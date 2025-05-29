@@ -58,11 +58,11 @@
 
             <div class="main-content flex flex-col min-h-screen">
                 <!--  BEGIN TOP NAVBAR  -->
-                <Header />
+                <!-- <Header /> -->
                 <!--  END TOP NAVBAR  -->
 
                 <!--  BEGIN CONTENT AREA  -->
-                <div class="p-6 animation">
+                <div class=" animation">
                     <router-view></router-view>
                 </div>
                 <!--  END CONTENT AREA  -->
@@ -94,11 +94,11 @@
             }
         };
 
-        const eleanimation: any = document.querySelector('.animation');
-        eleanimation.addEventListener('animationend', function () {
-            appSetting.changeAnimation('remove');
-        });
-        store.toggleMainLoader();
+        // const eleanimation: any = document.querySelector('.animation');
+        // eleanimation.addEventListener('animationend', function () {
+        //     appSetting.changeAnimation('remove');
+        // });
+        // store.toggleMainLoader();
     });
 
     const goToTop = () => {

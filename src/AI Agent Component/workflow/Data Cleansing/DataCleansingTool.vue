@@ -1,368 +1,431 @@
 <template>
   <div class="data-cleansing-container">
     <!-- Sidebar for file uploads -->
-    <div class="sidebar">
-      <div class="sidebar-header">
-        <button class="back-button">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-            <path d="m15 18-6-6 6-6"/>
-          </svg>
+    <div class="w-80 border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
+      <div class="p-6 space-y-6">
+        <div>
+          <h2 class="text-xl font-semibold dark:text-white-light">Data Cleansing Tool</h2>
+          <p class="text-sm text-white-dark mt-1">Upload files and process data with AI</p>
+        </div>
+
+        <!-- Source 1: ID Document -->
+        <div class="panel">
+          <div class="mb-5">
+            <h5 class="font-semibold text-lg dark:text-white-light">Source 1: ID Document</h5>
+            <p class="text-sm text-white-dark mt-1">Upload ID Image</p>
+          </div>
+          <div class="space-y-4">
+            <div class="border-2 border-dashed border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg p-6 text-center hover:border-primary transition-colors duration-200">
+              <div class="text-white-dark mb-4">
+                <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+              </div>
+              <p class="text-sm text-white-dark mb-2">Drag and drop file here</p>
+              <input type="file" @change="handleImageUpload" accept="image/jpeg,image/png,image/jpg" class="hidden" ref="imageInput" />
+              <button @click="$refs.imageInput.click()" class="btn btn-outline-primary btn-sm">Browse files</button>
+            </div>
+            <div v-if="imagePreview" class="mt-4">
+              <img :src="imagePreview" alt="Uploaded ID Document" class="w-full rounded-lg border border-[#e0e6ed] dark:border-[#1b2e4b]" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Source 2: CSV File 1 -->
+        <div class="panel">
+          <div class="mb-5">
+            <h5 class="font-semibold text-lg dark:text-white-light">Source 2: CSV File 1</h5>
+            <p class="text-sm text-white-dark mt-1">Upload CSV 1 (with address field)</p>
+          </div>
+          <div class="space-y-4">
+            <div class="border-2 border-dashed border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg p-6 text-center hover:border-primary transition-colors duration-200">
+              <div class="text-white-dark mb-4">
+                <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <p class="text-sm text-white-dark mb-2">Drag and drop file here</p>
+              <input type="file" @change="handleCSV1Upload" accept=".csv" class="hidden" ref="csv1Input" />
+              <button @click="$refs.csv1Input.click()" class="btn btn-outline-primary btn-sm">Browse files</button>
+            </div>
+            <div v-if="csv1File" class="flex items-center gap-2">
+              <span class="badge bg-success text-xs">
+                ✓ {{ csv1File.name }} uploaded
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Source 3: CSV File 2 -->
+        <div class="panel">
+          <div class="mb-5">
+            <h5 class="font-semibold text-lg dark:text-white-light">Source 3: CSV File 2</h5>
+            <p class="text-sm text-white-dark mt-1">Upload CSV 2 (with address components)</p>
+          </div>
+          <div class="space-y-4">
+            <div class="border-2 border-dashed border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg p-6 text-center hover:border-primary transition-colors duration-200">
+              <div class="text-white-dark mb-4">
+                <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              </div>
+              <p class="text-sm text-white-dark mb-2">Drag and drop file here</p>
+              <input type="file" @change="handleCSV2Upload" accept=".csv" class="hidden" ref="csv2Input" />
+              <button @click="$refs.csv2Input.click()" class="btn btn-outline-primary btn-sm">Browse files</button>
+            </div>
+            <div v-if="csv2File" class="flex items-center gap-2">
+              <span class="badge bg-success text-xs">
+                ✓ {{ csv2File.name }} uploaded
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Process Button -->
+        <button @click="processData" class="btn btn-primary w-full" :disabled="!canProcess" :class="{ 'opacity-60 pointer-events-none': !canProcess }">
+          Process Data
         </button>
       </div>
-      
-      <h2 class="sidebar-title">Data Sources</h2>
-
-      <div class="source-section">
-        <h3 class="source-title">Source 1: ID Document</h3>
-        <p class="source-subtitle">Upload ID Image</p>
-        <div class="file-upload-area">
-          <div class="upload-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14,2 14,8 20,8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10,9 9,9 8,9"/>
-            </svg>
-          </div>
-          <p class="upload-text">Drag and drop file here</p>
-          <input type="file" @change="handleImageUpload" accept="image/jpeg,image/png,image/jpg" class="file-input" />
-          <button class="browse-button">Browse files</button>
-        </div>
-        <img v-if="imagePreview" :src="imagePreview" alt="Uploaded ID Document" class="image-preview" />
-      </div>
-
-      <div class="source-section">
-        <h3 class="source-title">Source 2: CSV File 1</h3>
-        <p class="source-subtitle">Upload CSV 1 (with address field)</p>
-        <div class="file-upload-area">
-          <div class="upload-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14,2 14,8 20,8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10,9 9,9 8,9"/>
-            </svg>
-          </div>
-          <p class="upload-text">Drag and drop file here</p>
-          <input type="file" @change="handleCSV1Upload" accept=".csv" class="file-input" />
-          <button class="browse-button">Browse files</button>
-        </div>
-        <div v-if="csv1File" class="file-status success">
-          <span>✓</span> {{ csv1File.name }} uploaded
-        </div>
-      </div>
-
-      <div class="source-section">
-        <h3 class="source-title">Source 3: CSV File 2</h3>
-        <p class="source-subtitle">Upload CSV 2 (with address components)</p>
-        <div class="file-upload-area">
-          <div class="upload-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14,2 14,8 20,8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10,9 9,9 8,9"/>
-            </svg>
-          </div>
-          <p class="upload-text">Drag and drop file here</p>
-          <input type="file" @change="handleCSV2Upload" accept=".csv" class="file-input" />
-          <button class="browse-button">Browse files</button>
-        </div>
-        <div v-if="csv2File" class="file-status success">
-          <span>✓</span> {{ csv2File.name }} uploaded
-        </div>
-      </div>
-
-      <button @click="processData" class="process-button" :disabled="!canProcess">
-        Process Data
-      </button>
     </div>
 
     <!-- Main content area for results -->
-    <div class="main-content">
-      <h1 class="main-title">Data Cleansing Results</h1>
+    <div class="flex-1 p-6 overflow-y-auto">
+      <div class="space-y-6">
+        <div>
+          <h2 class="text-2xl font-semibold dark:text-white-light">Data Cleansing Results</h2>
+          <p class="text-white-dark">View processed data and AI analysis</p>
+        </div>
 
-      <div v-if="!isProcessing && !hasResults" class="info-message">
-        Upload all files in the sidebar and click 'Process Data' to begin
-      </div>
+        <!-- Info Message -->
+        <div v-if="!isProcessing && !hasResults" class="panel">
+          <div class="text-center py-8">
+            <div class="text-4xl mb-4">🧹</div>
+            <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Get Started</h3>
+            <p class="text-white-dark">
+              Upload all files in the sidebar and click 'Process Data' to begin data cleansing
+            </p>
+          </div>
+        </div>
 
-      <div v-if="error" class="error-message">
-        {{ error }}
-      </div>
+        <!-- Error Message -->
+        <div v-if="error" class="panel">
+          <div class="bg-danger-light p-4 rounded-lg border border-danger">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-danger" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+              </svg>
+              <span class="text-danger font-medium">{{ error }}</span>
+            </div>
+          </div>
+        </div>
 
-      <div v-if="isProcessing" class="processing-message">
-        <div class="spinner"></div>
-        <span>Processing data...</span>
-      </div>
+        <!-- Processing Message -->
+        <div v-if="isProcessing" class="panel">
+          <div class="flex items-center justify-center py-8">
+            <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mr-4"></div>
+            <span class="text-white-dark">Processing data...</span>
+          </div>
+        </div>
 
-      <!-- Results section -->
-      <div v-if="hasResults" class="results-section">
-        <hr class="my-6" />
+        <!-- Results section -->
+        <div v-if="hasResults" class="space-y-6">
+          <!-- Name Result -->
+          <div class="panel">
+            <div class="mb-5">
+              <h5 class="font-semibold text-lg dark:text-white-light">NAME</h5>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <h6 class="font-semibold mb-3 dark:text-white-light">Source Values</h6>
+                <div class="table-responsive">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Source</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>ID Document</td>
+                        <td>{{ preparedData?.name?.name1 || '-' }}</td>
+                      </tr>
+                      <tr>
+                        <td>CSV File 1</td>
+                        <td>{{ preparedData?.name?.name2 || '-' }}</td>
+                      </tr>
+                      <tr>
+                        <td>CSV File 2</td>
+                        <td>{{ preparedData?.name?.name3 || '-' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
 
-        <!-- Name Result -->
-        <div class="result-card">
-          <h2 class="text-xl font-bold mb-2">NAME</h2>
-          <div class="result-content">
-            <div class="source-values">
-              <h3 class="font-semibold">Source Values</h3>
-              <table class="w-full">
+              <div>
+                <div v-if="results.name && !results.name.error">
+                  <h6 class="font-semibold mb-3 dark:text-white-light">Cleaned Value</h6>
+                  <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4 mb-4">
+                    <p class="font-medium dark:text-white-light">{{ results.name.cleaned_name }}</p>
+                  </div>
+
+                  <h6 class="font-semibold mb-2 dark:text-white-light">Confidence Score:</h6>
+                  <div class="mb-4">
+                    <span class="badge bg-primary">{{ results.name.confidence_score }}</span>
+                  </div>
+
+                  <h6 class="font-semibold mb-2 dark:text-white-light">Reasoning:</h6>
+                  <p class="text-white-dark text-sm">{{ results.name.reasoning }}</p>
+                </div>
+                <div v-else-if="results.name && results.name.error" class="bg-danger-light p-4 rounded-lg border border-danger">
+                  <span class="text-danger">Error: {{ results.name.error }}</span>
+                </div>
+                <div v-else-if="isProcessingField.name" class="flex items-center gap-2">
+                  <div class="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                  <span class="text-white-dark">Processing NAME...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DOB Result -->
+          <div class="panel">
+            <div class="mb-5">
+              <h5 class="font-semibold text-lg dark:text-white-light">DOB</h5>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <h6 class="font-semibold mb-3 dark:text-white-light">Source Values</h6>
+                <div class="table-responsive">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Source</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>ID Document</td>
+                        <td>{{ preparedData?.dob?.dob1 || '-' }}</td>
+                      </tr>
+                      <tr>
+                        <td>CSV File 1</td>
+                        <td>{{ preparedData?.dob?.dob2 || '-' }}</td>
+                      </tr>
+                      <tr>
+                        <td>CSV File 2</td>
+                        <td>{{ preparedData?.dob?.dob3 || '-' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <div v-if="results.dob && !results.dob.error">
+                  <h6 class="font-semibold mb-3 dark:text-white-light">Cleaned Value</h6>
+                  <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4 mb-4">
+                    <p class="font-medium dark:text-white-light">{{ results.dob.cleaned_dob }}</p>
+                  </div>
+
+                  <h6 class="font-semibold mb-2 dark:text-white-light">Confidence Score:</h6>
+                  <div class="mb-4">
+                    <span class="badge bg-primary">{{ results.dob.confidence_score }}</span>
+                  </div>
+
+                  <h6 class="font-semibold mb-2 dark:text-white-light">Reasoning:</h6>
+                  <p class="text-white-dark text-sm">{{ results.dob.reasoning }}</p>
+                </div>
+                <div v-else-if="results.dob && results.dob.error" class="bg-danger-light p-4 rounded-lg border border-danger">
+                  <span class="text-danger">Error: {{ results.dob.error }}</span>
+                </div>
+                <div v-else-if="isProcessingField.dob" class="flex items-center gap-2">
+                  <div class="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                  <span class="text-white-dark">Processing DOB...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- NRIC Result -->
+          <div class="panel">
+            <div class="mb-5">
+              <h5 class="font-semibold text-lg dark:text-white-light">NRIC</h5>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <h6 class="font-semibold mb-3 dark:text-white-light">Source Values</h6>
+                <div class="table-responsive">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Source</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>ID Document</td>
+                        <td>{{ preparedData?.nric?.nric1 || '-' }}</td>
+                      </tr>
+                      <tr>
+                        <td>CSV File 1</td>
+                        <td>{{ preparedData?.nric?.nric2 || '-' }}</td>
+                      </tr>
+                      <tr>
+                        <td>CSV File 2</td>
+                        <td>{{ preparedData?.nric?.nric3 || '-' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <div v-if="results.nric && !results.nric.error">
+                  <h6 class="font-semibold mb-3 dark:text-white-light">Cleaned Value</h6>
+                  <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4 mb-4">
+                    <p class="font-medium dark:text-white-light">{{ results.nric.cleaned_nric }}</p>
+                  </div>
+
+                  <h6 class="font-semibold mb-2 dark:text-white-light">Confidence Score:</h6>
+                  <div class="mb-4">
+                    <span class="badge bg-primary">{{ results.nric.confidence_score }}</span>
+                  </div>
+
+                  <h6 class="font-semibold mb-2 dark:text-white-light">Reasoning:</h6>
+                  <p class="text-white-dark text-sm">{{ results.nric.reasoning }}</p>
+                </div>
+                <div v-else-if="results.nric && results.nric.error" class="bg-danger-light p-4 rounded-lg border border-danger">
+                  <span class="text-danger">Error: {{ results.nric.error }}</span>
+                </div>
+                <div v-else-if="isProcessingField.nric" class="flex items-center gap-2">
+                  <div class="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                  <span class="text-white-dark">Processing NRIC...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address Result -->
+          <div class="panel">
+            <div class="mb-5">
+              <h5 class="font-semibold text-lg dark:text-white-light">ADDRESS</h5>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <h6 class="font-semibold mb-3 dark:text-white-light">Source Values</h6>
+                <div class="table-responsive">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Source</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>ID Document</td>
+                        <td>{{ preparedData?.address?.address1 || '-' }}</td>
+                      </tr>
+                      <tr>
+                        <td>CSV File 1</td>
+                        <td>{{ preparedData?.address?.address2 || '-' }}</td>
+                      </tr>
+                      <tr>
+                        <td>CSV File 2</td>
+                        <td>{{ preparedData?.address?.address3 || '-' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <div v-if="results.address && !results.address.error">
+                  <h6 class="font-semibold mb-3 dark:text-white-light">Cleaned Value</h6>
+                  <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4 mb-4">
+                    <p class="font-medium dark:text-white-light">{{ formatAddress(results.address) }}</p>
+                  </div>
+
+                  <h6 class="font-semibold mb-2 dark:text-white-light">Confidence Score:</h6>
+                  <div class="mb-4">
+                    <span class="badge bg-primary">{{ results.address.confidence_score }}</span>
+                  </div>
+
+                  <h6 class="font-semibold mb-2 dark:text-white-light">Reasoning:</h6>
+                  <p class="text-white-dark text-sm">{{ results.address.reasoning }}</p>
+                </div>
+                <div v-else-if="results.address && results.address.error" class="bg-danger-light p-4 rounded-lg border border-danger">
+                  <span class="text-danger">Error: {{ results.address.error }}</span>
+                </div>
+                <div v-else-if="isProcessingField.address" class="flex items-center gap-2">
+                  <div class="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full"></div>
+                  <span class="text-white-dark">Processing ADDRESS...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Final Summary -->
+          <div v-if="allResultsReceived" class="panel">
+            <div class="mb-5">
+              <h5 class="font-semibold text-lg dark:text-white-light">Final Clean Data Summary</h5>
+            </div>
+            <div class="table-responsive mb-6">
+              <table>
                 <thead>
                   <tr>
-                    <th>Source</th>
-                    <th>Value</th>
+                    <th>Field</th>
+                    <th>Cleaned Value</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>ID Document</td>
-                    <td>{{ preparedData?.name?.name1 || '' }}</td>
+                    <td>Name</td>
+                    <td>{{ results.name?.cleaned_name || '-' }}</td>
                   </tr>
                   <tr>
-                    <td>CSV File 1</td>
-                    <td>{{ preparedData?.name?.name2 || '' }}</td>
+                    <td>DOB</td>
+                    <td>{{ results.dob?.cleaned_dob || '-' }}</td>
                   </tr>
                   <tr>
-                    <td>CSV File 2</td>
-                    <td>{{ preparedData?.name?.name3 || '' }}</td>
+                    <td>NRIC</td>
+                    <td>{{ results.nric?.cleaned_nric || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <td>Address Line 1</td>
+                    <td>{{ results.address?.addressLine1 || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <td>City</td>
+                    <td>{{ results.address?.city || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <td>State</td>
+                    <td>{{ results.address?.state || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <td>Country</td>
+                    <td>{{ results.address?.country || '-' }}</td>
+                  </tr>
+                  <tr>
+                    <td>Postcode</td>
+                    <td>{{ results.address?.postcode || '-' }}</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <div class="cleaned-value">
-              <div v-if="results.name && !results.name.error">
-                <h3 class="font-semibold">Cleaned value</h3>
-                <p>{{ results.name.cleaned_name }}</p>
-
-                <h3 class="font-semibold mt-4">Confidence Score:</h3>
-                <p>{{ results.name.confidence_score }}</p>
-
-                <h3 class="font-semibold mt-4">Reasoning:</h3>
-                <p>{{ results.name.reasoning }}</p>
-              </div>
-              <div v-else-if="results.name && results.name.error" class="error-message">
-                Error: {{ results.name.error }}
-              </div>
-              <div v-else-if="isProcessingField.name" class="processing-field">
-                Processing NAME...
-              </div>
-            </div>
+            <button @click="downloadCSV" class="btn btn-success">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              Download Clean Data as CSV
+            </button>
           </div>
-        </div>
-
-        <hr class="my-6" />
-
-        <!-- DOB Result -->
-        <div class="result-card">
-          <h2 class="text-xl font-bold mb-2">DOB</h2>
-          <div class="result-content">
-            <div class="source-values">
-              <h3 class="font-semibold">Source Values</h3>
-              <table class="w-full">
-                <thead>
-                  <tr>
-                    <th>Source</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>ID Document</td>
-                    <td>{{ preparedData?.dob?.dob1 || '' }}</td>
-                  </tr>
-                  <tr>
-                    <td>CSV File 1</td>
-                    <td>{{ preparedData?.dob?.dob2 || '' }}</td>
-                  </tr>
-                  <tr>
-                    <td>CSV File 2</td>
-                    <td>{{ preparedData?.dob?.dob3 || '' }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="cleaned-value">
-              <div v-if="results.dob && !results.dob.error">
-                <h3 class="font-semibold">Cleaned value</h3>
-                <p>{{ results.dob.cleaned_dob }}</p>
-
-                <h3 class="font-semibold mt-4">Confidence Score:</h3>
-                <p>{{ results.dob.confidence_score }}</p>
-
-                <h3 class="font-semibold mt-4">Reasoning:</h3>
-                <p>{{ results.dob.reasoning }}</p>
-              </div>
-              <div v-else-if="results.dob && results.dob.error" class="error-message">
-                Error: {{ results.dob.error }}
-              </div>
-              <div v-else-if="isProcessingField.dob" class="processing-field">
-                Processing DOB...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <hr class="my-6" />
-
-        <!-- NRIC Result -->
-        <div class="result-card">
-          <h2 class="text-xl font-bold mb-2">NRIC</h2>
-          <div class="result-content">
-            <div class="source-values">
-              <h3 class="font-semibold">Source Values</h3>
-              <table class="w-full">
-                <thead>
-                  <tr>
-                    <th>Source</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>ID Document</td>
-                    <td>{{ preparedData?.nric?.nric1 || '' }}</td>
-                  </tr>
-                  <tr>
-                    <td>CSV File 1</td>
-                    <td>{{ preparedData?.nric?.nric2 || '' }}</td>
-                  </tr>
-                  <tr>
-                    <td>CSV File 2</td>
-                    <td>{{ preparedData?.nric?.nric3 || '' }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="cleaned-value">
-              <div v-if="results.nric && !results.nric.error">
-                <h3 class="font-semibold">Cleaned value</h3>
-                <p>{{ results.nric.cleaned_nric }}</p>
-
-                <h3 class="font-semibold mt-4">Confidence Score:</h3>
-                <p>{{ results.nric.confidence_score }}</p>
-
-                <h3 class="font-semibold mt-4">Reasoning:</h3>
-                <p>{{ results.nric.reasoning }}</p>
-              </div>
-              <div v-else-if="results.nric && results.nric.error" class="error-message">
-                Error: {{ results.nric.error }}
-              </div>
-              <div v-else-if="isProcessingField.nric" class="processing-field">
-                Processing NRIC...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <hr class="my-6" />
-
-        <!-- Address Result -->
-        <div class="result-card">
-          <h2 class="text-xl font-bold mb-2">ADDRESS</h2>
-          <div class="result-content">
-            <div class="source-values">
-              <h3 class="font-semibold">Source Values</h3>
-              <table class="w-full">
-                <thead>
-                  <tr>
-                    <th>Source</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>ID Document</td>
-                    <td>{{ preparedData?.address?.address1 || '' }}</td>
-                  </tr>
-                  <tr>
-                    <td>CSV File 1</td>
-                    <td>{{ preparedData?.address?.address2 || '' }}</td>
-                  </tr>
-                  <tr>
-                    <td>CSV File 2</td>
-                    <td>{{ preparedData?.address?.address3 || '' }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div class="cleaned-value">
-              <div v-if="results.address && !results.address.error">
-                <h3 class="font-semibold">Cleaned value</h3>
-                <p>{{ formatAddress(results.address) }}</p>
-
-                <h3 class="font-semibold mt-4">Confidence Score:</h3>
-                <p>{{ results.address.confidence_score }}</p>
-
-                <h3 class="font-semibold mt-4">Reasoning:</h3>
-                <p>{{ results.address.reasoning }}</p>
-              </div>
-              <div v-else-if="results.address && results.address.error" class="error-message">
-                Error: {{ results.address.error }}
-              </div>
-              <div v-else-if="isProcessingField.address" class="processing-field">
-                Processing ADDRESS...
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <hr class="my-6" />
-
-        <!-- Final Summary -->
-        <div v-if="allResultsReceived" class="summary-section">
-          <h2 class="text-xl font-bold mb-4">Final Clean Data Summary</h2>
-          <table class="w-full">
-            <thead>
-              <tr>
-                <th>Field</th>
-                <th>Cleaned Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Name</td>
-                <td>{{ results.name?.cleaned_name || '' }}</td>
-              </tr>
-              <tr>
-                <td>DOB</td>
-                <td>{{ results.dob?.cleaned_dob || '' }}</td>
-              </tr>
-              <tr>
-                <td>NRIC</td>
-                <td>{{ results.nric?.cleaned_nric || '' }}</td>
-              </tr>
-              <tr>
-                <td>Address Line 1</td>
-                <td>{{ results.address?.addressLine1 || '' }}</td>
-              </tr>
-              <tr>
-                <td>City</td>
-                <td>{{ results.address?.city || '' }}</td>
-              </tr>
-              <tr>
-                <td>State</td>
-                <td>{{ results.address?.state || '' }}</td>
-              </tr>
-              <tr>
-                <td>Country</td>
-                <td>{{ results.address?.country || '' }}</td>
-              </tr>
-              <tr>
-                <td>Postcode</td>
-                <td>{{ results.address?.postcode || '' }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <button @click="downloadCSV" class="download-button mt-6">
-            Download Clean Data as CSV
-          </button>
         </div>
       </div>
     </div>
@@ -777,313 +840,26 @@ export default {
 </script>
 
 <style scoped>
+/* Custom styles for responsive design */
+@media (max-width: 768px) {
+  .w-80 {
+    width: 100%;
+  }
+
+  .flex {
+    flex-direction: column;
+  }
+}
 .data-cleansing-container {
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  background-color: #1a1a1a;
-  color: #ffffff;
+  height: 90vh;
+  overflow-y: scroll;
+
 }
 
-.sidebar {
-  min-width: 150px;
-  background-color: #2a2a2a;
-  padding: 0;
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-
-.sidebar-header {
-  padding: 1rem;
-  border-bottom: 1px solid #1e293b;
-}
-
-.back-button {
-  background: none;
-  border: none;
-  color: #ffffff;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  transition: background-color 0.2s;
-}
-
-.back-button:hover {
-  background-color: #1e293b;
-}
-
-.sidebar-title {
-  color: #ffffff;
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin: 0 0 1.5rem 0;
-  padding: 0 1rem;
-}
-
-.source-section {
-  padding: 0 1rem 1.5rem 1rem;
-  border-bottom: 1px solid #1e293b;
-}
-
-.source-title {
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.25rem 0;
-}
-
-.source-subtitle {
-  color:  #cdbca7;
-  font-size: 0.875rem;
-  margin: 0 0 1rem 0;
-}
-
-.file-upload-area {
-  background-color: #0f172a00;
-  border: 2px dashed  #c9c3bb;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  text-align: center;
-  position: relative;
-  transition: border-color 0.2s;
-}
-
-.file-upload-area:hover {
-  border-color:  #ffffff;
-}
-
-.upload-icon {
-  color:  #b9a183;
-  margin: 0 auto 0.75rem auto;
-  width: 24px;
-  height: 24px;
-}
-
-.upload-text {
-  color: #ffffff;
-  font-size: 0.875rem;
-  margin: 0 0 0.25rem 0;
-}
-
-.upload-limit {
-  color: #64748b;
-  font-size: 0.75rem;
-  margin: 0 0 1rem 0;
-}
-
-.file-input {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 200px;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.browse-button {
-  background-color:  #8b7355;
-  color: #ffffff;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.browse-button:hover {
-  background-color: #1e293b;
-}
-
-.image-preview {
-  margin-top: 1rem;
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.375rem;
-}
-
-.file-status {
-  margin-top: 0.75rem;
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-}
-
-.file-status.success {
-  background-color: #14532d;
-  color: #22c55e;
-}
-
-.file-status span {
-  font-weight: bold;
-  margin-right: 0.25rem;
-}
-
-.process-button {
-  width: calc(100% - 2rem);
-  margin: 1.5rem 1rem;
-  padding: 0.75rem;
-  background-color: #dc2626;
-  color: white;
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.process-button:hover {
-  background-color: #b91c1c;
-}
-
-.process-button:disabled {
-  background-color: #334155;
-  cursor: not-allowed;
-}
-
-.main-content {
-  flex: 1;
-  background-color: #1a1a1a;
-  padding: 2rem;
-  overflow-y: auto;
-}
-
-.main-title {
-  color: #ffffff;
-  font-size: 1.875rem;
-  font-weight: 600;
-  margin: 0 0 2rem 0;
-}
-
-.info-message {
-  padding: 1rem 1.5rem;
-  background-color: #8b7355;
-  border-radius: 0.5rem;
-  color: #ffffff;
-  font-size: 0.875rem;
-}
-
-.error-message {
-  padding: 1rem;
-  background-color: #450a0a;
-  border-radius: 0.375rem;
-  color: #f87171;
-  margin-bottom: 1rem;
-}
-
-.processing-message {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  background-color: #1e293b;
-  border-radius: 0.375rem;
-}
-
-.spinner {
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 3px solid #334155;
-  border-top-color: #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-right: 0.75rem;
-}
 ::-webkit-scrollbar {
-  display: none;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.result-card {
-  margin-bottom: 1.5rem;
-}
-
-.result-content {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.source-values,
-.cleaned-value {
-  flex: 1;
-  min-width: 250px;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 0.5rem;
-}
-
-th,
-td {
-  border: 1px solid #1e293b;
-  padding: 0.5rem;
-  text-align: left;
-  color: #ffffff;
-}
-
-th {
-  background-color: #020617;
-}
-
-.processing-field {
-  padding: 0.75rem;
-  background-color: #1e293b;
-  border-radius: 0.375rem;
-  font-style: italic;
-  color: #64748b;
-}
-
-.download-button {
-  padding: 0.75rem 1.5rem;
-  background-color: #16a34a;
-  color: white;
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.download-button:hover {
-  background-color: #15803d;
-}
-
-/* Mobile layout adjustments */
-@media (max-width: 768px) {
-  .data-cleansing-container {
-    flex-direction: column;
-    height: auto;
-  }
-
-  .sidebar {
-    width: 100%;
-    min-width: 100%;
-  }
-
-  .main-content {
-    padding: 1rem;
-  }
-
-  .result-content {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .source-values,
-  .cleaned-value {
-    width: 100%;
-    min-width: 100%;
-  }
-  
+    display: none;
 }
 </style>

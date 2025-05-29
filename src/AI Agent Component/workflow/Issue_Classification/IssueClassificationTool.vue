@@ -172,6 +172,7 @@
 import IconInfoTriangle from '@/components/icon/icon-info-triangle.vue'
 import IconCircleCheck from '@/components/icon/icon-circle-check.vue'
 import IconDownload from '@/components/icon/icon-download.vue'
+import { parse } from 'csv-parse/browser/esm/sync'
 
 export default {
   name: 'IssueClassificationTool',
@@ -253,59 +254,24 @@ export default {
       });
     },
 
-    // Parse CSV text
+    // Parse CSV text using csv-parse library
     parseCSV(text) {
-      if (!text || text.trim() === '') {
-        return [];
-      }
-
-      // Handle different line endings
-      const lines = text.split(/\r\n|\n|\r/).filter(line => line.trim() !== '');
-
-      if (lines.length === 0) {
-        return [];
-      }
-
-      // Get headers from first line
-      const headers = lines[0].split(',').map(h => h.trim());
-
-      // Parse data rows
-      return lines.slice(1)
-        .map(line => {
-          // Handle quoted values with commas inside
-          const values = [];
-          let inQuote = false;
-          let currentValue = '';
-
-          for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-
-            if (char === '"' && (i === 0 || line[i-1] !== '\\')) {
-              inQuote = !inQuote;
-            } else if (char === ',' && !inQuote) {
-              values.push(currentValue.trim());
-              currentValue = '';
-            } else {
-              currentValue += char;
-            }
-          }
-
-          // Add the last value
-          values.push(currentValue.trim());
-
-          // Create object from headers and values
-          const obj = {};
-          headers.forEach((header, index) => {
-            // Remove quotes from values if present
-            let value = values[index] || '';
-            if (value.startsWith('"') && value.endsWith('"')) {
-              value = value.substring(1, value.length - 1);
-            }
-            obj[header] = value;
-          });
-
-          return obj;
+      try {
+        // Use csv-parse to properly handle CSV format
+        const records = parse(text, {
+          columns: true,
+          skip_empty_lines: true,
+          trim: true
         });
+
+        console.log('CSV parsed successfully:', records.length, 'rows');
+        console.log('Sample record:', records[0]);
+
+        return records;
+      } catch (error) {
+        console.error('CSV parsing error:', error);
+        throw new Error(`CSV parsing failed: ${error.message}`);
+      }
     },
 
     // Clean text by handling encoding issues

@@ -1,155 +1,221 @@
 <template>
-  <div class="program-rankings">
-    <!-- Main Content -->
-    <div class="main-content">
-      <h1 class="page-title">Program Rankings</h1>
-      
-      <!-- Parameter Controls -->
-      <div class="parameter-controls">
-        <div class="control-group">
-          <label for="max-offers">Maximum offers per program</label>
-          <div class="slider-container">
-            <span class="slider-min">1</span>
-            <input 
-              type="range" 
-              id="max-offers" 
-              v-model.number="maxOffers" 
-              min="1" 
-              max="10" 
+  <div class="p-6 space-y-6">
+    <!-- Page Header -->
+    <div>
+      <h1 class="text-2xl font-semibold dark:text-white-light">Program Rankings</h1>
+      <p class="text-white-dark">Intelligent program allocation and ranking system</p>
+    </div>
+
+    <!-- Parameter Controls -->
+    <div class="panel">
+      <div class="mb-5">
+        <h5 class="font-semibold text-lg dark:text-white-light">Configuration Parameters</h5>
+        <p class="text-sm text-white-dark">Adjust settings for program allocation</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+          <label class="font-medium dark:text-white-light">Maximum offers per program</label>
+          <div class="flex items-center space-x-4">
+            <span class="text-sm text-white-dark min-w-[20px]">1</span>
+            <input
+              type="range"
+              v-model.number="maxOffers"
+              min="1"
+              max="10"
               step="1"
-              class="slider"
+              class="flex-1 h-2 bg-[#ebedf2] dark:bg-[#191e3a] rounded-lg appearance-none cursor-pointer slider"
             />
-            <span class="slider-max">10</span>
+            <span class="text-sm text-white-dark min-w-[20px]">10</span>
           </div>
-          <span class="slider-value">{{ maxOffers }}</span>
+          <div class="text-center">
+            <span class="badge bg-primary text-sm">{{ maxOffers }}</span>
+          </div>
         </div>
-        
-        <div class="control-group">
-          <label for="min-score">Minimum score threshold</label>
-          <div class="slider-container">
-            <span class="slider-min">0</span>
-            <input 
-              type="range" 
-              id="min-score" 
-              v-model.number="minScore" 
-              min="0" 
-              max="100" 
+
+        <div class="space-y-3">
+          <label class="font-medium dark:text-white-light">Minimum score threshold</label>
+          <div class="flex items-center space-x-4">
+            <span class="text-sm text-white-dark min-w-[20px]">0</span>
+            <input
+              type="range"
+              v-model.number="minScore"
+              min="0"
+              max="100"
               step="5"
-              class="slider"
+              class="flex-1 h-2 bg-[#ebedf2] dark:bg-[#191e3a] rounded-lg appearance-none cursor-pointer slider"
             />
-            <span class="slider-max">100</span>
+            <span class="text-sm text-white-dark min-w-[20px]">100</span>
           </div>
-          <span class="slider-value">{{ minScore }}</span>
+          <div class="text-center">
+            <span class="badge bg-primary text-sm">{{ minScore }}</span>
+          </div>
         </div>
       </div>
-      
-      <!-- Load Data Button -->
-      <button 
-        @click="loadStudentData" 
-        :disabled="loading"
-        class="action-button"
-      >
-        Load Student Application Data
-      </button>
-    
-      <!-- Loading Indicator -->
-      <div v-if="loading" class="loading-indicator">
-        <div class="spinner"></div>
-        <p>Fetching data from database...</p>
+    </div>
+
+    <!-- Load Data Button -->
+    <button
+      @click="loadStudentData"
+      :disabled="loading"
+      class="btn btn-primary"
+      :class="{ 'opacity-60 pointer-events-none': loading }"
+    >
+      {{ loading ? 'Loading...' : 'Load Student Application Data' }}
+    </button>
+
+    <!-- Loading Indicator -->
+    <div v-if="loading" class="panel">
+      <div class="flex items-center gap-3">
+        <div class="animate-spin w-5 h-5 border-2 border-primary border-t-transparent rounded-full"></div>
+        <span class="font-medium dark:text-white-light">Fetching data from database...</span>
       </div>
-    
-      <!-- Results Section -->
-    <div v-if="offerStats" class="results-section">
+    </div>
+
+    <!-- Results Section -->
+    <div v-if="offerStats" class="space-y-6">
       <!-- Overall Statistics -->
-      <div class="stats-card">
-        <h3>Offer Statistics</h3>
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-value">{{ offerStats.totalStudents }}</div>
-            <div class="stat-label">Total Students</div>
+      <div class="panel">
+        <div class="mb-5">
+          <h5 class="font-semibold text-lg dark:text-white-light">Offer Statistics</h5>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="text-center p-4 bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg">
+            <div class="text-2xl font-bold text-primary">{{ offerStats.totalStudents }}</div>
+            <div class="text-sm text-white-dark">Total Students</div>
           </div>
-          <div class="stat-item">
-            <div class="stat-value">{{ offerStats.studentsWithOffers }}</div>
-            <div class="stat-label">Students with Offers</div>
+          <div class="text-center p-4 bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg">
+            <div class="text-2xl font-bold text-success">{{ offerStats.studentsWithOffers }}</div>
+            <div class="text-sm text-white-dark">Students with Offers</div>
           </div>
-          <div class="stat-item">
-            <div class="stat-value">{{ offerStats.studentsWithoutOffers }}</div>
-            <div class="stat-label">Students without Offers</div>
+          <div class="text-center p-4 bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg">
+            <div class="text-2xl font-bold text-danger">{{ offerStats.studentsWithoutOffers }}</div>
+            <div class="text-sm text-white-dark">Students without Offers</div>
           </div>
         </div>
       </div>
-      
+
       <!-- Program Summary -->
-      <h3>Program Summary</h3>
-      <table class="summary-table">
-        <thead>
-          <tr>
-            <th>Program</th>
-            <th>Total Applicants</th>
-            <th>Offers Made</th>
-            <th>Spaces Remaining</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="stat in programStats" :key="stat.Program">
-            <td>{{ stat.Program }}</td>
-            <td>{{ stat['Total Applicants'] }}</td>
-            <td>{{ stat['Offers Made'] }}</td>
-            <td>{{ stat['Spaces Remaining'] }}</td>
-          </tr>
-        </tbody>
-      </table>
-      
+      <div class="panel">
+        <div class="mb-5">
+          <h5 class="font-semibold text-lg dark:text-white-light">Program Summary</h5>
+          <p class="text-sm text-white-dark">Overview of applications and offers by program</p>
+        </div>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th class="ltr:rounded-l-md rtl:rounded-r-md">Program</th>
+                <th>Total Applicants</th>
+                <th>Offers Made</th>
+                <th class="ltr:rounded-r-md rtl:rounded-l-md">Spaces Remaining</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="stat in programStats" :key="stat.Program"
+                  class="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
+                <td class="text-black dark:text-white font-medium">{{ stat.Program }}</td>
+                <td class="text-black dark:text-white">{{ stat['Total Applicants'] }}</td>
+                <td class="text-black dark:text-white">
+                  <span class="badge bg-success">{{ stat['Offers Made'] }}</span>
+                </td>
+                <td class="text-black dark:text-white">
+                  <span class="badge"
+                        :class="{
+                          'bg-success': stat['Spaces Remaining'] > 0,
+                          'bg-danger': stat['Spaces Remaining'] === 0
+                        }">
+                    {{ stat['Spaces Remaining'] }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Program Details -->
-      <h3>Program Details</h3>
-      <div class="program-details">
-        <div v-for="program in programs" :key="program" class="program-card">
-          <div 
-            class="program-header" 
-            @click="toggleProgramDetails(program)"
-            :class="{ 'expanded': expandedPrograms.includes(program) }"
-          >
-            <h4>{{ program }}</h4>
-            <div class="offer-count">{{ getProgramOfferCount(program) }} offers made</div>
-            <div class="expand-icon">{{ expandedPrograms.includes(program) ? '▼' : '►' }}</div>
-          </div>
-          
-          <div v-if="expandedPrograms.includes(program)" class="program-content">
-            <table class="program-table">
-              <thead>
-                <tr>
-                  <th>Reference Number</th>
-                  <th>Choice</th>
-                  <th>Match Score</th>
-                  <th>Program Rank</th>
-                  <th>Offer</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr 
-                  v-for="student in getProgramStudents(program)" 
-                  :key="`${program}-${student.reference_number}`"
-                  :class="{ 'offered': student.offer }"
-                >
-                  <td>{{ student.reference_number }}</td>
-                  <td>{{ formatChoice(student.choice) }}</td>
-                  <td :style="{ backgroundColor: getScoreColor(student.match_score) ,color: 'black'}">
-                    {{ student.match_score }}
-                  </td>
-                  <td>{{ student.program_rank }}</td>
-                  <td>{{ student.offer ? 'Yes' : 'No' }}</td>
-                </tr>
-              </tbody>
-            </table>
+      <div class="panel">
+        <div class="mb-5">
+          <h5 class="font-semibold text-lg dark:text-white-light">Program Details</h5>
+          <p class="text-sm text-white-dark">Detailed breakdown by program</p>
+        </div>
+
+        <div class="space-y-4">
+          <div v-for="program in programs" :key="program" class="border border-[#ebedf2] dark:border-[#191e3a] rounded-lg overflow-hidden">
+            <div
+              class="program-header p-4 bg-[#f1f2f3] dark:bg-[#1b2e4b] cursor-pointer transition-colors duration-200 hover:bg-[#e6e7e8] dark:hover:bg-[#253047]"
+              @click="toggleProgramDetails(program)"
+            >
+              <div class="flex items-center justify-between">
+                <h6 class="font-semibold dark:text-white-light">{{ program }}</h6>
+                <div class="flex items-center space-x-3">
+                  <span class="badge bg-primary text-xs">{{ getProgramOfferCount(program) }} offers made</span>
+                  <div class="text-white-dark">
+                    {{ expandedPrograms.includes(program) ? '▼' : '►' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="expandedPrograms.includes(program)" class="p-4">
+              <div class="table-responsive">
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="ltr:rounded-l-md rtl:rounded-r-md">Reference Number</th>
+                      <th>Choice</th>
+                      <th>Match Score</th>
+                      <th>Program Rank</th>
+                      <th class="ltr:rounded-r-md rtl:rounded-l-md">Offer</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="student in getProgramStudents(program)"
+                      :key="`${program}-${student.reference_number}`"
+                      class="text-white-dark hover:text-black dark:hover:text-white-light/90 group"
+                      :class="{ 'bg-success/10': student.offer }"
+                    >
+                      <td class="text-black dark:text-white">{{ student.reference_number }}</td>
+                      <td class="text-black dark:text-white">{{ formatChoice(student.choice) }}</td>
+                      <td>
+                        <span class="badge"
+                              :class="{
+                                'bg-success': getScoreLevel(student.match_score) === 'high',
+                                'bg-warning': getScoreLevel(student.match_score) === 'medium',
+                                'bg-danger': getScoreLevel(student.match_score) === 'low'
+                              }">
+                          {{ student.match_score }}
+                        </span>
+                      </td>
+                      <td class="text-black dark:text-white">{{ student.program_rank }}</td>
+                      <td>
+                        <span class="badge"
+                              :class="{
+                                'bg-success': student.offer,
+                                'bg-secondary': !student.offer
+                              }">
+                          {{ student.offer ? 'Yes' : 'No' }}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    
+
     <!-- No Data Message -->
-    <div v-if="noData" class="no-data-message">
-      <p>No data found or failed to load data.</p>
-    </div>
+    <div v-if="noData" class="panel">
+      <div class="text-center py-8">
+        <div class="text-4xl mb-4">📊</div>
+        <h3 class="text-lg font-semibold mb-2 dark:text-white-light">No Data Available</h3>
+        <p class="text-white-dark">No data found or failed to load data. Please try again.</p>
+      </div>
     </div>
   </div>
 </template>
@@ -178,11 +244,11 @@ export default {
     async loadStudentData() {
       this.loading = true;
       this.noData = false;
-      
+
       try {
         const response = await axios.get('https://n8n.forwen.com/webhook/790cbf44-3319-46ab-9a2c-8847c899f095');
         console.log('API Response:', response.data);
-        
+
         if (response.data && Array.isArray(response.data) && response.data.length > 0) {
           // Process the API response to ensure we're using the correct reference numbers
           const processedData = response.data.map(student => {
@@ -195,7 +261,7 @@ export default {
             }
             return student;
           });
-          
+
           this.studentData = processedData;
           console.log('Processed Student Data:', this.studentData);
           this.processData();
@@ -209,43 +275,43 @@ export default {
         this.loading = false;
       }
     },
-    
+
     processData() {
       // Process program matches
       this.matchResults = this.processStudentMatches(this.studentData);
-      
+
       // Generate program rankings
       this.rankings = this.generateProgramRankings(this.matchResults);
-      
+
       // Assign students to programs
       this.rankingsWithOffers = this.assignStudentsToPrograms(
-        this.rankings, 
-        this.maxOffers, 
+        this.rankings,
+        this.maxOffers,
         this.minScore
       );
-      
+
       // Get unique programs
       this.programs = [...new Set(this.rankingsWithOffers.map(r => r.Program))].sort();
-      
+
       // Generate program statistics
       this.generateProgramStats();
-      
+
       // Generate offer statistics
       this.generateOfferStats();
-      
+
       // Expand the first program by default
       if (this.programs.length > 0 && this.expandedPrograms.length === 0) {
         this.expandedPrograms = [this.programs[0]];
       }
     },
-    
+
     processStudentMatches(studentData) {
       const allMatches = [];
-      
+
       for (const student of studentData) {
         const studentId = student.reference_number;
         const selectedPrograms = new Set(); // Track programs already selected by this student
-        
+
         if (student.choice1 && student.c1_score !== undefined && student.c1_score !== null) {
           const program = student.choice1;
           if (!selectedPrograms.has(program)) {
@@ -258,7 +324,7 @@ export default {
             });
           }
         }
-        
+
         if (student.choice2 && student.c2_score !== undefined && student.c2_score !== null) {
           const program = student.choice2;
           if (!selectedPrograms.has(program)) {
@@ -271,7 +337,7 @@ export default {
             });
           }
         }
-        
+
         if (student.choice3 && student.c3_score !== undefined && student.c3_score !== null) {
           const program = student.choice3;
           if (!selectedPrograms.has(program)) {
@@ -285,19 +351,19 @@ export default {
           }
         }
       }
-      
+
       return allMatches;
     },
-    
+
     generateProgramRankings(matchData) {
       const programs = [...new Set(matchData.map(m => m.Program))];
       const allRankings = [];
-      
+
       for (const program of programs) {
         const programData = matchData
           .filter(m => m.Program === program)
           .sort((a, b) => b.match_score - a.match_score);
-        
+
         // Add program rank
         programData.forEach((student, index) => {
           allRankings.push({
@@ -307,42 +373,42 @@ export default {
           });
         });
       }
-      
+
       return allRankings;
     },
-    
+
     assignStudentsToPrograms(rankings, maxOffersPerProgram, minScoreThreshold) {
       const rankingsCopy = JSON.parse(JSON.stringify(rankings));
       const uniqueStudents = [...new Set(rankingsCopy.map(r => r.reference_number))];
       const programs = [...new Set(rankingsCopy.map(r => r.Program))];
       const assignedStudents = new Set();
       const programOffers = {};
-      
+
       // Initialize program offers count
       for (const program of programs) {
         programOffers[program] = 0;
       }
-      
+
       // First pass: Assign students to their first choice programs
       for (const student of uniqueStudents) {
         const studentChoices = rankingsCopy
           .filter(r => r.reference_number === student)
           .sort((a, b) => a.choice - b.choice);
-        
+
         if (studentChoices.length > 0) {
           const firstChoice = studentChoices.find(c => c.choice === 1);
-          
+
           if (firstChoice) {
             const program = firstChoice.Program;
             const score = firstChoice.match_score;
-            
+
             // Check if the program has space and the student meets the minimum score
             if (programOffers[program] < maxOffersPerProgram && score >= minScoreThreshold) {
               // Find this student's rank in this program
               const studentRank = rankingsCopy.find(
                 r => r.Program === program && r.reference_number === student
               ).program_rank;
-              
+
               // Make sure student is within the top maxOffers for this program
               if (studentRank <= maxOffersPerProgram) {
                 // Update offer status
@@ -351,7 +417,7 @@ export default {
                     r.offer = true;
                   }
                 });
-                
+
                 assignedStudents.add(student);
                 programOffers[program]++;
               }
@@ -359,34 +425,34 @@ export default {
           }
         }
       }
-      
+
       // Second pass: Try to assign remaining students to their second choices
       for (const student of uniqueStudents) {
         if (assignedStudents.has(student)) continue;
-        
+
         const studentChoices = rankingsCopy
           .filter(r => r.reference_number === student)
           .sort((a, b) => a.choice - b.choice);
-        
+
         if (studentChoices.length > 0) {
           const secondChoice = studentChoices.find(c => c.choice === 2);
-          
+
           if (secondChoice) {
             const program = secondChoice.Program;
             const score = secondChoice.match_score;
-            
+
             if (programOffers[program] < maxOffersPerProgram && score >= minScoreThreshold) {
               const studentRank = rankingsCopy.find(
                 r => r.Program === program && r.reference_number === student
               ).program_rank;
-              
+
               if (studentRank <= maxOffersPerProgram) {
                 rankingsCopy.forEach(r => {
                   if (r.reference_number === student && r.Program === program) {
                     r.offer = true;
                   }
                 });
-                
+
                 assignedStudents.add(student);
                 programOffers[program]++;
               }
@@ -394,34 +460,34 @@ export default {
           }
         }
       }
-      
+
       // Third pass: Try to assign remaining students to their third choices
       for (const student of uniqueStudents) {
         if (assignedStudents.has(student)) continue;
-        
+
         const studentChoices = rankingsCopy
           .filter(r => r.reference_number === student)
           .sort((a, b) => a.choice - b.choice);
-        
+
         if (studentChoices.length > 0) {
           const thirdChoice = studentChoices.find(c => c.choice === 3);
-          
+
           if (thirdChoice) {
             const program = thirdChoice.Program;
             const score = thirdChoice.match_score;
-            
+
             if (programOffers[program] < maxOffersPerProgram && score >= minScoreThreshold) {
               const studentRank = rankingsCopy.find(
                 r => r.Program === program && r.reference_number === student
               ).program_rank;
-              
+
               if (studentRank <= maxOffersPerProgram) {
                 rankingsCopy.forEach(r => {
                   if (r.reference_number === student && r.Program === program) {
                     r.offer = true;
                   }
                 });
-                
+
                 assignedStudents.add(student);
                 programOffers[program]++;
               }
@@ -429,17 +495,17 @@ export default {
           }
         }
       }
-      
+
       return rankingsCopy;
     },
-    
+
     generateProgramStats() {
       this.programStats = [];
-      
+
       for (const program of this.programs) {
         const programData = this.rankingsWithOffers.filter(r => r.Program === program);
         const offersMade = programData.filter(r => r.offer).length;
-        
+
         this.programStats.push({
           Program: program,
           'Total Applicants': programData.length,
@@ -448,7 +514,7 @@ export default {
         });
       }
     },
-    
+
     generateOfferStats() {
       const totalStudents = [...new Set(this.rankingsWithOffers.map(r => r.reference_number))].length;
       const studentsWithOffers = [...new Set(
@@ -456,14 +522,14 @@ export default {
           .filter(r => r.offer)
           .map(r => r.reference_number)
       )].length;
-      
+
       this.offerStats = {
         totalStudents,
         studentsWithOffers,
         studentsWithoutOffers: totalStudents - studentsWithOffers
       };
     },
-    
+
     getProgramStudents(program) {
       return this.rankingsWithOffers
         .filter(r => r.Program === program)
@@ -474,13 +540,13 @@ export default {
           return a.program_rank - b.program_rank;
         });
     },
-    
+
     getProgramOfferCount(program) {
       return this.rankingsWithOffers
         .filter(r => r.Program === program && r.offer)
         .length;
     },
-    
+
     toggleProgramDetails(program) {
       if (this.expandedPrograms.includes(program)) {
         this.expandedPrograms = this.expandedPrograms.filter(p => p !== program);
@@ -488,7 +554,7 @@ export default {
         this.expandedPrograms.push(program);
       }
     },
-    
+
     formatChoice(choice) {
       switch (choice) {
         case 1: return 'First Choice';
@@ -497,15 +563,15 @@ export default {
         default: return `Choice ${choice}`;
       }
     },
-    
-    getScoreColor(score) {
+
+    getScoreLevel(score) {
       const numScore = parseFloat(score);
-      
-      if (isNaN(numScore)) return '';
-      
-      if (numScore >= 80) return '#CCFFCC'; // Light green
-      if (numScore >= 60) return '#FFFFCC'; // Light yellow
-      return '#FFCCCC'; // Light red
+
+      if (isNaN(numScore)) return 'low';
+
+      if (numScore >= 80) return 'high';
+      if (numScore >= 60) return 'medium';
+      return 'low';
     }
   },
   watch: {
@@ -524,116 +590,12 @@ export default {
 </script>
 
 <style scoped>
-.program-rankings {
-  display: flex;
-  min-height: 100vh;
-  background-color: #1a1a1a;
-  color: #ffffff;
-  font-family: 'Inter', sans-serif;
-}
-
-/* Navigation Sidebar */
-.navigation-sidebar {
-  width: 200px;
-  background-color: #2a2a2a;
-  padding: 20px 0;
-  border-right: 1px solid #3a3a3a;
-}
-
-.nav-header {
-  color: #888;
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 0 20px;
-  margin-bottom: 15px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 20px;
-  color: #ccc;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.nav-item.active {
-  background-color: #3a3a3a;
-  color: #fff;
-  border-left: 3px solid #dc3545;
-}
-
-.nav-item:hover {
-  background-color: #3a3a3a;
-}
-
-.dropdown-icon {
-  color: #888;
-}
-
-/* Main Content */
-.main-content {
-  flex: 1;
-  padding: 40px;
-  max-width: 1200px;
-}
-
-.page-title {
-  font-size: 32px;
-  font-weight: 600;
-  color: #ffffff;
-  margin-bottom: 40px;
-}
-
-/* Parameter Controls */
-.parameter-controls {
-  margin-bottom: 30px;
-}
-
-.control-group {
-  margin-bottom: 30px;
-}
-
-.control-group label {
-  display: block;
-  font-size: 16px;
-  font-weight: 500;
-  color: #ffffff;
-  margin-bottom: 15px;
-}
-
-.slider-container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 10px;
-}
-
-.slider-min,
-.slider-max {
-  font-size: 14px;
-  color: #888;
-  min-width: 20px;
-}
-
-.slider {
-  flex: 1;
-  height: 6px;
-  background: #3a3a3a;
-  border-radius: 3px;
-  outline: none;
-  -webkit-appearance: none;
-}
-
+/* Custom slider styling */
 .slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
   appearance: none;
   width: 20px;
   height: 20px;
-  background: #dc3545;
+  background: var(--primary);
   border-radius: 50%;
   cursor: pointer;
 }
@@ -641,240 +603,13 @@ export default {
 .slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
-  background: #dc3545;
+  background: var(--primary);
   border-radius: 50%;
   cursor: pointer;
   border: none;
 }
 
-.slider-value {
-  font-size: 16px;
-  font-weight: 600;
-  color: #dc3545;
-  min-width: 30px;
-  text-align: center;
-}
-
-/* Action Button */
-.action-button {
-  background-color: #4a4a4a;
-  color: #ffffff;
-  border: 1px solid #666;
-  border-radius: 6px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  margin-bottom: 30px;
-}
-
-.action-button:hover {
-  background-color: #555;
-}
-
-.action-button:disabled {
-  background-color: #333;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-/* Loading Indicator */
-.loading-indicator {
-  display: flex;
-  align-items: center;
-  margin: 20px 0;
-  color: #ccc;
-}
-
-.spinner {
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  border-top: 3px solid #4CAF50;
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-  margin-right: 10px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Results Section */
-.results-section {
-  margin-top: 30px;
-}
-
-.stats-card {
-  background-color: #2a2a2a;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 30px;
-  border: 1px solid #3a3a3a;
-}
-
-.stats-card h3 {
-  color: #ffffff;
-  margin-bottom: 20px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.stats-grid {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.stat-item {
-  text-align: center;
-  min-width: 120px;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #ffffff;
-}
-
-.stat-label {
-  font-size: 14px;
-  color: #888;
-}
-
-/* Tables */
-.summary-table, .program-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  background-color: #2a2a2a;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.summary-table th,
-.summary-table td,
-.program-table th,
-.program-table td {
-  border: 1px solid #3a3a3a;
-  padding: 12px;
-  text-align: left;
-  color: #ffffff;
-}
-
-.summary-table th,
-.program-table th {
-  background-color: #333;
-  font-weight: 600;
-  color: #fff;
-}
-
-.summary-table td,
-.program-table td {
-  background-color: #2a2a2a;
-}
-
-.summary-table tr:hover td,
-.program-table tr:hover td {
-  background-color: #333;
-}
-
-/* Program Details */
-.program-details {
-  margin-top: 20px;
-}
-
-.program-card {
-  margin-bottom: 15px;
-  border: 1px solid #3a3a3a;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: #2a2a2a;
-}
-
 .program-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  cursor: pointer;
-  background-color: #333;
-  transition: background-color 0.2s;
-}
-
-.program-header:hover {
-  background-color: #3a3a3a;
-}
-
-.program-header h4 {
-  margin: 0;
-  flex: 1;
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.offer-count {
-  margin-right: 15px;
-  font-weight: bold;
-  color: #ccc;
-}
-
-.expand-icon {
-  font-size: 12px;
-  color: #888;
-}
-
-.program-content {
-  padding: 20px;
-  background-color: #2a2a2a;
-}
-
-.offered {
-  background-color: #36c736 !important;
-}
-
-/* No Data Message */
-.no-data-message {
-  margin-top: 20px;
-  padding: 20px;
-  background-color: #8b7355;
-  border-radius: 8px;
-  color: #ffffff;
-  text-align: center;
-}
-
-/* Section Headers */
-h3 {
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  margin-top: 30px;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .program-rankings {
-    flex-direction: column;
-  }
-  
-  .navigation-sidebar {
-    width: 100%;
-    padding: 15px 0;
-  }
-  
-  .main-content {
-    padding: 20px;
-  }
-  
-  .stats-grid {
-    flex-direction: column;
-    align-items: center;
-  }
+  transition: all 0.2s ease;
 }
 </style>

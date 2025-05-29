@@ -1,162 +1,229 @@
 <template>
-  <div class="purchase-order-viewer">
-    <!-- Main layout with sidebar and content -->
-    <div class="layout">
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <h2>Upload File</h2>
-        <div class="file-upload">
-          <input 
-            type="file" 
-            id="file-input"
-            @change="handleFileUpload" 
-            accept="application/pdf" 
-          />
-          <div class="file-upload-help">Upload a purchase order in PDF format</div>
-          <div v-if="selectedFile" class="selected-file">
-            Selected: {{ selectedFile.name }}
+  <div class="flex" style="height: 90vh;">
+    <!-- Sidebar for file upload -->
+    <div class="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
+      <div class="p-4 lg:p-6 space-y-4 lg:space-y-6">
+        <div>
+          <h2 class="text-xl font-semibold dark:text-white-light">Purchase Order Viewer</h2>
+          <p class="text-sm text-white-dark mt-1">Upload and process PDF files with AI</p>
+        </div>
+
+        <div class="panel">
+          <div class="mb-5">
+            <h5 class="font-semibold text-lg dark:text-white-light">Upload PDF File</h5>
+          </div>
+          <div class="space-y-4">
+            <div>
+              <input
+                type="file"
+                id="file-input"
+                @change="handleFileUpload"
+                accept="application/pdf"
+                class="form-input cursor-pointer"
+              />
+              <p class="text-xs text-white-dark mt-2">
+                Upload a purchase order in PDF format
+              </p>
+            </div>
+
+            <div v-if="selectedFile" class="flex items-center gap-2">
+              <span class="badge bg-secondary text-xs">
+                ✓ {{ selectedFile.name }}
+              </span>
+            </div>
           </div>
         </div>
-        
-        <div v-if="selectedFile" class="divider"></div>
-        
-        <button 
-          v-if="selectedFile" 
-          @click="processFile" 
-          :disabled="processing" 
-          class="process-button"
+
+        <button
+          v-if="selectedFile"
+          @click="processFile"
+          :disabled="processing"
+          class="btn btn-primary w-full"
+          :class="{ 'opacity-60 pointer-events-none': processing }"
         >
-          {{ processing ? 'Processing...' : 'Process' }}
+          {{ processing ? 'Processing...' : 'Process with AI' }}
         </button>
-      </div>
-      
-      <!-- Main content -->
-      <div class="content">
-        <h1>Purchase Order Viewer</h1>
-        
-        <!-- Empty state when no file is uploaded -->
-        <div v-if="!selectedFile" class="empty-state">
-          <img src="https://img.icons8.com/clouds/150/000000/upload.png" alt="Upload" />
-          <p class="empty-state-text">Upload a PDF file using the sidebar to get started.</p>
-          <p class="empty-state-subtext">The system will automatically extract and display purchase order details.</p>
+
+        <div v-if="convertingImages" class="space-y-3">
+          <div class="w-full bg-[#ebedf2] dark:bg-dark/40 rounded-full h-2">
+            <div class="bg-primary h-2 rounded-full animate-pulse"></div>
+          </div>
+          <p class="text-sm text-white-dark text-center">
+            Converting PDF to images...
+          </p>
         </div>
-        
-        <!-- Tabs for file preview and extracted details -->
-        <div v-else class="tabs">
-          <div class="tab-headers">
-            <div 
-              class="tab-header" 
-              :class="{ active: activeTab === 'preview' }" 
+      </div>
+    </div>
+
+    <!-- Main content area -->
+    <div class="flex-1 p-6 overflow-y-auto">
+      <!-- Empty state when no file is uploaded -->
+      <div v-if="!selectedFile" class="flex items-center justify-center h-full">
+        <div class="panel max-w-md">
+          <div class="text-center py-8">
+            <div class="text-4xl mb-4">📄</div>
+            <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Get Started</h3>
+            <p class="text-white-dark">
+              Upload a PDF file using the sidebar to get started. The system will automatically extract and display purchase order details.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs for file preview and extracted details -->
+      <div v-else class="space-y-6">
+        <div>
+          <h2 class="text-2xl font-semibold dark:text-white-light">Purchase Order Analysis</h2>
+          <p class="text-white-dark">View file preview and extracted details</p>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="panel">
+          <div class="flex border-b border-[#ebedf2] dark:border-[#191e3a]">
+            <button
+              class="px-4 py-3 font-medium transition-colors duration-300"
+              :class="{
+                'text-primary border-b-2 border-primary': activeTab === 'preview',
+                'text-white-dark hover:text-primary': activeTab !== 'preview'
+              }"
               @click="activeTab = 'preview'"
             >
               File Preview
-            </div>
-            <div 
-              class="tab-header" 
-              :class="{ active: activeTab === 'details' }" 
+            </button>
+            <button
+              class="px-4 py-3 font-medium transition-colors duration-300"
+              :class="{
+                'text-primary border-b-2 border-primary': activeTab === 'details',
+                'text-white-dark hover:text-primary': activeTab !== 'details'
+              }"
               @click="activeTab = 'details'"
             >
               Extracted Details
-            </div>
+            </button>
           </div>
-          
-          <!-- File Preview Tab -->
-          <div v-if="activeTab === 'preview'" class="tab-content">
-            <div v-if="images.length > 0" class="images-container">
-              <div v-for="(image, index) in images" :key="index" class="image-wrapper">
-                <img :src="image" class="preview-image" />
-                <div class="image-caption">Page {{ index + 1 }}</div>
+
+          <!-- Tab Content -->
+          <div class="p-6">
+            <!-- File Preview Tab -->
+            <div v-if="activeTab === 'preview'">
+              <div v-if="images.length > 0" class="space-y-6">
+                <div v-for="(image, index) in images" :key="index" class="text-center">
+                  <img :src="image" class="max-w-full border border-[#ebedf2] dark:border-[#191e3a] rounded-lg mx-auto" />
+                  <p class="text-sm text-white-dark mt-2">Page {{ index + 1 }}</p>
+                </div>
+              </div>
+              <div v-else-if="convertingImages" class="text-center py-8">
+                <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p class="text-white-dark">Converting PDF to images...</p>
+              </div>
+              <div v-else class="text-center py-8">
+                <p class="text-white-dark">No preview available. Please upload a valid PDF file.</p>
               </div>
             </div>
-            <div v-else-if="convertingImages" class="loading-message">
-              Converting PDF to images...
-            </div>
-            <div v-else class="no-preview-message">
-              No preview available. Please upload a valid PDF file.
-            </div>
-          </div>
-          
-          <!-- Extracted Details Tab -->
-          <div v-if="activeTab === 'details'" class="tab-content">
-            <div v-if="!poData" class="no-data-message">
-              <p v-if="processing">Processing file...</p>
-              <p v-else>No data available. Please process the file first.</p>
-            </div>
-            
-            <div v-else class="po-details">
-              <div v-for="(po, poIndex) in poData" :key="poIndex" class="po-container">
-                <!-- Company Information -->
-                <h3>Company Information</h3>
-                <div class="info-container">
-                  <div class="info-grid">
-                    <div class="info-column">
-                      <strong>Company:</strong>
-                      <div>{{ po.purchaser_company_name_with_registration_number || 'null' }}</div>
-                      
-                      <strong>Address:</strong>
-                      <div>{{ po.purchaser_address || 'null' }}</div>
+
+            <!-- Extracted Details Tab -->
+            <div v-if="activeTab === 'details'">
+              <div v-if="!poData" class="text-center py-8">
+                <div v-if="processing" class="space-y-4">
+                  <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+                  <p class="text-white-dark">Processing file...</p>
+                </div>
+                <p v-else class="text-white-dark">No data available. Please process the file first.</p>
+              </div>
+
+              <div v-else class="space-y-6">
+                <div v-for="(po, poIndex) in poData" :key="poIndex" class="space-y-6">
+                  <!-- Company Information -->
+                  <div class="panel">
+                    <div class="mb-5">
+                      <h5 class="font-semibold text-lg dark:text-white-light">Company Information</h5>
                     </div>
-                    
-                    <div class="info-column">
-                      <strong>Tel:</strong>
-                      <div>{{ po.purchaser_tel || 'null' }}</div>
-                      
-                      <strong>Fax:</strong>
-                      <div>{{ po.purchaser_fax || 'null' }}</div>
-                    </div>
-                    
-                    <div class="info-column">
-                      <strong>Email:</strong>
-                      <div>{{ po.purchaser_email || 'null' }}</div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label class="font-medium text-white-dark">Company:</label>
+                        <p class="mt-1 dark:text-white-light">{{ po.purchaser_company_name_with_registration_number || 'N/A' }}</p>
+
+                        <label class="font-medium text-white-dark mt-4 block">Address:</label>
+                        <p class="mt-1 dark:text-white-light">{{ po.purchaser_address || 'N/A' }}</p>
+                      </div>
+
+                      <div>
+                        <label class="font-medium text-white-dark">Tel:</label>
+                        <p class="mt-1 dark:text-white-light">{{ po.purchaser_tel || 'N/A' }}</p>
+
+                        <label class="font-medium text-white-dark mt-4 block">Fax:</label>
+                        <p class="mt-1 dark:text-white-light">{{ po.purchaser_fax || 'N/A' }}</p>
+                      </div>
+
+                      <div>
+                        <label class="font-medium text-white-dark">Email:</label>
+                        <p class="mt-1 dark:text-white-light">{{ po.purchaser_email || 'N/A' }}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                <!-- PO Details -->
-                <h3>Purchase Order Information</h3>
-                <div class="info-container">
-                  <div class="info-grid">
-                    <div class="info-column">
-                      <strong>PO Number:</strong>
-                      <div>{{ po.po_number || 'null' }}</div>
+
+                  <!-- PO Details -->
+                  <div class="panel">
+                    <div class="mb-5">
+                      <h5 class="font-semibold text-lg dark:text-white-light">Purchase Order Information</h5>
                     </div>
-                    
-                    <div class="info-column">
-                      <strong>PO Date:</strong>
-                      <div>{{ po.po_date || 'null' }}</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label class="font-medium text-white-dark">PO Number:</label>
+                        <p class="mt-1 dark:text-white-light">{{ po.po_number || 'N/A' }}</p>
+                      </div>
+
+                      <div>
+                        <label class="font-medium text-white-dark">PO Date:</label>
+                        <p class="mt-1 dark:text-white-light">{{ po.po_date || 'N/A' }}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                
-                <!-- Items Table -->
-                <h3>Items</h3>
-                <div v-if="po.table && po.table.length > 0" class="table-container">
-                  <table class="items-table">
-                    <thead>
-                      <tr>
-                        <th v-for="(column, colIndex) in Object.keys(po.table[0])" :key="colIndex">
-                          {{ column }}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(item, itemIndex) in po.table" :key="itemIndex">
-                        <td v-for="(column, colIndex) in Object.keys(item)" :key="colIndex">
-                          {{ item[column] !== null ? item[column] : '-' }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div v-else class="no-items-message">
-                  No items found in the purchase order.
-                </div>
-                
-                <!-- Reasoning -->
-                <h3>Reasoning</h3>
-                <div class="reasoning-container">
-                  <p v-if="po.reasoning" v-html="formatReasoning(po.reasoning)"></p>
-                  <p v-else>No reasoning provided.</p>
+
+                  <!-- Items Table -->
+                  <div class="panel">
+                    <div class="mb-5">
+                      <h5 class="font-semibold text-lg dark:text-white-light">Items</h5>
+                    </div>
+                    <div v-if="po.table && po.table.length > 0" class="table-responsive">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th v-for="(column, colIndex) in Object.keys(po.table[0])" :key="colIndex"
+                                :class="{
+                                  'ltr:rounded-l-md rtl:rounded-r-md': colIndex === 0,
+                                  'ltr:rounded-r-md rtl:rounded-l-md': colIndex === Object.keys(po.table[0]).length - 1
+                                }">
+                              {{ column }}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(item, itemIndex) in po.table" :key="itemIndex"
+                              class="text-white-dark hover:text-black dark:hover:text-white-light/90 group">
+                            <td v-for="(column, colIndex) in Object.keys(item)" :key="colIndex"
+                                class="text-black dark:text-white">
+                              {{ item[column] !== null ? item[column] : '-' }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div v-else class="text-center py-8">
+                      <p class="text-white-dark">No items found in the purchase order.</p>
+                    </div>
+                  </div>
+
+                  <!-- Reasoning -->
+                  <div class="panel">
+                    <div class="mb-5">
+                      <h5 class="font-semibold text-lg dark:text-white-light">AI Analysis Reasoning</h5>
+                    </div>
+                    <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4">
+                      <p v-if="po.reasoning" v-html="formatReasoning(po.reasoning)" class="text-white-dark whitespace-pre-line"></p>
+                      <p v-else class="text-white-dark">No reasoning provided.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -191,17 +258,17 @@ export default {
         this.convertPdfToImages(file);
       }
     },
-    
+
     async convertPdfToImages(file) {
       this.convertingImages = true;
-      
+
       try {
         const formData = new FormData();
         formData.append('fileInput', file);
         formData.append('imageFormat', 'jpg');
         formData.append('singleOrMultiple', 'multiple');
         formData.append('dpi', '300');
-        
+
         const response = await axios.post(
           'https://stirlingpdf.io/api/v1/convert/pdf/img',
           formData,
@@ -212,7 +279,7 @@ export default {
             }
           }
         );
-        
+
         // Process the zip file
         await this.processZipResponse(response.data);
       } catch (error) {
@@ -221,21 +288,21 @@ export default {
         this.convertingImages = false;
       }
     },
-    
+
     async processZipResponse(zipData) {
       try {
         // Use JSZip to extract images from the zip file
         const JSZip = (await import('jszip')).default;
         const zip = new JSZip();
-        
+
         const zipContents = await zip.loadAsync(zipData);
-        const imageFiles = Object.values(zipContents.files).filter(file => 
+        const imageFiles = Object.values(zipContents.files).filter(file =>
           !file.dir && /\.(jpe?g|png)$/i.test(file.name)
         );
-        
+
         // Sort image files by name to maintain order
         imageFiles.sort((a, b) => a.name.localeCompare(b.name));
-        
+
         // Process each image file
         for (const file of imageFiles) {
           const blob = await file.async('blob');
@@ -246,16 +313,16 @@ export default {
         console.error('Error processing zip file:', error);
       }
     },
-    
+
     async processFile() {
       if (!this.selectedFile) return;
-      
+
       this.processing = true;
-      
+
       try {
         const formData = new FormData();
         formData.append('file', this.selectedFile);
-        
+
         const response = await axios.post(
           'https://n8n.forwen.com/webhook/c6622b28-df07-4f33-86b0-3233901525e1',
           formData,
@@ -265,7 +332,7 @@ export default {
             }
           }
         );
-        
+
         this.poData = response.data;
         this.activeTab = 'details';
       } catch (error) {
@@ -274,7 +341,7 @@ export default {
         this.processing = false;
       }
     },
-    
+
     formatReasoning(reasoning) {
       if (!reasoning) return '';
       return reasoning.replace(/\\n/g, '<br>');
@@ -284,229 +351,14 @@ export default {
 </script>
 
 <style scoped>
-.purchase-order-viewer {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  color: #333;
-}
+/* Custom styles for responsive design */
+@media (max-width: 768px) {
+  .w-80 {
+    width: 100%;
+  }
 
-.layout {
-  display: flex;
-  min-height: 100vh;
-}
-
-/* Sidebar styles */
-.sidebar {
-  width: 300px;
-  padding: 2rem;
-  background-color: #f8f9fa;
-  border-right: 1px solid #e9ecef;
-}
-
-.file-upload {
-  margin-bottom: 1.5rem;
-}
-
-.file-upload input[type="file"] {
-  display: block;
-  margin-bottom: 1rem;
-  width: 100%;
-}
-
-.selected-file {
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
-  color: #007bff;
-  word-break: break-all;
-}
-
-.file-upload-help {
-  font-size: 0.875rem;
-  color: #6c757d;
-}
-
-.divider {
-  height: 1px;
-  background-color: #dee2e6;
-  margin: 1.5rem 0;
-}
-
-.process-button {
-  display: block;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.process-button:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-}
-
-/* Content styles */
-.content {
-  flex: 1;
-  padding: 2rem;
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  background-color: #f8f9fa;
-  border-radius: 1rem;
-  margin: 2rem 0;
-  text-align: center;
-}
-
-.empty-state img {
-  margin-bottom: 1.5rem;
-}
-
-.empty-state-text {
-  color: #6c757d;
-  font-size: 1.1rem;
-  margin: 1rem 0;
-}
-
-.empty-state-subtext {
-  color: #6c757d;
-}
-
-/* Tabs styles */
-.tabs {
-  margin-top: 2rem;
-}
-
-.tab-headers {
-  display: flex;
-  gap: 2rem;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.tab-header {
-  padding: 1rem 0;
-  cursor: pointer;
-  font-weight: 500;
-  color: #6c757d;
-}
-
-.tab-header.active {
-  color: #007bff;
-  border-bottom: 2px solid #007bff;
-}
-
-.tab-content {
-  padding: 2rem 0;
-}
-
-/* Image preview styles */
-.images-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.image-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.preview-image {
-  max-width: 100%;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
-}
-
-.image-caption {
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
-  color: #6c757d;
-}
-
-.loading-message, .no-preview-message, .no-data-message {
-  padding: 2rem;
-  text-align: center;
-  color: #6c757d;
-  background-color: #f8f9fa;
-  border-radius: 0.25rem;
-}
-
-/* PO details styles */
-.po-container {
-  margin-bottom: 3rem;
-}
-
-.info-container {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 2rem;
-}
-
-.info-column strong {
-  display: block;
-  margin-bottom: 0.5rem;
-  margin-top: 1rem;
-}
-
-.info-column strong:first-child {
-  margin-top: 0;
-}
-
-.table-container {
-  margin-bottom: 2rem;
-  overflow-x: auto;
-}
-
-.items-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.items-table th, .items-table td {
-  border: 1px solid #dee2e6;
-  padding: 0.75rem;
-  text-align: left;
-}
-
-.items-table th {
-  background-color: #f8f9fa;
-  font-weight: 500;
-}
-
-.items-table tr:nth-child(even) {
-  background-color: #f8f9fa;
-}
-
-.no-items-message {
-  padding: 1.5rem;
-  text-align: center;
-  color: #6c757d;
-  background-color: #f8f9fa;
-  border-radius: 0.25rem;
-  margin-bottom: 2rem;
-}
-
-.reasoning-container {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
-  padding: 1.5rem;
-  white-space: pre-line;
+  .flex {
+    flex-direction: column;
+  }
 }
 </style>
