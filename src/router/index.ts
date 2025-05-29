@@ -25,6 +25,66 @@ const routes: RouteRecordRaw[] = [
 
     // apps
     {
+        path: '/apps/ai-agent',
+        name: 'ai-agent',
+        component: () => import(/* webpackChunkName: "ai-agent" */ '../AI Agent Component/AIBasepage.vue'),
+    },
+    {
+        path: '/apps/ai-agent/:agentType',
+        name: 'ai-agent-with-type',
+        component: () => import(/* webpackChunkName: "ai-agent" */ '../AI Agent Component/AIBasepage.vue'),
+        props: true,
+    },
+
+    // chatbot routes
+    {
+        path: '/chatbot/customer-support',
+        name: 'customer-support',
+        component: () => import(/* webpackChunkName: "chatbot-customer-support" */ '../AI Agent Component/chatbot/chatbot-agent/PetbackerCS.vue'),
+    },
+    {
+        path: '/chatbot/program-advisor',
+        name: 'program-advisor',
+        component: () => import(/* webpackChunkName: "chatbot-program-advisor" */ '../AI Agent Component/chatbot/chatbot-agent/ProgramAdvisor.vue'),
+    },
+    {
+        path: '/chatbot/pet-trainer',
+        name: 'pet-trainer',
+        component: () => import(/* webpackChunkName: "chatbot-pet-trainer" */ '../AI Agent Component/chatbot/chatbot-agent/PetSitterTrainer.vue'),
+    },
+    {
+        path: '/chatbot/mortgage-assistant',
+        name: 'mortgage-assistant',
+        component: () => import(/* webpackChunkName: "chatbot-mortgage-assistant" */ '../AI Agent Component/chatbot/chatbot-agent/MortgageApplicationData.vue'),
+    },
+
+    // workflow routes
+    {
+        path: '/workflow/applicant-scoring',
+        name: 'applicant-scoring',
+        component: () => import(/* webpackChunkName: "workflow-applicant-scoring" */ '../AI Agent Component/workflow/Applicant_Scoring/ApplicantScoring.vue'),
+    },
+    {
+        path: '/workflow/issue-classification',
+        name: 'issue-classification',
+        component: () => import(/* webpackChunkName: "workflow-issue-classification" */ '../AI Agent Component/workflow/Issue_Classification/IssueClassification.vue'),
+    },
+    {
+        path: '/workflow/purchase-order',
+        name: 'purchase-order',
+        component: () => import(/* webpackChunkName: "workflow-purchase-order" */ '../AI Agent Component/workflow/Purchase Order/PurchaseOrderViewer.vue'),
+    },
+    {
+        path: '/workflow/data-cleansing',
+        name: 'data-cleansing',
+        component: () => import(/* webpackChunkName: "workflow-data-cleansing" */ '../AI Agent Component/workflow/Data Cleansing/DataCleansing.vue'),
+    },
+    {
+        path: '/workflow/receipt-claim',
+        name: 'receipt-claim',
+        component: () => import(/* webpackChunkName: "workflow-receipt-claim" */ '../AI Agent Component/workflow/Receipt Claim Analyzer/ReceiptClaim.vue'),
+    },
+    {
         path: '/apps/chat',
         name: 'chat',
         component: () => import(/* webpackChunkName: "apps-chat" */ '../views/apps/chat.vue'),

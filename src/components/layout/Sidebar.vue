@@ -32,46 +32,42 @@
                         <li class="nav-item">
                             <ul>
                                 <li class="nav-item">
-                                    <router-link to="/apps/chat" class="group" @click="toggleMobileMenu">
+                                    <router-link to="/chatbot/customer-support" class="group" @click="toggleMobileMenu">
                                         <div class="flex items-center">
                                             <icon-menu-chat class="group-hover:!text-primary shrink-0" />
-
-                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                                $t('chat')
-                                            }}</span>
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                PB Customer Support
+                                            </span>
                                         </div>
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/apps/mailbox" class="group" @click="toggleMobileMenu">
+                                    <router-link to="/chatbot/program-advisor" class="group" @click="toggleMobileMenu">
                                         <div class="flex items-center">
-                                            <icon-menu-mailbox class="group-hover:!text-primary shrink-0" />
-
-                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                                $t('mailbox')
-                                            }}</span>
+                                            <icon-cpu-bolt class="group-hover:!text-primary shrink-0" />
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                Program Advisor
+                                            </span>
                                         </div>
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/apps/todolist" class="group" @click="toggleMobileMenu">
+                                    <router-link to="/chatbot/pet-trainer" class="group" @click="toggleMobileMenu">
                                         <div class="flex items-center">
-                                            <icon-menu-todo class="group-hover:!text-primary shrink-0" />
-
-                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                                $t('todo_list')
-                                            }}</span>
+                                            <icon-menu-contacts class="group-hover:!text-primary shrink-0" />
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                Pet Sitter Trainer
+                                            </span>
                                         </div>
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/apps/notes" class="group" @click="toggleMobileMenu">
+                                    <router-link to="/chatbot/mortgage-assistant" class="group" @click="toggleMobileMenu">
                                         <div class="flex items-center">
-                                            <icon-menu-notes class="group-hover:!text-primary shrink-0" />
-
-                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                                $t('notes')
-                                            }}</span>
+                                            <icon-menu-invoice class="group-hover:!text-primary shrink-0" />
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                Mortgage Assistant
+                                            </span>
                                         </div>
                                     </router-link>
                                 </li>
@@ -82,59 +78,59 @@
                             <icon-minus class="w-4 h-5 flex-none hidden" />
                             <span>WORKFLOW</span>
                         </h2>
-                        <li class="menu nav-item">
-                            <router-link to="/charts" class="nav-link group" @click="toggleMobileMenu">
-                                <div class="flex items-center">
-                                    <icon-menu-charts class="group-hover:!text-primary shrink-0" />
-
-                                    <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{ $t('charts') }}</span>
-                                </div>
-                            </router-link>
-                        </li>
-
-                        <li class="menu nav-item">
-                            <router-link to="/widgets" class="nav-link group" @click="toggleMobileMenu">
-                                <div class="flex items-center">
-                                    <icon-menu-widgets class="group-hover:!text-primary shrink-0" />
-
-                                    <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{ $t('widgets') }}</span>
-                                </div>
-                            </router-link>
-                        </li>
-
-                        <li class="menu nav-item">
-                            <router-link to="/font-icons" class="nav-link group" @click="toggleMobileMenu">
-                                <div class="flex items-center">
-                                    <icon-menu-font-icons class="group-hover:!text-primary shrink-0" />
-
-                                    <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                        $t('font_icons')
-                                    }}</span>
-                                </div>
-                            </router-link>
-                        </li>
-
-                        <li class="menu nav-item">
-                            <router-link to="/dragndrop" class="nav-link group" @click="toggleMobileMenu">
-                                <div class="flex items-center">
-                                    <icon-menu-drag-and-drop class="group-hover:!text-primary shrink-0" />
-
-                                    <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                        $t('drag_and_drop')
-                                    }}</span>
-                                </div>
-                            </router-link>
-                        </li>
-                         <li class="menu nav-item">
-                            <router-link to="/dragndrop" class="nav-link group" @click="toggleMobileMenu">
-                                <div class="flex items-center">
-                                    <icon-menu-drag-and-drop class="group-hover:!text-primary shrink-0" />
-
-                                    <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                        $t('drag_and_drop')
-                                    }}</span>
-                                </div>
-                            </router-link>
+                        <li class="nav-item">
+                            <ul>
+                                <li class="nav-item">
+                                    <router-link to="/workflow/applicant-scoring" class="group" @click="toggleMobileMenu">
+                                        <div class="flex items-center">
+                                            <icon-menu-users class="group-hover:!text-primary shrink-0" />
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                UTP Applicant Scoring
+                                            </span>
+                                        </div>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/workflow/issue-classification" class="group" @click="toggleMobileMenu">
+                                        <div class="flex items-center">
+                                            <icon-menu-components class="group-hover:!text-primary shrink-0" />
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                Petbacker Issue Classification
+                                            </span>
+                                        </div>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/workflow/purchase-order" class="group" @click="toggleMobileMenu">
+                                        <div class="flex items-center">
+                                            <icon-menu-invoice class="group-hover:!text-primary shrink-0" />
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                Purchase Order Extraction
+                                            </span>
+                                        </div>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/workflow/data-cleansing" class="group" @click="toggleMobileMenu">
+                                        <div class="flex items-center">
+                                            <icon-menu-datatables class="group-hover:!text-primary shrink-0" />
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                Data Cleansing
+                                            </span>
+                                        </div>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/workflow/receipt-claim" class="group" @click="toggleMobileMenu">
+                                        <div class="flex items-center">
+                                            <icon-menu-forms class="group-hover:!text-primary shrink-0" />
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                Receipt Claim Analyzer
+                                            </span>
+                                        </div>
+                                    </router-link>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </perfect-scrollbar>
@@ -152,6 +148,7 @@
     import IconCaretsDown from '@/components/icon/icon-carets-down.vue';
     import IconMenuDashboard from '@/components/icon/menu/icon-menu-dashboard.vue';
     import IconMinus from '@/components/icon/icon-minus.vue';
+    import IconCpuBolt from '@/components/icon/icon-cpu-bolt.vue';
     import IconMenuChat from '@/components/icon/menu/icon-menu-chat.vue';
     import IconMenuMailbox from '@/components/icon/menu/icon-menu-mailbox.vue';
     import IconMenuTodo from '@/components/icon/menu/icon-menu-todo.vue';

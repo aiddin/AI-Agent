@@ -1,12 +1,12 @@
 <template>
   <div class="chatbot-container">
     <div class="background-wrapper">
-      <img 
+      <img
         :src="isMobile ? mobileBackgroundImage : desktopBackgroundImage"
-        :alt="altText" 
+        :alt="altText"
         class="background-image" :style="{ marginTop: isMobile ? '15px' : '0px' }"/>
     </div>
- 
+
   </div>
 </template>
 
@@ -16,16 +16,16 @@ import { createChat } from '@n8n/chat'
 import '@n8n/chat/style.css'
 
 // Import all background images
-import AIChatbotBackground from '@/assets/images/AIAgentSelector/AIChatbotBackground.svg'
-import AIChatbotBackgroundMobile from '@/assets/images/AIAgentSelector/AIChatbotBackgroundMobile.svg'
-import MortgageBackground from '@/assets/images/AIAgentSelector/MortgageBackground.png'
-import MortgageBackgroundMobile from '@/assets/images/AIAgentSelector/MortgageBackgroundMobile.png'
-import PetbackerBackground from '@/assets/images/AIAgentSelector/PetbackerBackground.png'
-import PetbackerBackgroundMobile from '@/assets/images/AIAgentSelector/PetbackerBackgroundMobile.png'
-import TrainerBackground from '@/assets/images/AIAgentSelector/TrainerBackground.svg'
-import TrainerBackgroundMobile from '@/assets/images/AIAgentSelector/TrainerBackgroundMobile.svg'
-import AdvisorBackground from '@/assets/images/AIAgentSelector/AdvisorBackground.png'
-import AdvisorBackgroundMobile from '@/assets/images/AIAgentSelector/AdvisorBackgroundMobile.png'
+import AIChatbotBackground from '@/assets/css/images/AIAgentSelector/AIChatbotBackground.svg'
+import AIChatbotBackgroundMobile from '@/assets/css/images/AIAgentSelector/AIChatbotBackgroundMobile.svg'
+import MortgageBackground from '@/assets/css/images/AIAgentSelector/MortgageBackground.png'
+import MortgageBackgroundMobile from '@/assets/css/images/AIAgentSelector/MortgageBackgroundMobile.png'
+import PetbackerBackground from '@/assets/css/images/AIAgentSelector/PetbackerBackground.png'
+import PetbackerBackgroundMobile from '@/assets/css/images/AIAgentSelector/PetbackerBackgroundMobile.png'
+import TrainerBackground from '@/assets/css/images/AIAgentSelector/TrainerBackground.svg'
+import TrainerBackgroundMobile from '@/assets/css/images/AIAgentSelector/TrainerBackgroundMobile.svg'
+import AdvisorBackground from '@/assets/css/images/AIAgentSelector/AdvisorBackground.png'
+import AdvisorBackgroundMobile from '@/assets/css/images/AIAgentSelector/AdvisorBackgroundMobile.png'
 
 const props = defineProps({
   config: {
@@ -77,4 +77,4 @@ onMounted(() => {
 })
 </script>
 
-<style src="src/assets/chatbot-styles.css" scoped></style>
+<style src="src/assets/css/chatbot-styles.css" scoped></style>
