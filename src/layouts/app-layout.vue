@@ -94,11 +94,11 @@
             }
         };
 
-        // const eleanimation: any = document.querySelector('.animation');
-        // eleanimation.addEventListener('animationend', function () {
-        //     appSetting.changeAnimation('remove');
-        // });
-        // store.toggleMainLoader();
+        const eleanimation: any = document.querySelector('.animation');
+        eleanimation.addEventListener('animationend', function () {
+            appSetting.changeAnimation('remove');
+        });
+        store.toggleMainLoader();
     });
 
     const goToTop = () => {
