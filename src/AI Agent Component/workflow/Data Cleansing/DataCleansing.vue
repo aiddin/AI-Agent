@@ -4,7 +4,7 @@
     <div class="w-80 border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
       <div class="p-6 space-y-6">
         <div>
-          <h2 class="text-xl font-semibold dark:text-white-light">Data Cleansing Tool</h2>
+          <h2 class="text-xl font-semibold dark:text-white-light">Data Cleansing Source</h2>
           <p class="text-sm text-white-dark mt-1">Upload files and process data with AI</p>
         </div>
 
@@ -99,7 +99,7 @@
         <!-- Info Message -->
         <div v-if="!isProcessing && !hasResults" class="panel">
           <div class="text-center py-8">
-            <div class="text-4xl mb-4">🧹</div>
+            <div class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5"><img src="/assets/images/Ai Agent_Data Cleansing.png" alt="Placeholder Image" width=160 height="160" class="mb-4"></div>
             <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Get Started</h3>
             <p class="text-white-dark">
               Upload all files in the sidebar and click 'Process Data' to begin data cleansing

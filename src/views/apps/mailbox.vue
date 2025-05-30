@@ -859,7 +859,7 @@
 
     const defaultData = ref({
         id: null,
-        from: 'vristo@mail.com',
+        from: 'VETECE@mail.com',
         to: '',
         cc: '',
         title: '',
