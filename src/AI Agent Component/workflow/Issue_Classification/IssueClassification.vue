@@ -4,8 +4,9 @@
         <div class="w-80 border-r border-[#e0e6ed] dark:border-[#1b2e4b]">
             <div class="p-6 space-y-6">
                 <div>
-                    <h2 class="text-xl font-semibold dark:text-white-light">Issue Classification</h2>
-                    <p class="text-sm text-white-dark mt-1">Upload and process CSV files with AI</p>
+                    <h2 class="text-xl font-semibold dark:text-white-light">PetBacker Issue Classification</h2>
+                    <p class="text-sm text-white-dark mt-1">Smarter Support: Automatically Categorize Customer Issues
+                    </p>
                 </div>
 
                 <div class="panel">
@@ -49,16 +50,26 @@
         <!-- Main content area for results -->
         <div class="flex-1 p-6 overflow-auto">
             <div v-if="!csvFile && !hasResults" class="flex items-center justify-center h-full">
-                <div class="panel max-w-md">
+                <div class="panel">
                     <div class="text-center py-8">
                         <div
                             class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
                             <img src="/assets/images/Ai Agent_Issue Classification.png" alt="Placeholder Image"
-                                width=160 height="160"></div>
-                        <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Get Started</h3>
-                        <p class="text-white-dark">
-                            Upload a CSV file with 'text' and 'human_label' columns to begin processing and compare
-                            human labels with AI-generated labels.
+                                width=160 height="160">
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2 dark:text-white-light">PetBacker Issue Classification</h3>
+                        <p class="text-left text-white-dark mb-4 leading-relaxed">
+                            Support teams often face the challenge of sorting through high volumes of customer queries,
+                            especially when users describe issues in their own words.
+                            PetBacker Issue Classification solves this by using AI to automatically interpret and group
+                            support tickets into predefined categories such as “Payment Issues,” “Booking Problems,” or
+                            “App Bugs.”
+                        </p>
+                        <p class="text-left text-white-dark leading-relaxed">
+                            This allows customer service teams to route and respond to inquiries faster and more
+                            effectively. By automating the classification step, your support staff can spend less time
+                            sorting and more time solving, ultimately leading to a smoother experience for both users
+                            and agents.
                         </p>
                     </div>
                 </div>

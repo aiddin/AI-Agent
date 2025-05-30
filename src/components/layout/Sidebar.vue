@@ -31,7 +31,7 @@
                         <li class="nav-item">
                             <ul>
                                 <li class="nav-item">
-                                    <router-link to="/chatbot/customer-support" class="group" @click="toggleMobileMenu">
+                                    <router-link to="/chatbot/customer-support" class="group" @click="toggleMobileMenu('chatbot1')">
                                         <div class="flex items-center">
                                             <icon-menu-chat class="group-hover:!text-primary shrink-0" />
                                             <span
@@ -42,7 +42,7 @@
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/chatbot/program-advisor" class="group" @click="toggleMobileMenu">
+                                    <router-link to="/chatbot/program-advisor" class="group" @click="toggleMobileMenu('chatbot2')">
                                         <div class="flex items-center">
                                             <icon-cpu-bolt class="group-hover:!text-primary shrink-0" />
                                             <span
@@ -53,7 +53,7 @@
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/chatbot/pet-trainer" class="group" @click="toggleMobileMenu">
+                                    <router-link to="/chatbot/pet-trainer" class="group" @click="toggleMobileMenu('chatbot3')">
                                         <div class="flex items-center">
                                             <icon-menu-contacts class="group-hover:!text-primary shrink-0" />
                                             <span
@@ -65,7 +65,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <router-link to="/chatbot/mortgage-assistant" class="group"
-                                        @click="toggleMobileMenu">
+                                        @click="toggleMobileMenu('chatbot4')">
                                         <div class="flex items-center">
                                             <icon-menu-invoice class="group-hover:!text-primary shrink-0" />
                                             <span
@@ -187,7 +187,7 @@ import IconMenuDocumentation from '@/components/icon/menu/icon-menu-documentatio
 const store = useAppStore()
 const activeDropdown: any = ref('')
 const subActive: any = ref('')
-
+const currentChatbot: any = ref('')
 onMounted(() => {
     const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]')
     if (selector) {
@@ -205,13 +205,18 @@ onMounted(() => {
     }
 })
 
-const toggleMobileMenu = () => {
-    const n8nChatElement = document.getElementById('n8n-chat')
-    if (n8nChatElement) {
-        n8nChatElement.remove()
+const toggleMobileMenu = (chatbot) => {
+    if (!chatbot || chatbot !== currentChatbot.value) {
+        currentChatbot.value = chatbot;
+
+        const n8nChatElement = document.getElementById('n8n-chat');
+        if (n8nChatElement) {
+            n8nChatElement.remove();
+        }
     }
+
     if (window.innerWidth < 1024) {
-        store.toggleSidebar()
+        store.toggleSidebar();
     }
-}
+};
 </script>

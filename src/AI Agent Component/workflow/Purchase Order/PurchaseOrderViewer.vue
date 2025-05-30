@@ -5,8 +5,8 @@
             class="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
             <div class="p-4 lg:p-6 space-y-4 lg:space-y-6">
                 <div>
-                    <h2 class="text-xl font-semibold dark:text-white-light">Purchase Order Viewer</h2>
-                    <p class="text-sm text-white-dark mt-1">Upload and process PDF files with AI</p>
+                    <h2 class="text-xl font-semibold dark:text-white-light">Purchase Order Information Extraction</h2>
+                    <p class="text-sm text-white-dark mt-1">Turn Purchase Orders into Usable Data Instantly</p>
                 </div>
 
                 <div class="panel">
@@ -50,17 +50,27 @@
         <div class="flex-1 p-6 overflow-y-auto">
             <!-- Empty state when no file is uploaded -->
             <div v-if="!selectedFile" class="flex items-center justify-center h-full">
-                <div class="panel max-w-md">
+                <div class="panel">
                     <div class="text-center py-8">
                         <div
                             class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
                             <img src="/assets/images/Ai Agent_Information Extraction.png" alt="Placeholder Image"
                                 width=160 height="160" class="mb-4">
                         </div>
-                        <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Get Started</h3>
-                        <p class="text-white-dark">
-                            Upload a PDF file using the sidebar to get started. The system will automatically extract
-                            and display purchase order details.
+                        <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Purchase Order Information
+                            Extraction</h3>
+                        <p class="text-left text-white-dark mb-4 leading-relaxed">
+                            The Purchase Order Information Extraction workflow eliminates the need for manual data entry
+                            by intelligently reading and extracting key fields from purchase order documents.
+                            Whether you're dealing with scanned PDFs, emailed attachments, or bulk uploads, the system
+                            identifies and pulls out important information such as vendor names, order numbers, item
+                            descriptions, quantities, and totals.
+                        </p>
+                        <p class="text-left text-white-dark leading-relaxed">
+                            This enables seamless integration into your financial or procurement systems, reducing human
+                            error and increasing operational efficiency.
+                            Say goodbye to tedious paperwork and hello to smart, structured data ready for immediate
+                            use.
                         </p>
                     </div>
                 </div>

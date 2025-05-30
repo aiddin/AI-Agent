@@ -5,7 +5,8 @@
             <div class="p-6 space-y-6">
                 <div>
                     <h2 class="text-xl font-semibold dark:text-white-light">Applicant Scoring Tools</h2>
-                    <p class="text-sm text-white-dark mt-1">Comprehensive student evaluation system</p>
+                    <p class="text-sm text-white-dark mt-1">Evaluate College Applicants with Intelligence and Fairness
+                    </p>
                 </div>
 
                 <!-- Navigation Menu -->
@@ -55,21 +56,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Mobile Menu Toggle (shown only on mobile) -->
-                <div v-if="isMobile" class="panel">
-                    <div class="flex items-center justify-between p-4">
-                        <span class="font-medium dark:text-white-light">{{ getCurrentPageTitle() }}</span>
-                        <button @click="toggleMenu" class="btn btn-outline-primary btn-sm">
-                            <span class="text-xs">Menu</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="ml-1">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -77,17 +63,28 @@
 
 
         <div class="flex-1 p-6 overflow-auto">
-               <div v-if="currentPage === 'default'" class="flex items-center justify-center h-full">
-                <div class="panel max-w-md">
+            <div v-if="currentPage === 'default'" class="flex items-center justify-center h-full">
+                <div class="panel">
                     <div class="text-center py-8">
                         <div
                             class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
-                            <img src="/assets/images/Ai Agent_UTP applicant scoring.png" alt="Placeholder Image" width=160
-                                height="160" class="mb-4">
+                            <img src="/assets/images/Ai Agent_UTP applicant scoring.png" alt="Placeholder Image"
+                                width=160 height="160" class="mb-4">
                         </div>
-                        <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Get Started</h3>
-                        <p class="text-white-dark">
-                            Upload a receipt image to begin AI-powered expense analysis and claim verification.
+                        <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Applicant Scoring</h3>
+                        <p class="text-left text-white-dark mb-4 leading-relaxed">
+                            The UTP Applicant Scoring tool is designed to streamline and enhance the college admissions
+                            process by leveraging AI to rate applicants based on their submitted qualifications.
+                            Instead of manually reviewing transcripts, extracurriculars, and other credentials, this
+                            system intelligently analyzes each applicant's profile using predefined academic and
+                            non-academic criteria.
+                        </p>
+                        <p class="text-left text-white-dark leading-relaxed">
+                            By doing so, it helps institutions maintain a consistent and unbiased evaluation standard
+                            while significantly reducing administrative workload.
+                            Whether you're handling hundreds or thousands of applications, the tool ensures each
+                            applicant is assessed fairly, quickly, and transparently—helping admissions teams make more
+                            confident, data-driven decisions.
                         </p>
                     </div>
                 </div>
@@ -163,7 +160,7 @@ export default {
                 case 'program-rankings':
                     return 'Program Rankings'
                 default:
-                    return 'default'
+                    return ''
             }
         },
         resetScrollPositions () {

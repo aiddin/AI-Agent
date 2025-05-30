@@ -6,7 +6,7 @@
             <div class="p-4 lg:p-6 space-y-4 lg:space-y-6">
                 <div>
                     <h2 class="text-xl font-semibold dark:text-white-light">Receipt Claim Analyzer</h2>
-                    <p class="text-sm text-white-dark mt-1">Upload receipt for AI-powered expense analysis</p>
+                    <p class="text-sm text-white-dark mt-1">Automate Reimbursement with Smart Receipt Analysis</p>
                 </div>
 
                 <!-- Upload Section -->
@@ -20,7 +20,7 @@
                         <!-- Camera Button -->
                         <button @click="takePhoto" class="btn btn-primary w-full" :disabled="isLoading">
                             <icon-camera class="w-4 h-4 ltr:mr-2 rtl:ml-2" />
-                            Take Photo
+                            Upload Photo
                         </button>
 
                         <!-- Image Preview -->
@@ -57,24 +57,40 @@
         <!-- Main content area for results -->
         <div class="flex-1 p-6 overflow-y-auto">
             <!-- Empty State -->
+            <!--
+        <div v-if="!isProcessing && !hasResults" class="panel">
+          <div class="text-center py-8">
+            <div class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5"><img src="/assets/images/Ai Agent_Data Cleansing.png" alt="Placeholder Image" width=160 height="160" class="mb-4"></div>
+            <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Data Cleansing</h3>
+            <p class="text-white-dark">
+            Managing multiple data sources can be messy, especially when you're trying to consolidate information from various databases and physical identification documents. The Data Cleansing workflow tackles this problem by comparing entries from two different database sources and verifying them against a national ID card or official document. It then intelligently merges the most accurate and up-to-date information into a unified profile. This process helps organizations maintain clean, reliable records, ensuring data integrity across systems while reducing duplication and inconsistencies.
+            </p>
+          </div>
+        </div> -->
 
-
-
-            <div v-if="!uploaded && !isLoading" class="flex items-center justify-center h-full">
-                <div class="panel max-w-md">
-                    <div class="text-center py-8">
-                        <div
-                            class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
-                            <img src="/assets/images/Ai Agent_Receipt analyzer .png" alt="Placeholder Image" width=160
-                                height="160" class="mb-4">
-                        </div>
-                        <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Get Started</h3>
-                        <p class="text-white-dark">
-                            Upload a receipt image to begin AI-powered expense analysis and claim verification.
-                        </p>
+            <div v-if="!uploaded && !isLoading" class="panel">
+                <div class="text-center py-8">
+                    <div
+                        class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
+                        <img src="/assets/images/Ai Agent_Receipt analyzer .png" alt="Placeholder Image" width=160
+                            height="160" class="mb-4">
                     </div>
+                    <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Receipt Claim Analyzer</h3>
+                    <p class="text-left text-white-dark mb-4 leading-relaxed">
+                        Processing reimbursement claims can be time-consuming and prone to manual oversight.
+                        The Receipt Claim Analyzer automates this process by analyzing itemized receipts submitted by
+                        users and determining claim eligibility based on predefined business rules.
+                    </p>
+                    <p class="text-left text-white-dark leading-relaxed">
+                        Whether it's verifying amounts, matching items to approved categories, or checking for
+                        duplicates, the system evaluates claims in real-time and flags any issues before they reach a
+                        human reviewer.
+                        This drastically cuts down processing time and helps organizations maintain compliance and
+                        transparency, all while providing users with faster, more consistent claim outcomes.
+                    </p>
                 </div>
             </div>
+
 
             <!-- Results Section -->
             <div v-if="uploaded" class="space-y-6">
