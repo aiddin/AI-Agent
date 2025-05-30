@@ -2,7 +2,7 @@
     <div class="flex h-full">
         <!-- Sidebar for file upload -->
         <div
-            class="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
+            class="w-max-md lg:w-80 border-b lg:border-b-0 lg:border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
             <div class="p-4 lg:p-6 space-y-4 lg:space-y-6">
                 <div>
                     <h2 class="text-xl font-semibold dark:text-white-light">Purchase Order Information Extraction</h2>
@@ -60,17 +60,11 @@
                         <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Purchase Order Information
                             Extraction</h3>
                         <p class="text-left text-white-dark mb-4 leading-relaxed">
-                            The Purchase Order Information Extraction workflow eliminates the need for manual data entry
-                            by intelligently reading and extracting key fields from purchase order documents.
-                            Whether you're dealing with scanned PDFs, emailed attachments, or bulk uploads, the system
-                            identifies and pulls out important information such as vendor names, order numbers, item
-                            descriptions, quantities, and totals.
-                        </p>
-                        <p class="text-left text-white-dark leading-relaxed">
-                            This enables seamless integration into your financial or procurement systems, reducing human
-                            error and increasing operational efficiency.
-                            Say goodbye to tedious paperwork and hello to smart, structured data ready for immediate
-                            use.
+                            The Purchase Order Information Extraction AI workflow automates data entry by extracting key
+                            fields from purchase order documents, including vendor names, order numbers, and item
+                            details from scanned PDFs, or emails, to ensures seamless integration into financial systems, reduces human error, and boosts
+                            operational efficiency—transforming tedious paperwork into structured data ready for
+                            immediate use
                         </p>
                     </div>
                 </div>

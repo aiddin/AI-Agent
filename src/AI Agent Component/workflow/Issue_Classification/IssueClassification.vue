@@ -59,17 +59,12 @@
                         </div>
                         <h3 class="text-lg font-semibold mb-2 dark:text-white-light">PetBacker Issue Classification</h3>
                         <p class="text-left text-white-dark mb-4 leading-relaxed">
-                            Support teams often face the challenge of sorting through high volumes of customer queries,
-                            especially when users describe issues in their own words.
-                            PetBacker Issue Classification solves this by using AI to automatically interpret and group
-                            support tickets into predefined categories such as “Payment Issues,” “Booking Problems,” or
-                            “App Bugs.”
-                        </p>
-                        <p class="text-left text-white-dark leading-relaxed">
-                            This allows customer service teams to route and respond to inquiries faster and more
-                            effectively. By automating the classification step, your support staff can spend less time
-                            sorting and more time solving, ultimately leading to a smoother experience for both users
-                            and agents.
+                            Support teams often struggle with high volumes of customer queries, particularly when issues
+                            are described in users' own words.
+                            By using AI to automatically categorize support tickets into
+                            predefined groups like “Payment Issues” and “App Bugs.”, customer service teams to respond faster and more effectively, allowing staff
+                            to focus on solving issues rather than sorting, leading to a smoother experience for
+                            everyone.
                         </p>
                     </div>
                 </div>

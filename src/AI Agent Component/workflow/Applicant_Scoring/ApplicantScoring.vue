@@ -73,18 +73,10 @@
                         </div>
                         <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Applicant Scoring</h3>
                         <p class="text-left text-white-dark mb-4 leading-relaxed">
-                            The UTP Applicant Scoring tool is designed to streamline and enhance the college admissions
-                            process by leveraging AI to rate applicants based on their submitted qualifications.
-                            Instead of manually reviewing transcripts, extracurriculars, and other credentials, this
-                            system intelligently analyzes each applicant's profile using predefined academic and
-                            non-academic criteria.
-                        </p>
-                        <p class="text-left text-white-dark leading-relaxed">
-                            By doing so, it helps institutions maintain a consistent and unbiased evaluation standard
-                            while significantly reducing administrative workload.
-                            Whether you're handling hundreds or thousands of applications, the tool ensures each
-                            applicant is assessed fairly, quickly, and transparently—helping admissions teams make more
-                            confident, data-driven decisions.
+                            The Applicant Scoring tool uses AI to streamline college admissions by rating applicants
+                            based on their qualifications. It automates profile analysis, ensuring consistent and
+                            unbiased evaluations, reduces administrative workload, allowing institutions to assess applications fairly
+                            and efficiently. Leading to more confident, data-driven decisions.
                         </p>
                     </div>
                 </div>

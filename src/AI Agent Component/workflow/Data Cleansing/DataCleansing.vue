@@ -4,14 +4,14 @@
         <div class="w-80 border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
             <div class="p-6 space-y-6">
                 <div>
-                    <h2 class="text-xl font-semibold dark:text-white-light">Data Cleansing Source</h2>
-                    <p class="text-sm text-white-dark mt-1">Upload files and process data with AI</p>
+                    <h2 class="text-2xl font-semibold dark:text-white-light">Data Cleansing</h2>
+                    <p class="text-white-dark">Merge and Verify Data Across Sources with Confidence</p>
                 </div>
 
                 <!-- Source 1: ID Document -->
                 <div class="panel">
-                    <div class="mb-5">
-                        <h5 class="font-semibold text-lg dark:text-white-light">Source 1: ID Document</h5>
+                    <div class="mb-2">
+                        <h5 class="font-semibold  text-md dark:text-white-light">Source 1: ID Document</h5>
                         <p class="text-sm text-white-dark mt-1">Upload ID Image</p>
                     </div>
                     <div class="space-y-4">
@@ -38,8 +38,8 @@
 
                 <!-- Source 2: CSV File 1 -->
                 <div class="panel">
-                    <div class="mb-5">
-                        <h5 class="font-semibold text-lg dark:text-white-light">Source 2: CSV File 1</h5>
+                    <div class="mb-2">
+                        <h5 class="font-semibold  text-md dark:text-white-light">Source 2: CSV File 1</h5>
                         <p class="text-sm text-white-dark mt-1">Upload CSV 1 (with address field)</p>
                     </div>
                     <div class="space-y-4">
@@ -67,8 +67,8 @@
 
                 <!-- Source 3: CSV File 2 -->
                 <div class="panel">
-                    <div class="mb-5">
-                        <h5 class="font-semibold text-lg dark:text-white-light">Source 3: CSV File 2</h5>
+                    <div class="mb-2">
+                        <h5 class="font-semibold text-md dark:text-white-light">Source 3: CSV File 2</h5>
                         <p class="text-sm text-white-dark mt-1">Upload CSV 2 (with address components)</p>
                     </div>
                     <div class="space-y-4">
@@ -105,10 +105,6 @@
         <!-- Main content area for results -->
         <div class="flex-1 p-6 overflow-y-auto">
             <div class="space-y-6">
-                <div>
-                    <h2 class="text-2xl font-semibold dark:text-white-light">Data Cleansing</h2>
-                    <p class="text-white-dark">Merge and Verify Data Across Sources with Confidence</p>
-                </div>
 
                 <!-- Info Message -->
                 <div v-if="!isProcessing && !hasResults" class="panel">
@@ -116,19 +112,16 @@
                         <div
                             class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
                             <img src="/assets/images/Ai Agent_Data Cleansing.png" alt="Placeholder Image" width=160
-                                height="160" class="mb-4"></div>
+                                height="160" class="mb-4">
+                        </div>
                         <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Data Cleansing</h3>
                         <p class="text-left text-white-dark mb-4 leading-relaxed">
-                            Managing multiple data sources can be messy, especially when you're trying to consolidate
-                            information from various databases and physical identification documents.
-                            The Data Cleansing workflow tackles this problem by comparing entries from two different
-                            database sources and verifying them against a national ID card or official document.
-                        </p>
-                        <p class="text-left text-white-dark leading-relaxed">
-                            It then intelligently merges the most accurate and up-to-date information into a unified
-                            profile.
-                            This process helps organizations maintain clean, reliable records, ensuring data integrity
-                            across systems while reducing duplication and inconsistencies.
+                            Managing multiple data sources can be challenging, especially when consolidating information
+                            from various databases and identification documents.
+                            The Data Cleansing workflow addresses this by comparing entries from different sources and
+                            verifying them against a national ID or official document while intelligently merges the most accurate information into a unified profile, helping
+                            organizations maintain reliable records and ensuring data integrity while reducing
+                            duplication.
                         </p>
                     </div>
                 </div>

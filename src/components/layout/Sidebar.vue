@@ -7,7 +7,7 @@
                     <router-link to="/" class="main-logo flex items-center shrink-0">
                         <img class="w-8 ml-[5px] flex-none" src="/assets/images/logo.png" alt="" />
                         <span
-                            class="text-2xl ltr:ml-4 rtl: font-semibold align-middle lg:inline dark:text-white-light">AI
+                            class="text-2xl ltr:ml-7 rtl:font-semibold align-middle lg:inline dark:text-white-light flex-grow text-center">AI
                             AGENT</span>
                     </router-link>
                     <a href="javascript:;"
@@ -31,7 +31,8 @@
                         <li class="nav-item">
                             <ul>
                                 <li class="nav-item">
-                                    <router-link to="/chatbot/customer-support" class="group" @click="toggleMobileMenu('chatbot1')">
+                                    <router-link to="/chatbot/customer-support" class="group"
+                                        @click="toggleMobileMenu('chatbot1')">
                                         <div class="flex items-center">
                                             <icon-menu-chat class="group-hover:!text-primary shrink-0" />
                                             <span
@@ -42,7 +43,8 @@
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/chatbot/program-advisor" class="group" @click="toggleMobileMenu('chatbot2')">
+                                    <router-link to="/chatbot/program-advisor" class="group"
+                                        @click="toggleMobileMenu('chatbot2')">
                                         <div class="flex items-center">
                                             <icon-cpu-bolt class="group-hover:!text-primary shrink-0" />
                                             <span
@@ -53,7 +55,8 @@
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
-                                    <router-link to="/chatbot/pet-trainer" class="group" @click="toggleMobileMenu('chatbot3')">
+                                    <router-link to="/chatbot/pet-trainer" class="group"
+                                        @click="toggleMobileMenu('chatbot3')">
                                         <div class="flex items-center">
                                             <icon-menu-contacts class="group-hover:!text-primary shrink-0" />
                                             <span
@@ -207,16 +210,16 @@ onMounted(() => {
 
 const toggleMobileMenu = (chatbot) => {
     if (!chatbot || chatbot !== currentChatbot.value) {
-        currentChatbot.value = chatbot;
+        currentChatbot.value = chatbot
 
-        const n8nChatElement = document.getElementById('n8n-chat');
+        const n8nChatElement = document.getElementById('n8n-chat')
         if (n8nChatElement) {
-            n8nChatElement.remove();
+            n8nChatElement.remove()
         }
     }
 
     if (window.innerWidth < 1024) {
-        store.toggleSidebar();
+        store.toggleSidebar()
     }
-};
+}
 </script>
