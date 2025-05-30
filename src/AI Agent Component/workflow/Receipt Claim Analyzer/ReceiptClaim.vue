@@ -1,9 +1,8 @@
 <template>
     <div class="flex h-full">
         <!-- Sidebar for upload -->
-        <div
-            class="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
-            <div class="p-4 lg:p-6 space-y-4 lg:space-y-6">
+        <<div class="max-w-xs h-full border-r border-[#e0e6ed] dark:border-[#1b2e4b] flex flex-col">
+    <div class="p-4 lg:p-6 space-y-4 lg:space-y-6 flex-grow">
                 <div>
                     <h2 class="text-xl font-semibold dark:text-white-light">Receipt Claim Analyzer</h2>
                     <p class="text-sm text-white-dark mt-1">Automate Reimbursement with Smart Receipt Analysis</p>
@@ -56,22 +55,11 @@
 
         <!-- Main content area for results -->
         <div class="flex-1 p-6 overflow-y-auto">
-            <!-- Empty State -->
-            <!--
-        <div v-if="!isProcessing && !hasResults" class="panel">
-          <div class="text-center py-8">
-            <div class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5"><img src="/assets/images/Ai Agent_Data Cleansing.png" alt="Placeholder Image" width=160 height="160" class="mb-4"></div>
-            <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Data Cleansing</h3>
-            <p class="text-white-dark">
-            Managing multiple data sources can be messy, especially when you're trying to consolidate information from various databases and physical identification documents. The Data Cleansing workflow tackles this problem by comparing entries from two different database sources and verifying them against a national ID card or official document. It then intelligently merges the most accurate and up-to-date information into a unified profile. This process helps organizations maintain clean, reliable records, ensuring data integrity across systems while reducing duplication and inconsistencies.
-            </p>
-          </div>
-        </div> -->
 
-            <div v-if="!uploaded && !isLoading" class="panel">
-                <div class="text-center py-8">
-                    <div
-                        class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
+            <div v-if="!uploaded && !isLoading"class="w-full flex justify-center">
+                    <div class="text-center items-center py-8 max-w-xl">
+                        <div
+                            class="flex-1 overflow-y-auto flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
                         <img src="/assets/images/Ai Agent_Receipt analyzer .png" alt="Placeholder Image" width=160
                             height="160" class="mb-4">
                     </div>

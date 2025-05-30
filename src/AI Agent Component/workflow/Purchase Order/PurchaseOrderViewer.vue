@@ -49,11 +49,10 @@
         <!-- Main content area -->
         <div class="flex-1 p-6 overflow-y-auto">
             <!-- Empty state when no file is uploaded -->
-            <div v-if="!selectedFile" class="flex items-center justify-center h-full">
-                <div class="panel">
-                    <div class="text-center py-8">
+            <div v-if="!selectedFile" class="w-full flex justify-center">
+                    <div class="text-center items-center py-8 max-w-xl">
                         <div
-                            class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
+                            class="flex-1 overflow-y-auto flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
                             <img src="/assets/images/Ai Agent_Information Extraction.png" alt="Placeholder Image"
                                 width=160 height="160" class="mb-4">
                         </div>
@@ -67,7 +66,7 @@
                             immediate use
                         </p>
                     </div>
-                </div>
+
             </div>
 
             <!-- Tabs for file preview and extracted details -->

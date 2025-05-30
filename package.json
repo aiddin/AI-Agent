@@ -10,7 +10,7 @@
     },
     "engines": {
         "node": "22.0.0"
-      },
+    },
     "dependencies": {
         "@bhplugin/vue3-datatable": "^2.0.0",
         "@capacitor/android": "^6.1.2",
@@ -51,6 +51,7 @@
         "lucide-vue-next": "^0.473.0",
         "maska": "^3.0.3",
         "path": "^0.12.7",
+        "pdf-to-img": "^4.4.0",
         "pinia": "^2.2.4",
         "radix-vue": "^1.9.12",
         "sweetalert2": "^11.5.1",

@@ -107,11 +107,11 @@
             <div class="space-y-6">
 
                 <!-- Info Message -->
-                <div v-if="!isProcessing && !hasResults" class="panel">
-                    <div class="text-center py-8">
+                <div v-if="!isProcessing && !hasResults" class="w-full flex justify-center">
+                    <div class="text-center items-center py-8 max-w-xl">
                         <div
-                            class="flex-1 overflow-y-auto bg-white flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
-                            <img src="/assets/images/Ai Agent_Data Cleansing.png" alt="Placeholder Image" width=160
+                            class="flex-1 overflow-y-auto flex flex-col items-center justify-center text-center text-gray-600 text-3xl p-5">
+                            <img src="/assets/images/Ai Agent_Data Cleansing.png" alt="Placeholder Image" width="160"
                                 height="160" class="mb-4">
                         </div>
                         <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Data Cleansing</h3>
@@ -119,7 +119,8 @@
                             Managing multiple data sources can be challenging, especially when consolidating information
                             from various databases and identification documents.
                             The Data Cleansing workflow addresses this by comparing entries from different sources and
-                            verifying them against a national ID or official document while intelligently merges the most accurate information into a unified profile, helping
+                            verifying them against a national ID or official document while intelligently merging the
+                            most accurate information into a unified profile, helping
                             organizations maintain reliable records and ensuring data integrity while reducing
                             duplication.
                         </p>
