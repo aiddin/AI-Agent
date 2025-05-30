@@ -77,16 +77,11 @@
                     </div>
                     <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Receipt Claim Analyzer</h3>
                     <p class="text-left text-white-dark mb-4 leading-relaxed">
-                        Processing reimbursement claims can be time-consuming and prone to manual oversight.
-                        The Receipt Claim Analyzer automates this process by analyzing itemized receipts submitted by
-                        users and determining claim eligibility based on predefined business rules.
-                    </p>
-                    <p class="text-left text-white-dark leading-relaxed">
-                        Whether it's verifying amounts, matching items to approved categories, or checking for
-                        duplicates, the system evaluates claims in real-time and flags any issues before they reach a
-                        human reviewer.
-                        This drastically cuts down processing time and helps organizations maintain compliance and
-                        transparency, all while providing users with faster, more consistent claim outcomes.
+                        Processing reimbursement claims can be time-consuming and prone to oversight. The Receipt Claim
+                        Analyzer automates this by analyzing itemized receipts and determining claim eligibility based
+                        on predefined rules and it verifies amounts, matches items to approved categories, and checks for duplicates, evaluating
+                        claims in real-time and flagging issues before human review. This reduces processing time and
+                        enhances compliance and transparency, providing users with faster, consistent outcomes.
                     </p>
                 </div>
             </div>

@@ -3,7 +3,7 @@
         <div class="flex-1 overflow-y-auto">
             <div class="flex flex-col items-center justify-center h-full text-center text-gray-600 text-3xl p-5">
                 <h1>Welcome to Our Collective AI Agent </h1>
-                <p class="mt-4 text-lg text-gray-500 text-left leading-relaxed">
+                <p class="mt-4 text-sm text-gray-500 text-left leading-relaxed">
                     In a rapidly evolving world, our AI agents are here to enhance efficiency and improve your
                     experience. Designed to automate tasks and provide insightful support, each agent adapts to your
                     specific needs.
@@ -14,7 +14,7 @@
 
 
                 </p>
-                <p class="mt-4 text-lg text-gray-500 text-left leading-relaxed">
+                <p class="mt-4 text-sm text-gray-500 text-left leading-relaxed">
                     Whether you need assistance with document verification, candidate scoring, or program rankings, our
                     AI agents are equipped to handle it all. Each agent is tailored to provide specialized support,
                     ensuring you get the most relevant and effective solutions for your needs.
