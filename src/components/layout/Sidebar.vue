@@ -104,7 +104,7 @@
                                             <icon-menu-components class="group-hover:!text-primary shrink-0" />
                                             <span
                                                 class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
-                                                Petbacker Issue Classification
+                                                PB Issue Classification
                                             </span>
                                         </div>
                                     </router-link>
