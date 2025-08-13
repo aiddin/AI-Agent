@@ -1,7 +1,7 @@
 <template>
     <div class="flex h-full">
         <!-- Sidebar for upload -->
-        <<div class="max-w-xs h-full border-r border-[#e0e6ed] dark:border-[#1b2e4b] flex flex-col">
+        <div class="max-w-xs h-full border-r border-[#e0e6ed] dark:border-[#1b2e4b] flex flex-col">
     <div class="p-4 lg:p-6 space-y-4 lg:space-y-6 flex-grow">
                 <div>
                     <h2 class="text-xl font-semibold dark:text-white-light">Receipt Claim Analyzer</h2>

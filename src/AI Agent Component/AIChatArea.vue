@@ -232,4 +232,17 @@ watch(
   color: #333;
   /* Darker text color */
 }
+
+/* N8N Chat Styling - Smaller Text */
+:deep(.n8n-chat-window),
+:deep(.n8n-chat-messages),
+:deep(.n8n-chat-message),
+:deep(.n8n-chat-text) {
+  font-size: 0.75rem !important;
+}
+
+:deep(.n8n-chat-window *),
+:deep(.n8n-chat-messages *) {
+  font-size: 0.75rem !important;
+}
 </style>
