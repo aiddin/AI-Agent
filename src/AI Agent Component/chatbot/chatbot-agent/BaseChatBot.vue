@@ -89,4 +89,23 @@ onMounted(() => {
   font-size: 12px !important;
   line-height: 1.4 !important;
 }
+
+/* Hide "powered by n8n" branding */
+[class*="powered-by"],
+[class*="branding"],
+[class*="footer"],
+.n8n-chat [class*="powered"],
+.n8n-chat [class*="brand"],
+[data-chat] [class*="powered"],
+[data-chat] [class*="brand"],
+[title*="n8n"],
+[alt*="powered by"],
+[alt*="n8n"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
 </style>
