@@ -234,15 +234,19 @@ watch(
 }
 
 /* N8N Chat Styling - Smaller Text */
+:deep(.n8n-chat),
+:deep(.n8n-chat *),
 :deep(.n8n-chat-window),
-:deep(.n8n-chat-messages),
-:deep(.n8n-chat-message),
-:deep(.n8n-chat-text) {
-  font-size: 0.75rem !important;
-}
-
 :deep(.n8n-chat-window *),
-:deep(.n8n-chat-messages *) {
-  font-size: 0.75rem !important;
+:deep(.n8n-chat-messages),
+:deep(.n8n-chat-messages *),
+:deep(.n8n-chat-message),
+:deep(.n8n-chat-message *),
+:deep(.n8n-chat-text),
+:deep(.n8n-chat-text *),
+:deep(n8n-chat),
+:deep(n8n-chat *) {
+  font-size: 12px !important;
+  line-height: 1.4 !important;
 }
 </style>

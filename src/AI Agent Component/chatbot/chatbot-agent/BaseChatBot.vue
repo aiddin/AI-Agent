@@ -78,3 +78,15 @@ onMounted(() => {
 </script>
 
 <style src="src/assets/css/chatbot-styles.css" scoped></style>
+
+<style>
+/* Override n8n chat font size - must be global to affect n8n components */
+.n8n-chat,
+.n8n-chat *,
+[class*="n8n-chat"] *,
+[data-chat] *,
+[data-n8n-chat] * {
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+</style>
