@@ -84,6 +84,18 @@
                                         </div>
                                     </router-link>
                                 </li>
+                                <li class="nav-item">
+                                    <router-link to="/chatbot/mortgage-documents" class="group"
+                                        @click="toggleMobileMenu('chatbot5')">
+                                        <div class="flex items-center">
+                                            <icon-menu-forms class="group-hover:!text-primary shrink-0" />
+                                            <span
+                                                class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">
+                                                Mortgage Documents
+                                            </span>
+                                        </div>
+                                    </router-link>
+                                </li>
                             </ul>
                         </li>
 
