@@ -206,7 +206,7 @@
         </div>
         
         <!-- Mobile Sticky Button -->
-        <div v-if="uploaded" class="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-[#0e1726] border-t border-[#e0e6ed] dark:border-[#1b2e4b] z-50">
+        <div v-if="uploaded" class="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-[#0e1726] border-t border-[#e0e6ed] dark:border-[#1b2e4b] z-10">
             <button @click="backtoHome()" class="btn btn-secondary w-full">
                 <icon-arrow-left class="w-4 h-4 ltr:mr-2 rtl:ml-2" />
                 Analyze Another Receipt
