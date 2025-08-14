@@ -12,7 +12,7 @@
                 <div class="panel">
                     <div class="mb-5">
                         <h5 class="font-semibold text-lg dark:text-white-light">Upload Receipt</h5>
-                        <p class="text-sm text-white-dark">Take a photo or upload an image</p>
+                        <p class="text-sm text-white-dark">Take a photo of your receipt</p>
                     </div>
 
                     <div class="space-y-4">
@@ -21,22 +21,6 @@
                             <icon-camera class="w-4 h-4 ltr:mr-2 rtl:ml-2" />
                             {{ compressing ? 'Compressing...' : 'Take Photo' }}
                         </button>
-
-                        <!-- File Upload -->
-                        <div class="relative">
-                            <input 
-                                type="file" 
-                                ref="fileInput"
-                                @change="handleFileSelect" 
-                                accept="image/*" 
-                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                :disabled="isLoading || compressing"
-                            />
-                            <button class="btn btn-outline-primary w-full" :disabled="isLoading || compressing">
-                                <icon-gallery class="w-4 h-4 ltr:mr-2 rtl:ml-2" />
-                                Choose from Gallery
-                            </button>
-                        </div>
 
                         <!-- Image Preview -->
                         <div
@@ -289,19 +273,6 @@ export default {
             }
         },
 
-        async handleFileSelect(event) {
-            const selectedFile = event.target.files[0]
-            if (!selectedFile) return
-
-            try {
-                // Compress the image if it's too large
-                const compressedFile = await this.compressImage(selectedFile)
-                this.file = compressedFile
-                this.imageUrl = URL.createObjectURL(compressedFile)
-            } catch (error) {
-                console.error('Error handling file select:', error)
-            }
-        },
 
         async takePhoto () {
             try {
@@ -387,11 +358,6 @@ export default {
             this.file = null
             this.items = []
             this.compressing = false
-            
-            // Clear file input
-            if (this.$refs.fileInput) {
-                this.$refs.fileInput.value = ''
-            }
         }
     },
 }
