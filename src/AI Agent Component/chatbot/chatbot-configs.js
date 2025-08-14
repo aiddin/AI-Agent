@@ -61,7 +61,7 @@ export const petbackerCSConfig = {
 }
 
 export const petSitterTrainerConfig = {
-  webhookUrl: 'https://n8n.forwen.com/webhook/7d747854-a9bf-4066-b487-f62d53be5dfc/chat',
+  webhookUrl: 'https://workflow.forwen.com/webhook/7d747854-a9bf-4066-b487-f62d53be5dfc/chat',
   initialMessages: [
     'Welcome to PetBacker Sitter Trainer AI! Practice handling real pet owner messages, get feedback, and improve your communication and service skills. Let\'s get started!'
   ],
@@ -87,7 +87,7 @@ export const programAdvisorConfig = {
     'application/pdf'
   ],
   initialMessages: [
-    'Hi! I\'m UTP\'s AI Program Advisor, here to help you find the best program at UTP. Let\'s get started!'
+    'Hi! I\'m Athena\'s AI Program Advisor, here to help you find the best program at Athena. Let\'s get started!'
   ],
   i18n: {
     en: {
