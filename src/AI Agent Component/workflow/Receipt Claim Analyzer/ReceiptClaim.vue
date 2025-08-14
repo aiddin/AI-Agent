@@ -17,10 +17,26 @@
 
                     <div class="space-y-4">
                         <!-- Camera Button -->
-                        <button @click="takePhoto" class="btn btn-primary w-full" :disabled="isLoading">
+                        <button @click="takePhoto" class="btn btn-primary w-full" :disabled="isLoading || compressing">
                             <icon-camera class="w-4 h-4 ltr:mr-2 rtl:ml-2" />
-                            Upload Photo
+                            {{ compressing ? 'Compressing...' : 'Take Photo' }}
                         </button>
+
+                        <!-- File Upload -->
+                        <div class="relative">
+                            <input 
+                                type="file" 
+                                ref="fileInput"
+                                @change="handleFileSelect" 
+                                accept="image/*" 
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                :disabled="isLoading || compressing"
+                            />
+                            <button class="btn btn-outline-primary w-full" :disabled="isLoading || compressing">
+                                <icon-gallery class="w-4 h-4 ltr:mr-2 rtl:ml-2" />
+                                Choose from Gallery
+                            </button>
+                        </div>
 
                         <!-- Image Preview -->
                         <div
@@ -30,15 +46,29 @@
                                 <icon-gallery class="w-12 h-12 text-white-dark mb-2" />
                                 <span class="text-white-dark">Your receipt image will appear here</span>
                             </div>
-                            <img v-if="imageUrl" :src="imageUrl" alt="Uploaded Receipt"
-                                class="w-full h-48 object-cover" />
+                            <div v-if="imageUrl">
+                                <img :src="imageUrl" alt="Uploaded Receipt" class="w-full h-48 object-cover" />
+                                <div v-if="file" class="p-2 bg-gray-50 dark:bg-gray-800 text-xs text-center text-white-dark">
+                                    Size: {{ (file.size / 1024).toFixed(1) }}KB
+                                    <span v-if="file.size <= 1024 * 1024" class="text-success ml-2">✓ Optimized</span>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Submit Button -->
-                        <button @click="uploadImage" class="btn btn-success w-full" :disabled="isLoading || !imageUrl">
+                        <button @click="uploadImage" class="btn btn-success w-full" :disabled="isLoading || compressing || !imageUrl">
                             <icon-send class="w-4 h-4 ltr:mr-2 rtl:ml-2" />
                             {{ isLoading ? 'Processing...' : 'Analyze Receipt' }}
                         </button>
+                    </div>
+
+                    <!-- Compression State -->
+                    <div v-if="compressing" class="mt-4">
+                        <div class="flex items-center gap-3">
+                            <div class="animate-spin w-5 h-5 border-2 border-warning border-t-transparent rounded-full">
+                            </div>
+                            <span class="font-medium dark:text-white-light">Compressing image...</span>
+                        </div>
                     </div>
 
                     <!-- Loading State -->
@@ -195,6 +225,7 @@
 
 <script>
 import { Camera, CameraResultType } from '@capacitor/camera'
+import imageCompression from 'browser-image-compression'
 import IconCamera from '@/components/icon/icon-camera.vue'
 import IconGallery from '@/components/icon/icon-gallery.vue'
 import IconCircleCheck from '@/components/icon/icon-circle-check.vue'
@@ -220,11 +251,58 @@ export default {
             reasoning: '',
             uploaded: false,
             claimable: 0,
-            nonClaimable: 0
+            nonClaimable: 0,
+            compressing: false
         }
     },
 
     methods: {
+        async compressImage(file) {
+            // Check if file is larger than 1MB (1024 * 1024 bytes)
+            if (file.size <= 1024 * 1024) {
+                console.log('File is already under 1MB, no compression needed')
+                return file
+            }
+
+            console.log(`Original file size: ${(file.size / 1024 / 1024).toFixed(2)} MB`)
+            this.compressing = true
+
+            try {
+                const options = {
+                    maxSizeMB: 1, // Maximum size in MB
+                    maxWidthOrHeight: 1920, // Maximum width or height
+                    useWebWorker: true, // Use web worker for better performance
+                    fileType: 'image/jpeg', // Convert to JPEG for better compression
+                    initialQuality: 0.8 // Initial quality
+                }
+
+                const compressedFile = await imageCompression(file, options)
+                console.log(`Compressed file size: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`)
+                
+                return compressedFile
+            } catch (error) {
+                console.error('Error compressing image:', error)
+                // Return original file if compression fails
+                return file
+            } finally {
+                this.compressing = false
+            }
+        },
+
+        async handleFileSelect(event) {
+            const selectedFile = event.target.files[0]
+            if (!selectedFile) return
+
+            try {
+                // Compress the image if it's too large
+                const compressedFile = await this.compressImage(selectedFile)
+                this.file = compressedFile
+                this.imageUrl = URL.createObjectURL(compressedFile)
+            } catch (error) {
+                console.error('Error handling file select:', error)
+            }
+        },
+
         async takePhoto () {
             try {
                 const image = await Camera.getPhoto({
@@ -235,7 +313,16 @@ export default {
                 this.imageUrl = image.webPath
                 const response = await fetch(image.webPath)
                 const blob = await response.blob()
-                this.file = new File([blob], 'photo.jpg', { type: blob.type })
+                let file = new File([blob], 'photo.jpg', { type: blob.type })
+                
+                // Compress the image if it's too large
+                file = await this.compressImage(file)
+                this.file = file
+                
+                // Update image URL with compressed version for preview
+                if (file !== blob) {
+                    this.imageUrl = URL.createObjectURL(file)
+                }
             } catch (error) {
                 console.error('Error taking photo:', error)
             }
@@ -292,9 +379,19 @@ export default {
             this.uploaded = false
             this.claimable = 0
             this.nonClaimable = 0
+            // Clean up blob URL if it exists
+            if (this.imageUrl && this.imageUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(this.imageUrl)
+            }
             this.imageUrl = null
             this.file = null
             this.items = []
+            this.compressing = false
+            
+            // Clear file input
+            if (this.$refs.fileInput) {
+                this.$refs.fileInput.value = ''
+            }
         }
     },
 }
