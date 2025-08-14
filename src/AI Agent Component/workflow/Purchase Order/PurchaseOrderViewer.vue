@@ -241,6 +241,7 @@
 
 <script>
 import axios from 'axios'
+import { fromPath } from "pdf2pic";
 
 export default {
     data () {
