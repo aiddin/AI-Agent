@@ -1,8 +1,8 @@
 <template>
-    <div class="flex h-full">
-        <!-- Sidebar for file upload -->
+    <div class="flex flex-col lg:flex-row h-full min-h-screen lg:min-h-0">
+        <!-- Sidebar/Header for file upload -->
         <div
-            class="w-max-md lg:w-80 border-b lg:border-b-0 lg:border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
+            class="w-full lg:max-w-sm lg:h-full lg:border-r border-b lg:border-b-0 border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
             <div class="p-4 lg:p-6 space-y-4 lg:space-y-6">
                 <div>
                     <h2 class="text-xl font-semibold dark:text-white-light">Purchase Order Information Extraction</h2>
@@ -47,7 +47,7 @@
         </div>
 
         <!-- Main content area -->
-        <div class="flex-1 p-6 overflow-y-auto">
+        <div class="flex-1 p-4 lg:p-6 overflow-y-auto">
             <!-- Empty state when no file is uploaded -->
             <div v-if="!selectedFile" class="w-full flex justify-center">
                     <div class="text-center items-center py-8 max-w-xl">
@@ -78,14 +78,14 @@
 
                 <!-- Tab Navigation -->
                 <div class="panel">
-                    <div class="flex border-b border-[#ebedf2] dark:border-[#191e3a]">
-                        <button class="px-4 py-3 font-medium transition-colors duration-300" :class="{
+                    <div class="flex border-b border-[#ebedf2] dark:border-[#191e3a] overflow-x-auto">
+                        <button class="px-3 py-3 lg:px-4 font-medium transition-colors duration-300 whitespace-nowrap min-h-[44px]" :class="{
                             'text-primary border-b-2 border-primary': activeTab === 'preview',
                             'text-white-dark hover:text-primary': activeTab !== 'preview'
                         }" @click="activeTab = 'preview'">
                             File Preview
                         </button>
-                        <button class="px-4 py-3 font-medium transition-colors duration-300" :class="{
+                        <button class="px-3 py-3 lg:px-4 font-medium transition-colors duration-300 whitespace-nowrap min-h-[44px]" :class="{
                             'text-primary border-b-2 border-primary': activeTab === 'details',
                             'text-white-dark hover:text-primary': activeTab !== 'details'
                         }" @click="activeTab = 'details'">
@@ -94,7 +94,7 @@
                     </div>
 
                     <!-- Tab Content -->
-                    <div class="p-6">
+                    <div class="p-4 lg:p-6">
                         <!-- File Preview Tab -->
                         <div v-if="activeTab === 'preview'">
                             <div v-if="images.length > 0" class="space-y-6">
@@ -135,7 +135,7 @@
                                             <h5 class="font-semibold text-lg dark:text-white-light">Company Information
                                             </h5>
                                         </div>
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                             <div>
                                                 <label class="font-medium text-white-dark">Company:</label>
                                                 <p class="mt-1 dark:text-white-light">{{
@@ -170,7 +170,7 @@
                                             <h5 class="font-semibold text-lg dark:text-white-light">Purchase Order
                                                 Information</h5>
                                         </div>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
                                                 <label class="font-medium text-white-dark">PO Number:</label>
                                                 <p class="mt-1 dark:text-white-light">{{ po.po_number || 'N/A' }}</p>
@@ -367,14 +367,134 @@ export default {
 </script>
 
 <style scoped>
-/* Custom styles for responsive design */
-@media (max-width: 768px) {
-    .w-80 {
-        width: 100%;
+/* Enhanced mobile responsive design */
+@media (max-width: 1023px) {
+    /* Mobile-first approach for screens smaller than lg (1024px) */
+    .panel {
+        border-radius: 0.75rem;
+        margin-bottom: 1rem;
     }
+    
+    /* Ensure proper spacing on mobile */
+    .space-y-4 > * + * {
+        margin-top: 1rem;
+    }
+    
+    .space-y-6 > * + * {
+        margin-top: 1.5rem;
+    }
+    
+    /* Optimize button sizes for mobile */
+    .btn {
+        min-height: 44px;
+        font-size: 0.875rem;
+    }
+    
+    /* Better text readability on mobile */
+    h1, h2 {
+        font-size: 1.5rem;
+        line-height: 1.4;
+    }
+    
+    h5 {
+        font-size: 1.125rem;
+        line-height: 1.4;
+    }
+    
+    /* Optimize tab buttons for mobile */
+    .min-h-\[44px\] {
+        font-size: 0.875rem;
+    }
+}
 
-    .flex {
-        flex-direction: column;
+@media (max-width: 639px) {
+    /* Extra small screens (sm breakpoint) */
+    .grid-cols-2 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    
+    .sm\:grid-cols-2 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    
+    /* Reduce padding on small screens */
+    .p-4 {
+        padding: 0.75rem;
+    }
+    
+    /* Optimize table responsiveness */
+    table {
+        font-size: 0.75rem;
+    }
+    
+    th, td {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    /* Stack tab navigation on very small screens */
+    .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Enhanced visual states */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.panel {
+    transition: all 0.3s ease;
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn {
+        min-height: 48px;
+    }
+    
+    .min-h-\[44px\] {
+        min-height: 48px;
+    }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 1023px) and (orientation: landscape) {
+    .min-h-screen {
+        min-height: 100vh;
+    }
+    
+    .lg\:min-h-0 {
+        min-height: 100vh;
+    }
+}
+
+/* Data table responsive improvements */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+    .table-responsive table {
+        min-width: 600px;
+    }
+    
+    .table-responsive::after {
+        content: '← Scroll to see more →';
+        display: block;
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        padding: 0.5rem;
     }
 }
 </style>
