@@ -268,54 +268,65 @@ export default {
             this.convertingImages = true
 
             try {
-                const formData = new FormData()
-                formData.append('fileInput', file)
-                formData.append('imageFormat', 'jpg')
-                formData.append('singleOrMultiple', 'multiple')
-                formData.append('dpi', '300')
+                console.log('Starting PDF conversion...')
+                
+                // Import PDF.js library dynamically for client-side use
+                const pdfjsLib = await import('pdfjs-dist')
+                console.log('PDF.js imported successfully')
+                
+                // Set worker source for PDF.js using local file
+                pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
+                console.log('Worker source set to:', pdfjsLib.GlobalWorkerOptions.workerSrc)
+                
+                // Convert file to array buffer for PDF.js
+                const arrayBuffer = await file.arrayBuffer()
+                console.log('File converted to array buffer, size:', arrayBuffer.byteLength)
+                
+                // Load PDF document
+                const pdf = await pdfjsLib.getDocument(arrayBuffer).promise
+                console.log('PDF loaded successfully, pages:', pdf.numPages)
 
-                const response = await axios.post(
-                    'https://stirlingpdf.io/api/v1/convert/pdf/img',
-                    formData,
-                    {
-                        responseType: 'arraybuffer',
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }
-                )
-
-                // Process the zip file
-                await this.processZipResponse(response.data)
-            } catch (error) {
-                console.error('Error converting PDF to images:', error)
-            } finally {
-                this.convertingImages = false
-            }
-        },
-
-        async processZipResponse (zipData) {
-            try {
-                // Use JSZip to extract images from the zip file
-                const JSZip = (await import('jszip')).default
-                const zip = new JSZip()
-
-                const zipContents = await zip.loadAsync(zipData)
-                const imageFiles = Object.values(zipContents.files).filter(file =>
-                    !file.dir && /\.(jpe?g|png)$/i.test(file.name)
-                )
-
-                // Sort image files by name to maintain order
-                imageFiles.sort((a, b) => a.name.localeCompare(b.name))
-
-                // Process each image file
-                for (const file of imageFiles) {
-                    const blob = await file.async('blob')
+                this.images = []
+                
+                // Process each page
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    console.log('Processing page:', pageNum)
+                    const page = await pdf.getPage(pageNum)
+                    
+                    // Set up canvas for rendering
+                    const canvas = document.createElement('canvas')
+                    const context = canvas.getContext('2d')
+                    
+                    // Scale for better quality
+                    const scale = 2
+                    const viewport = page.getViewport({ scale })
+                    
+                    canvas.width = viewport.width
+                    canvas.height = viewport.height
+                    
+                    // Render page to canvas
+                    await page.render({
+                        canvasContext: context,
+                        viewport: viewport
+                    }).promise
+                    console.log('Page rendered to canvas:', pageNum)
+                    
+                    // Convert canvas to blob and create URL
+                    const blob = await new Promise(resolve => {
+                        canvas.toBlob(resolve, 'image/jpeg', 0.95)
+                    })
                     const imageUrl = URL.createObjectURL(blob)
                     this.images.push(imageUrl)
+                    console.log('Page image created:', pageNum, 'URL:', imageUrl)
                 }
+                console.log('All pages processed successfully')
             } catch (error) {
-                console.error('Error processing zip file:', error)
+                console.error('Error converting PDF to images:', error)
+                console.error('Error stack:', error.stack)
+                // Fallback to show error message
+                alert(`Error converting PDF to images: ${error.message}`)
+            } finally {
+                this.convertingImages = false
             }
         },
 
