@@ -19,7 +19,7 @@ export const mortgageApplicationDataConfig = {
 }
 
 export const mortgageApplicationDocumentConfig = {
-  webhookUrl: 'https://workflow.forwen.com/webhook/7d747854-a9bf-4066-b487-f62d53be5dfc/chat',
+  webhookUrl: 'https://workflow.forwen.com/webhook/080d5b00-9183-496a-b6fd-a351b5482d2e/chat',
   allowFileUploads: true,
   allowedFilesMimeTypes: [
     'image/*',
