@@ -57,6 +57,11 @@ const routes: RouteRecordRaw[] = [
         name: 'mortgage-assistant',
         component: () => import(/* webpackChunkName: "chatbot-mortgage-assistant" */ '../AI Agent Component/chatbot/chatbot-agent/MortgageApplicationData.vue'),
     },
+    {
+        path: '/chatbot/mortgage-documents',
+        name: 'mortgage-documents',
+        component: () => import(/* webpackChunkName: "chatbot-mortgage-documents" */ '../AI Agent Component/chatbot/chatbot-agent/MortgageApplicationDocument.vue'),
+    },
 
     // workflow routes
     {
