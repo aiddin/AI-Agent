@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col lg:flex-row h-full min-h-screen lg:min-h-0">
         <!-- Sidebar/Header for upload -->
-        <div class="w-full lg:max-w-sm lg:h-full lg:border-r border-b lg:border-b-0 border-[#e0e6ed] dark:border-[#1b2e4b] flex flex-col">
+        <div class="w-full lg:max-w-sm lg:h-full lg:border-r border-b lg:border-b-0 border-[#e0e6ed] dark:border-[#1b2e4b] flex flex-col" :class="{ 'hidden-mobile-after-upload': uploaded }" >
             <div class="p-4 lg:p-6 space-y-4 lg:space-y-6 flex-grow">
                 <div>
                     <h2 class="text-xl font-semibold dark:text-white-light">Receipt Claim Analyzer</h2>
@@ -195,7 +195,7 @@
                     </div>
 
                     <!-- Back Button -->
-                    <div class="mt-6 pt-4 border-t border-[#e0e6ed] dark:border-[#1b2e4b]">
+                    <div class="mt-6 pt-4 border-t border-[#e0e6ed] dark:border-[#1b2e4b] lg:block hidden">
                         <button @click="backtoHome()" class="btn btn-secondary w-full">
                             <icon-arrow-left class="w-4 h-4 ltr:mr-2 rtl:ml-2" />
                             Analyze Another Receipt
@@ -203,6 +203,14 @@
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Mobile Sticky Button -->
+        <div v-if="uploaded" class="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-[#0e1726] border-t border-[#e0e6ed] dark:border-[#1b2e4b] z-50">
+            <button @click="backtoHome()" class="btn btn-secondary w-full">
+                <icon-arrow-left class="w-4 h-4 ltr:mr-2 rtl:ml-2" />
+                Analyze Another Receipt
+            </button>
         </div>
     </div>
 </template>
@@ -493,6 +501,18 @@ export default {
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
     .upload-area {
         border-width: 0.5px;
+    }
+}
+
+/* Hide upload section on mobile after analysis */
+@media (max-width: 1023px) {
+    .hidden-mobile-after-upload {
+        display: none !important;
+    }
+    
+    /* Add bottom padding to prevent content from being hidden behind sticky button */
+    .flex-1.p-4.lg\\:p-6 {
+        padding-bottom: 80px;
     }
 }
 </style>
