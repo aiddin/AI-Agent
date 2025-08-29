@@ -87,7 +87,7 @@ export const programAdvisorConfig = {
     'application/pdf'
   ],
   initialMessages: [
-    'Hi! I\'m Athena\'s AI Program Advisor, here to help you find the best program at Athena. Let\'s get started!'
+    'Hi! I\'m UniSZA\'s AI Program Advisor, here to help you find the best program at UniSZA. Let\'s get started!'
   ],
   i18n: {
     en: {
