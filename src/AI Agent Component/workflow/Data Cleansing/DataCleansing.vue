@@ -1,32 +1,32 @@
 <template>
-    <div class="data-cleansing-container">
+    <div class="flex flex-col lg:flex-row h-full min-h-screen lg:min-h-0">
         <!-- Sidebar for file uploads -->
-        <div class="w-80 border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
-            <div class="p-6 space-y-6">
+        <div class="w-full lg:max-w-sm lg:h-full lg:border-r border-b lg:border-b-0 border-[#e0e6ed] dark:border-[#1b2e4b] overflow-y-auto">
+            <div class="p-4 lg:p-6 space-y-4 lg:space-y-6">
                 <div>
-                    <h2 class="text-2xl font-semibold dark:text-white-light">Data Cleansing</h2>
-                    <p class="text-white-dark">Merge and Verify Data Across Sources with Confidence</p>
+                    <h2 class="text-xl lg:text-2xl font-semibold dark:text-white-light">Data Cleansing</h2>
+                    <p class="text-sm lg:text-base text-white-dark">Merge and Verify Data Across Sources with Confidence</p>
                 </div>
 
                 <!-- Source 1: ID Document -->
                 <div class="panel">
                     <div class="mb-2">
-                        <h5 class="font-semibold  text-md dark:text-white-light">Source 1: ID Document</h5>
-                        <p class="text-sm text-white-dark mt-1">Upload ID Image</p>
+                        <h5 class="font-semibold text-sm lg:text-base dark:text-white-light">Source 1: ID Document</h5>
+                        <p class="text-xs lg:text-sm text-white-dark mt-1">Upload ID Image</p>
                     </div>
                     <div class="space-y-4">
                         <div
-                            class="border-2 border-dashed border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg p-6 text-center hover:border-primary transition-colors duration-200">
-                            <div class="text-white-dark mb-4">
-                                <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="border-2 border-dashed border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg p-4 lg:p-6 text-center hover:border-primary transition-colors duration-200 min-h-[120px] lg:min-h-[140px] flex flex-col justify-center">
+                            <div class="text-white-dark mb-3 lg:mb-4">
+                                <svg class="w-6 h-6 lg:w-8 lg:h-8 mx-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
                             </div>
-                            <p class="text-sm text-white-dark mb-2">Drag and drop file here</p>
+                            <p class="text-xs lg:text-sm text-white-dark mb-2">Drag and drop file here</p>
                             <input type="file" @change="handleImageUpload" accept="image/jpeg,image/png,image/jpg"
                                 class="hidden" ref="imageInput" />
-                            <button @click="$refs.imageInput.click()" class="btn btn-outline-primary btn-sm">Browse
+                            <button @click="$refs.imageInput.click()" class="btn btn-outline-primary btn-sm text-xs lg:text-sm min-h-[44px] lg:min-h-[36px]">Browse
                                 files</button>
                         </div>
                         <div v-if="imagePreview" class="mt-4">
@@ -39,26 +39,26 @@
                 <!-- Source 2: CSV File 1 -->
                 <div class="panel">
                     <div class="mb-2">
-                        <h5 class="font-semibold  text-md dark:text-white-light">Source 2: CSV File 1</h5>
-                        <p class="text-sm text-white-dark mt-1">Upload CSV 1 (with address field)</p>
+                        <h5 class="font-semibold text-sm lg:text-base dark:text-white-light">Source 2: CSV File 1</h5>
+                        <p class="text-xs lg:text-sm text-white-dark mt-1">Upload CSV 1 (with address field)</p>
                     </div>
                     <div class="space-y-4">
                         <div
-                            class="border-2 border-dashed border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg p-6 text-center hover:border-primary transition-colors duration-200">
-                            <div class="text-white-dark mb-4">
-                                <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="border-2 border-dashed border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg p-4 lg:p-6 text-center hover:border-primary transition-colors duration-200 min-h-[120px] lg:min-h-[140px] flex flex-col justify-center">
+                            <div class="text-white-dark mb-3 lg:mb-4">
+                                <svg class="w-6 h-6 lg:w-8 lg:h-8 mx-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
-                            <p class="text-sm text-white-dark mb-2">Drag and drop file here</p>
+                            <p class="text-xs lg:text-sm text-white-dark mb-2">Drag and drop file here</p>
                             <input type="file" @change="handleCSV1Upload" accept=".csv" class="hidden"
                                 ref="csv1Input" />
-                            <button @click="$refs.csv1Input.click()" class="btn btn-outline-primary btn-sm">Browse
+                            <button @click="$refs.csv1Input.click()" class="btn btn-outline-primary btn-sm text-xs lg:text-sm min-h-[44px] lg:min-h-[36px]">Browse
                                 files</button>
                         </div>
                         <div v-if="csv1File" class="flex items-center gap-2">
-                            <span class="badge bg-success text-xs">
+                            <span class="badge bg-success text-xs flex-shrink-0">
                                 ✓ {{ csv1File.name }} uploaded
                             </span>
                         </div>
@@ -68,26 +68,26 @@
                 <!-- Source 3: CSV File 2 -->
                 <div class="panel">
                     <div class="mb-2">
-                        <h5 class="font-semibold text-md dark:text-white-light">Source 3: CSV File 2</h5>
-                        <p class="text-sm text-white-dark mt-1">Upload CSV 2 (with address components)</p>
+                        <h5 class="font-semibold text-sm lg:text-base dark:text-white-light">Source 3: CSV File 2</h5>
+                        <p class="text-xs lg:text-sm text-white-dark mt-1">Upload CSV 2 (with address components)</p>
                     </div>
                     <div class="space-y-4">
                         <div
-                            class="border-2 border-dashed border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg p-6 text-center hover:border-primary transition-colors duration-200">
-                            <div class="text-white-dark mb-4">
-                                <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="border-2 border-dashed border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg p-4 lg:p-6 text-center hover:border-primary transition-colors duration-200 min-h-[120px] lg:min-h-[140px] flex flex-col justify-center">
+                            <div class="text-white-dark mb-3 lg:mb-4">
+                                <svg class="w-6 h-6 lg:w-8 lg:h-8 mx-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
-                            <p class="text-sm text-white-dark mb-2">Drag and drop file here</p>
+                            <p class="text-xs lg:text-sm text-white-dark mb-2">Drag and drop file here</p>
                             <input type="file" @change="handleCSV2Upload" accept=".csv" class="hidden"
                                 ref="csv2Input" />
-                            <button @click="$refs.csv2Input.click()" class="btn btn-outline-primary btn-sm">Browse
+                            <button @click="$refs.csv2Input.click()" class="btn btn-outline-primary btn-sm text-xs lg:text-sm min-h-[44px] lg:min-h-[36px]">Browse
                                 files</button>
                         </div>
                         <div v-if="csv2File" class="flex items-center gap-2">
-                            <span class="badge bg-success text-xs">
+                            <span class="badge bg-success text-xs flex-shrink-0">
                                 ✓ {{ csv2File.name }} uploaded
                             </span>
                         </div>
@@ -95,7 +95,7 @@
                 </div>
 
                 <!-- Process Button -->
-                <button @click="processData" class="btn btn-primary w-full" :disabled="!canProcess"
+                <button @click="processData" class="btn btn-primary w-full text-sm lg:text-base min-h-[44px]" :disabled="!canProcess"
                     :class="{ 'opacity-60 pointer-events-none': !canProcess }">
                     Process Data
                 </button>
@@ -103,8 +103,8 @@
         </div>
 
         <!-- Main content area for results -->
-        <div class="flex-1 p-6 overflow-y-auto">
-            <div class="space-y-6">
+        <div class="flex-1 p-4 lg:p-6 overflow-y-auto">
+            <div class="space-y-4 lg:space-y-6">
 
                 <!-- Info Message -->
                 <div v-if="!isProcessing && !hasResults" class="w-full flex justify-center">
@@ -114,8 +114,8 @@
                             <img src="/assets/images/Ai Agent_Data Cleansing.png" alt="Placeholder Image" width="160"
                                 height="160" class="mb-4">
                         </div>
-                        <h3 class="text-lg font-semibold mb-2 dark:text-white-light">Data Cleansing</h3>
-                        <p class="text-left text-white-dark mb-4 leading-relaxed">
+                        <h3 class="text-base lg:text-lg font-semibold mb-2 dark:text-white-light">Data Cleansing</h3>
+                        <p class="text-sm lg:text-base text-left text-white-dark mb-4 leading-relaxed">
                             Managing multiple data sources can be challenging, especially when consolidating information
                             from various databases and identification documents.
                             The Data Cleansing workflow addresses this by comparing entries from different sources and
@@ -131,23 +131,23 @@
                 <div v-if="error" class="panel">
                     <div class="bg-danger-light p-4 rounded-lg border border-danger">
                         <div class="flex items-center gap-2">
-                            <svg class="w-5 h-5 text-danger" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-5 h-5 text-danger flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                                     clip-rule="evenodd" />
                             </svg>
-                            <span class="text-danger font-medium">{{ error }}</span>
+                            <span class="text-danger font-medium text-sm lg:text-base">{{ error }}</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Processing Message -->
                 <div v-if="isProcessing" class="panel">
-                    <div class="flex items-center justify-center py-8">
+                    <div class="flex items-center justify-center py-6 lg:py-8">
                         <div
-                            class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mr-4">
+                            class="animate-spin w-6 h-6 lg:w-8 lg:h-8 border-4 border-primary border-t-transparent rounded-full mr-3 lg:mr-4 flex-shrink-0">
                         </div>
-                        <span class="text-white-dark">Processing data...</span>
+                        <span class="text-white-dark text-sm lg:text-base">Processing data...</span>
                     </div>
                 </div>
 
@@ -158,9 +158,9 @@
                         <div class="mb-5">
                             <h5 class="font-semibold text-lg dark:text-white-light">NAME</h5>
                         </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                             <div>
-                                <h6 class="font-semibold mb-3 dark:text-white-light">Source Values</h6>
+                                <h6 class="font-semibold mb-2 lg:mb-3 text-sm lg:text-base dark:text-white-light">Source Values</h6>
                                 <div class="table-responsive">
                                     <table>
                                         <thead>
@@ -189,28 +189,28 @@
 
                             <div>
                                 <div v-if="results.name && !results.name.error">
-                                    <h6 class="font-semibold mb-3 dark:text-white-light">Cleaned Value</h6>
-                                    <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4 mb-4">
-                                        <p class="font-medium dark:text-white-light">{{ results.name.cleaned_name }}</p>
+                                    <h6 class="font-semibold mb-2 lg:mb-3 text-sm lg:text-base dark:text-white-light">Cleaned Value</h6>
+                                    <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-3 lg:p-4 mb-3 lg:mb-4">
+                                        <p class="font-medium text-sm lg:text-base dark:text-white-light break-words">{{ results.name.cleaned_name }}</p>
                                     </div>
 
-                                    <h6 class="font-semibold mb-2 dark:text-white-light">Confidence Score:</h6>
-                                    <div class="mb-4">
-                                        <span class="badge bg-primary">{{ results.name.confidence_score }}</span>
+                                    <h6 class="font-semibold mb-2 text-sm lg:text-base dark:text-white-light">Confidence Score:</h6>
+                                    <div class="mb-3 lg:mb-4">
+                                        <span class="badge bg-primary text-xs lg:text-sm flex-shrink-0">{{ results.name.confidence_score }}</span>
                                     </div>
 
-                                    <h6 class="font-semibold mb-2 dark:text-white-light">Reasoning:</h6>
-                                    <p class="text-white-dark text-sm">{{ results.name.reasoning }}</p>
+                                    <h6 class="font-semibold mb-2 text-sm lg:text-base dark:text-white-light">Reasoning:</h6>
+                                    <p class="text-white-dark text-xs lg:text-sm leading-relaxed">{{ results.name.reasoning }}</p>
                                 </div>
                                 <div v-else-if="results.name && results.name.error"
-                                    class="bg-danger-light p-4 rounded-lg border border-danger">
-                                    <span class="text-danger">Error: {{ results.name.error }}</span>
+                                    class="bg-danger-light p-3 lg:p-4 rounded-lg border border-danger">
+                                    <span class="text-danger text-sm lg:text-base">Error: {{ results.name.error }}</span>
                                 </div>
                                 <div v-else-if="isProcessingField.name" class="flex items-center gap-2">
                                     <div
-                                        class="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full">
+                                        class="animate-spin w-4 h-4 border-2 border-primary border-t-transparent rounded-full flex-shrink-0">
                                     </div>
-                                    <span class="text-white-dark">Processing NAME...</span>
+                                    <span class="text-white-dark text-sm lg:text-base">Processing NAME...</span>
                                 </div>
                             </div>
                         </div>
@@ -221,9 +221,9 @@
                         <div class="mb-5">
                             <h5 class="font-semibold text-lg dark:text-white-light">DOB</h5>
                         </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                             <div>
-                                <h6 class="font-semibold mb-3 dark:text-white-light">Source Values</h6>
+                                <h6 class="font-semibold mb-2 lg:mb-3 text-sm lg:text-base dark:text-white-light">Source Values</h6>
                                 <div class="table-responsive">
                                     <table>
                                         <thead>
@@ -252,7 +252,7 @@
 
                             <div>
                                 <div v-if="results.dob && !results.dob.error">
-                                    <h6 class="font-semibold mb-3 dark:text-white-light">Cleaned Value</h6>
+                                    <h6 class="font-semibold mb-2 lg:mb-3 text-sm lg:text-base dark:text-white-light">Cleaned Value</h6>
                                     <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4 mb-4">
                                         <p class="font-medium dark:text-white-light">{{ results.dob.cleaned_dob }}</p>
                                     </div>
@@ -284,9 +284,9 @@
                         <div class="mb-5">
                             <h5 class="font-semibold text-lg dark:text-white-light">NRIC</h5>
                         </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                             <div>
-                                <h6 class="font-semibold mb-3 dark:text-white-light">Source Values</h6>
+                                <h6 class="font-semibold mb-2 lg:mb-3 text-sm lg:text-base dark:text-white-light">Source Values</h6>
                                 <div class="table-responsive">
                                     <table>
                                         <thead>
@@ -315,7 +315,7 @@
 
                             <div>
                                 <div v-if="results.nric && !results.nric.error">
-                                    <h6 class="font-semibold mb-3 dark:text-white-light">Cleaned Value</h6>
+                                    <h6 class="font-semibold mb-2 lg:mb-3 text-sm lg:text-base dark:text-white-light">Cleaned Value</h6>
                                     <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4 mb-4">
                                         <p class="font-medium dark:text-white-light">{{ results.nric.cleaned_nric }}</p>
                                     </div>
@@ -347,9 +347,9 @@
                         <div class="mb-5">
                             <h5 class="font-semibold text-lg dark:text-white-light">ADDRESS</h5>
                         </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                             <div>
-                                <h6 class="font-semibold mb-3 dark:text-white-light">Source Values</h6>
+                                <h6 class="font-semibold mb-2 lg:mb-3 text-sm lg:text-base dark:text-white-light">Source Values</h6>
                                 <div class="table-responsive">
                                     <table>
                                         <thead>
@@ -378,7 +378,7 @@
 
                             <div>
                                 <div v-if="results.address && !results.address.error">
-                                    <h6 class="font-semibold mb-3 dark:text-white-light">Cleaned Value</h6>
+                                    <h6 class="font-semibold mb-2 lg:mb-3 text-sm lg:text-base dark:text-white-light">Cleaned Value</h6>
                                     <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4 mb-4">
                                         <p class="font-medium dark:text-white-light">{{ formatAddress(results.address)
                                             }}</p>
@@ -456,8 +456,8 @@
                             </table>
                         </div>
 
-                        <button @click="downloadCSV" class="btn btn-success">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button @click="downloadCSV" class="btn btn-success text-sm lg:text-base min-h-[44px] w-full sm:w-auto">
+                            <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
@@ -878,26 +878,193 @@ export default {
 </script>
 
 <style scoped>
-/* Custom styles for responsive design */
-@media (max-width: 768px) {
-  .w-80 {
-    width: 100%;
-  }
+/* Mobile-first responsive design */
 
-  .flex {
-    flex-direction: column;
-  }
-}
-.data-cleansing-container {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 90vh;
-  overflow-y: scroll;
-
+/* Base mobile styles */
+.table-responsive {
+  @apply overflow-x-auto;
 }
 
+.table-responsive table {
+  @apply min-w-full;
+}
+
+.table-responsive th,
+.table-responsive td {
+  @apply px-2 py-2 text-xs;
+  @apply whitespace-nowrap;
+}
+
+/* Enhanced table responsiveness for mobile */
+@media (max-width: 640px) {
+  .table-responsive {
+    @apply -mx-4;
+    @apply px-4;
+  }
+  
+  .table-responsive table {
+    @apply text-xs;
+  }
+  
+  .table-responsive th,
+  .table-responsive td {
+    @apply px-1 py-1;
+    @apply max-w-[120px];
+    @apply truncate;
+  }
+}
+
+/* Touch device optimizations */
+@media (pointer: coarse) {
+  .btn {
+    @apply min-h-[44px];
+  }
+  
+  .badge {
+    @apply min-h-[32px];
+    @apply px-3;
+  }
+  
+  /* Increase touch targets */
+  input[type="file"] + button {
+    @apply min-h-[48px];
+  }
+}
+
+/* Landscape orientation handling */
+@media (orientation: landscape) and (max-height: 500px) {
+  .min-h-screen {
+    @apply min-h-[100vh];
+  }
+  
+  .lg\:min-h-0 {
+    @apply min-h-0;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .border-dashed {
+    @apply border-solid;
+    @apply border-2;
+  }
+  
+  .text-white-dark {
+    @apply text-gray-800 dark:text-gray-200;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .transition-colors,
+  .animate-spin {
+    @apply transition-none;
+    @apply animate-none;
+  }
+}
+
+/* Typography scaling */
+@media (min-width: 640px) {
+  .table-responsive th,
+  .table-responsive td {
+    @apply px-4 py-3 text-sm;
+  }
+}
+
+@media (min-width: 1024px) {
+  .table-responsive th,
+  .table-responsive td {
+    @apply text-base;
+  }
+}
+
+/* Focus states for accessibility */
+.btn:focus,
+input:focus,
+button:focus {
+  @apply ring-2 ring-primary ring-offset-2;
+  @apply outline-none;
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .table-responsive th,
+  .table-responsive td {
+    @apply border-gray-700;
+  }
+}
+
+/* Hide scrollbars */
 ::-webkit-scrollbar {
-    display: none;
+  display: none;
+}
+
+/* Custom scrollbar for better UX on larger screens */
+@media (min-width: 1024px) {
+  ::-webkit-scrollbar {
+    display: block;
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600;
+    @apply rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+}
+
+/* Loading state improvements */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Improved hover effects */
+@media (hover: hover) {
+  .hover\:border-primary:hover {
+    @apply border-primary;
+    @apply shadow-sm;
+  }
+  
+  .btn:hover {
+    @apply transform;
+    @apply scale-105;
+    @apply transition-transform;
+    @apply duration-150;
+  }
+}
+
+/* Better spacing for mobile */
+@media (max-width: 640px) {
+  .space-y-4 > * + * {
+    @apply mt-3;
+  }
+  
+  .space-y-6 > * + * {
+    @apply mt-4;
+  }
+  
+  .gap-4 {
+    @apply gap-3;
+  }
+  
+  .gap-6 {
+    @apply gap-4;
+  }
 }
 </style>
