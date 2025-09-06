@@ -77,7 +77,7 @@ export const petSitterTrainerConfig = {
 }
 
 export const programAdvisorConfig = {
-  webhookUrl: 'https://workflow.forwen.com/webhook/515c5cfb-da0a-4de8-b1e8-65f3b0cfe5aa/chat',
+  webhookUrl: 'https://workflow.forwen.com/webhook/af4e704c-2db3-48ab-8753-e4716bbdbf3f/chat',
   mode: 'window',
   showWelcomeScreen: false,
   defaultLanguage: 'en',
