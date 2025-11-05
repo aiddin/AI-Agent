@@ -340,7 +340,7 @@ export default {
                 formData.append('file', this.selectedFile)
 
                 const response = await axios.post(
-                    'https://n8n.forwen.com/webhook/c6622b28-df07-4f33-86b0-3233901525e1',
+                    'https://workflow.forwen.com/webhook/ff560528-83ee-437b-9250-e7bddc475445',
                     formData,
                     {
                         headers: {
