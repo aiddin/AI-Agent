@@ -473,7 +473,7 @@ export default {
         name: "https://workflow.forwen.com/webhook/data-cleansing/name",
         dob: "https://workflow.forwen.com/webhook/data-cleansing/dob",
         nric: "https://workflow.forwen.com/webhook/data-cleansing/nric",
-        address: "https://workflow.forwen.com/webhook-test/data-cleansing/address"
+        address: "https://workflow.forwen.com/webhook/data-cleansing/address"
       }
     }
   },
