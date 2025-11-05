@@ -354,7 +354,7 @@ export default {
         };
 
         // Make API call
-        const response = await fetch("https://n8n.forwen.com/webhook/24b3d90f-9f0d-42c9-adf1-4153cc43d3ff", {
+        const response = await fetch("https://workflow.forwen.com/webhook/issue-classification", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

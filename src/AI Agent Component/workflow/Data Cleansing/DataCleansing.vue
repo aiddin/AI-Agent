@@ -508,10 +508,10 @@ export default {
 
       // API endpoints
       apiEndpoints: {
-        name: "https://n8n.forwen.com/webhook/c9ff9dae-6505-44e1-b22f-6ea7cd02d2b1",
-        dob: "https://n8n.forwen.com/webhook/4ec23b06-20fe-4d74-a3c5-b636d2a74446",
-        nric: "https://n8n.forwen.com/webhook/47437be7-6ebc-4633-9f73-b6bb8a277c9d",
-        address: "https://n8n.forwen.com/webhook/e088e87e-215b-4cec-aef4-3d1e3b63ecbb"
+        name: "https://workflow.forwen.com/webhook/data-cleansing/name",
+        dob: "https://workflow.forwen.com/webhook/data-cleansing/dob",
+        nric: "https://workflow.forwen.com/webhook/data-cleansing/nric",
+        address: "https://workflow.forwen.com/webhook-test/data-cleansing/address"
       }
     }
   },
@@ -598,7 +598,7 @@ export default {
         const formData = new FormData()
         formData.append('file', this.imageFile)
 
-        const response = await fetch("https://n8n.forwen.com/webhook/9eb4285c-57bd-484d-b71f-4d915055321a", {
+        const response = await fetch("https://workflow.forwen.com/webhook/data-cleansing/image", {
           method: 'POST',
           body: formData
         })
@@ -901,11 +901,11 @@ export default {
     @apply -mx-4;
     @apply px-4;
   }
-  
+
   .table-responsive table {
     @apply text-xs;
   }
-  
+
   .table-responsive th,
   .table-responsive td {
     @apply px-1 py-1;
@@ -919,12 +919,12 @@ export default {
   .btn {
     @apply min-h-[44px];
   }
-  
+
   .badge {
     @apply min-h-[32px];
     @apply px-3;
   }
-  
+
   /* Increase touch targets */
   input[type="file"] + button {
     @apply min-h-[48px];
@@ -936,7 +936,7 @@ export default {
   .min-h-screen {
     @apply min-h-[100vh];
   }
-  
+
   .lg\:min-h-0 {
     @apply min-h-0;
   }
@@ -948,7 +948,7 @@ export default {
     @apply border-solid;
     @apply border-2;
   }
-  
+
   .text-white-dark {
     @apply text-gray-800 dark:text-gray-200;
   }
@@ -1005,16 +1005,16 @@ button:focus {
     display: block;
     width: 6px;
   }
-  
+
   ::-webkit-scrollbar-track {
     @apply bg-gray-100 dark:bg-gray-800;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     @apply bg-gray-300 dark:bg-gray-600;
     @apply rounded-full;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-gray-400 dark:bg-gray-500;
   }
@@ -1040,7 +1040,7 @@ button:focus {
     @apply border-primary;
     @apply shadow-sm;
   }
-  
+
   .btn:hover {
     @apply transform;
     @apply scale-105;
@@ -1054,15 +1054,15 @@ button:focus {
   .space-y-4 > * + * {
     @apply mt-3;
   }
-  
+
   .space-y-6 > * + * {
     @apply mt-4;
   }
-  
+
   .gap-4 {
     @apply gap-3;
   }
-  
+
   .gap-6 {
     @apply gap-4;
   }

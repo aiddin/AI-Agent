@@ -204,7 +204,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Mobile Sticky Button -->
         <div v-if="uploaded" class="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-white dark:bg-[#0e1726] border-t border-[#e0e6ed] dark:border-[#1b2e4b] z-10">
             <button @click="backtoHome()" class="btn btn-secondary w-full">
@@ -270,7 +270,7 @@ export default {
 
                 const compressedFile = await imageCompression(file, options)
                 console.log(`Compressed file size: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`)
-                
+
                 return compressedFile
             } catch (error) {
                 console.error('Error compressing image:', error)
@@ -293,11 +293,11 @@ export default {
                 const response = await fetch(image.webPath)
                 const blob = await response.blob()
                 let file = new File([blob], 'photo.jpg', { type: blob.type })
-                
+
                 // Compress the image if it's too large
                 file = await this.compressImage(file)
                 this.file = file
-                
+
                 // Update image URL with compressed version for preview
                 if (file !== blob) {
                     this.imageUrl = URL.createObjectURL(file)
@@ -318,7 +318,7 @@ export default {
             formData.append('img', this.file)
 
             try {
-                const response = await fetch('https://n8n.forwen.com/webhook/abc30272-a718-4474-b415-680d561be61e', {
+                const response = await fetch('https://workflow.forwen.com/webhook/receipt', {
                     method: 'POST',
                     body: formData,
                 })
@@ -379,29 +379,29 @@ export default {
         border-radius: 0.75rem;
         margin-bottom: 1rem;
     }
-    
+
     /* Ensure proper spacing on mobile */
     .space-y-4 > * + * {
         margin-top: 1rem;
     }
-    
+
     /* Optimize button sizes for mobile */
     .btn {
         min-height: 44px; /* Minimum touch target size */
         font-size: 0.875rem;
     }
-    
+
     /* Better text readability on mobile */
     h1 {
         font-size: 1.5rem;
         line-height: 1.4;
     }
-    
+
     h2 {
         font-size: 1.25rem;
         line-height: 1.4;
     }
-    
+
     h3 {
         font-size: 1.125rem;
         line-height: 1.4;
@@ -413,27 +413,27 @@ export default {
     .grid-cols-2 {
         grid-template-columns: repeat(1, minmax(0, 1fr));
     }
-    
+
     /* Stack summary cards on very small screens */
     .sm\:grid-cols-2 {
         grid-template-columns: repeat(1, minmax(0, 1fr));
     }
-    
+
     /* Optimize item detail grids for small screens */
     .lg\:grid-cols-4 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    
+
     /* Reduce padding on small screens */
     .p-4 {
         padding: 0.75rem;
     }
-    
+
     /* Optimize text sizes for small screens */
     .text-xl {
         font-size: 1.125rem;
     }
-    
+
     .text-2xl {
         font-size: 1.25rem;
     }
@@ -468,7 +468,7 @@ export default {
         transform: none;
         box-shadow: none;
     }
-    
+
     .btn {
         min-height: 48px; /* Larger touch targets for touch devices */
     }
@@ -479,7 +479,7 @@ export default {
     .upload-area {
         border-color: rgba(255, 255, 255, 0.1);
     }
-    
+
     .upload-area:hover {
         border-color: var(--primary);
         background-color: rgba(var(--primary-rgb), 0.1);
@@ -491,7 +491,7 @@ export default {
     .min-h-screen {
         min-height: 100vh;
     }
-    
+
     .lg\:min-h-0 {
         min-height: 100vh;
     }
@@ -509,7 +509,7 @@ export default {
     .hidden-mobile-after-upload {
         display: none !important;
     }
-    
+
     /* Add bottom padding to prevent content from being hidden behind sticky button */
     .flex-1.p-4.lg\\:p-6 {
         padding-bottom: 80px;
