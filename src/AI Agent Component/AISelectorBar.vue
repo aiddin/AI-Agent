@@ -115,6 +115,12 @@
                         <span class="category-tag finance">Finance</span>
 
           </div>
+          <div class="card" @click="selectAgentAndCloseDrawer('document-chat')"
+            :class="{ active: selectedAgent === 'document-chat' }">
+            Document Chat
+            <span class="card-description">Upload documents and chat with AI about their content</span>
+            <span class="category-tag misc">Misc</span>
+          </div>
         </div>
       </div>
     </div>

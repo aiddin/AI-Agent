@@ -6,7 +6,12 @@
     "scripts": {
         "dev": "vite",
         "build": "vue-tsc --noEmit && vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "test": "playwright test",
+        "test:ui": "playwright test --ui",
+        "test:headed": "playwright test --headed",
+        "test:debug": "playwright test --debug",
+        "test:report": "playwright show-report"
     },
     "engines": {
         "node": "22.0.0"
@@ -85,6 +90,7 @@
     "devDependencies": {
         "@capacitor/cli": "^5.7.8",
         "@intlify/unplugin-vue-i18n": "^4.0.0",
+        "@playwright/test": "^1.56.1",
         "@rollup/plugin-alias": "^5.1.0",
         "@tailwindcss/forms": "^0.5.3",
         "@tailwindcss/typography": "^0.5.7",
