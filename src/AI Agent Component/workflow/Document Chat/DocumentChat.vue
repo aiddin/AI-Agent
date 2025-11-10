@@ -273,11 +273,28 @@
             </div>
 
             <!-- Chat Area -->
-            <div v-else class="flex-1 flex flex-col overflow-hidden">
+            <div v-else class="flex-1 flex flex-col overflow-hidden h-full">
                 <!-- Chat Messages -->
-                <div ref="chatContainer" class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4">
-                    <!-- Welcome Message (only when no messages) -->
-                    <div v-if="messages.length === 0" class="space-y-4">
+                <div ref="chatContainer" class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4 min-h-0 max-h-[calc(100vh-150px)]">
+                    <!-- Loading/Analyzing State -->
+                    <div v-if="isProcessing && messages.length === 0" class="space-y-4">
+                        <div class="flex gap-3">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+                                    <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4">
+                                    <p class="text-sm dark:text-white-light">Analyzing your document...</p>
+                                    <p class="text-xs text-white-dark mt-2">Please wait while I process the content</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Welcome Message (only when not processing and no messages) -->
+                    <div v-else-if="messages.length === 0" class="space-y-4">
                         <div class="flex gap-3">
                             <div class="flex-shrink-0">
                                 <div
@@ -348,13 +365,14 @@
                         </div>
                     </div>
 
-                    <!-- Suggested Questions (shown when available) -->
-                    <div v-if="suggestedQuestions.length > 0 && !isTyping" class="space-y-3">
+                    <!-- Suggested Questions (shown when available and not processing) -->
+                    <div v-if="suggestedQuestions.length > 0 && !isTyping && !isProcessing" class="space-y-3">
                         <p class="text-xs text-white-dark font-medium">Suggested questions:</p>
                         <div class="grid grid-cols-1 gap-2">
                             <button v-for="(question, index) in suggestedQuestions" :key="index"
                                 @click="askQuestion(question)"
-                                class="text-left p-3 bg-white dark:bg-[#0e1726] border border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg hover:border-primary hover:shadow-md transition-all text-sm dark:text-white-light">
+                                class="text-left p-3 bg-white dark:bg-[#0e1726] border border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg hover:border-primary hover:shadow-md transition-all text-sm dark:text-white-light"
+                                :disabled="isProcessing">
                                 {{ question }}
                             </button>
                         </div>
@@ -656,24 +674,6 @@ const loadDocument = async (file) => {
         isTyping.value = false // Ensure typing is false when loading
 
         console.log('Loading document:', file.name, 'ID:', file.id)
-
-        // Check if document needs processing first
-        // Documents loaded from database might not be processed yet
-        if (!file.processed) {
-            console.log('Document not processed yet, processing now...')
-            try {
-                const processResponse = await processDocument(file.id)
-                if (processResponse.success) {
-                    file.processed = true
-                    console.log('Document processed successfully')
-                } else {
-                    console.warn('Document processing returned success: false')
-                }
-            } catch (error) {
-                console.error('Document processing failed:', error)
-                // Continue anyway - might already be processed
-            }
-        }
 
         // Initialize chat session for the selected document
         const chatResponse = await initializeChat(file.id)
