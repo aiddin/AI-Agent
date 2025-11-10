@@ -20,7 +20,8 @@
                         <p class="text-sm text-danger">{{ errorMessage }}</p>
                         <button @click="errorMessage = ''" class="ml-auto text-danger hover:text-danger-dark">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
@@ -55,7 +56,8 @@
                     <div class="panel">
                         <div class="flex items-start justify-between mb-3">
                             <h5 class="font-semibold text-base dark:text-white-light">Current Document</h5>
-                            <button @click="removeDocument" class="text-danger hover:text-danger-dark transition-colors">
+                            <button @click="removeDocument"
+                                class="text-danger hover:text-danger-dark transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -106,14 +108,17 @@
                     <!-- Loading State for Files -->
                     <div v-if="isLoadingFiles" class="flex items-center justify-center py-8">
                         <div class="text-center">
-                            <div class="animate-spin w-8 h-8 border-3 border-primary border-t-transparent rounded-full mx-auto mb-3"></div>
+                            <div
+                                class="animate-spin w-8 h-8 border-3 border-primary border-t-transparent rounded-full mx-auto mb-3">
+                            </div>
                             <p class="text-sm text-white-dark">Loading documents...</p>
                         </div>
                     </div>
 
                     <!-- Empty State -->
                     <div v-else-if="uploadedFiles.length === 0" class="py-8 text-center">
-                        <svg class="w-12 h-12 mx-auto text-white-dark mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-12 h-12 mx-auto text-white-dark mb-3" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
@@ -142,10 +147,10 @@
         </div>
 
         <!-- Middle - Document Preview -->
-        <div class="flex-1 flex flex-col bg-[#f9fafb] dark:bg-[#0e1726] border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-hidden">
+        <div
+            class="flex-1 flex flex-col bg-[#f9fafb] dark:bg-[#0e1726] border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-hidden">
             <!-- Empty State -->
-            <div v-if="!currentDocument"
-                class="flex-1 flex items-center justify-center p-4 lg:p-6 overflow-y-auto">
+            <div v-if="!currentDocument" class="flex-1 flex items-center justify-center p-4 lg:p-6 overflow-y-auto">
                 <div class="text-center max-w-xl">
                     <div class="mb-6">
                         <div class="text-primary mb-4">
@@ -186,24 +191,28 @@
                 </div>
 
                 <!-- Preview Content -->
-                <div class="flex-1 overflow-y-auto p-6 bg-white dark:bg-[#0e1726]">
+                <div class="flex-1 overflow-y-auto p-6 bg-white dark:bg-[#0e1726] max-h-[calc(100vh-120px)]">
                     <!-- Loading Preview -->
                     <div v-if="isProcessing" class="flex items-center justify-center h-full">
                         <div class="text-center">
-                            <div class="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                            <div
+                                class="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4">
+                            </div>
                             <p class="text-lg font-medium dark:text-white-light mb-2">Loading document preview...</p>
                             <p class="text-sm text-white-dark">Please wait while we prepare your document</p>
                         </div>
                     </div>
 
                     <!-- Image Preview -->
-                    <div v-else-if="isImage(currentDocument.name)" class="flex items-center justify-center h-full">
+                    <div v-else-if="isImage(currentDocument.name)"
+                        class="flex items-center justify-center min-h-[400px]">
                         <img :src="documentPreviewUrl" :alt="currentDocument.name"
-                            class="max-w-full max-h-full object-contain rounded-lg shadow-lg" />
+                            class="max-w-full h-auto object-contain rounded-lg shadow-lg" />
                     </div>
 
                     <!-- Audio Preview -->
-                    <div v-else-if="isAudio(currentDocument.name)" class="flex items-center justify-center h-full">
+                    <div v-else-if="isAudio(currentDocument.name)"
+                        class="flex items-center justify-center min-h-[400px]">
                         <div class="w-full max-w-2xl">
                             <div class="text-primary mb-6 text-center">
                                 <svg class="w-24 h-24 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,7 +228,8 @@
                     </div>
 
                     <!-- Video Preview -->
-                    <div v-else-if="isVideo(currentDocument.name)" class="flex items-center justify-center h-full">
+                    <div v-else-if="isVideo(currentDocument.name)"
+                        class="flex items-center justify-center min-h-[400px]">
                         <div class="w-full max-w-4xl">
                             <video controls class="w-full rounded-lg shadow-lg" :src="documentPreviewUrl">
                                 Your browser does not support the video element.
@@ -229,13 +239,14 @@
                     </div>
 
                     <!-- PDF Preview -->
-                    <div v-else-if="isPDF(currentDocument.name)" class="h-full">
+                    <div v-else-if="isPDF(currentDocument.name)" class="min-h-[600px] h-[800px]">
                         <iframe :src="documentPreviewUrl" class="w-full h-full rounded-lg border-0"></iframe>
                     </div>
 
                     <!-- Text Preview -->
                     <div v-else-if="isText(currentDocument.name)" class="prose dark:prose-invert max-w-none">
-                        <pre class="whitespace-pre-wrap font-mono text-sm dark:text-white-light bg-[#f9fafb] dark:bg-[#1b2e4b] p-4 rounded-lg">{{ documentContent }}</pre>
+                        <pre
+                            class="whitespace-pre-wrap font-mono text-sm dark:text-white-light bg-[#f9fafb] dark:bg-[#1b2e4b] p-4 rounded-lg">{{ documentContent }}</pre>
                     </div>
 
                     <!-- DOC/Other Files Preview Placeholder -->
@@ -247,9 +258,11 @@
                                         d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
                             </div>
-                            <h4 class="text-lg font-semibold dark:text-white-light mb-2">{{ getFileType(currentDocument.name) }} Document</h4>
+                            <h4 class="text-lg font-semibold dark:text-white-light mb-2">{{
+                                getFileType(currentDocument.name) }} Document</h4>
                             <p class="text-sm text-white-dark mb-4">{{ currentDocument.name }}</p>
-                            <p class="text-xs text-white-dark">Preview not available for this file type.<br/>Use the chat to ask questions about this document.</p>
+                            <p class="text-xs text-white-dark">Preview not available for this file type.<br />Use the
+                                chat to ask questions about this document.</p>
                         </div>
                     </div>
                 </div>
@@ -275,13 +288,17 @@
             <!-- Chat Area -->
             <div v-else class="flex-1 flex flex-col overflow-hidden h-full">
                 <!-- Chat Messages -->
-                <div ref="chatContainer" class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4 min-h-0 max-h-[calc(100vh-150px)]">
+                <div ref="chatContainer"
+                    class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4 min-h-0 max-h-[calc(100vh-150px)]">
                     <!-- Loading/Analyzing State -->
                     <div v-if="isProcessing && messages.length === 0" class="space-y-4">
                         <div class="flex gap-3">
                             <div class="flex-shrink-0">
-                                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
-                                    <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                                <div
+                                    class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+                                    <div
+                                        class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full">
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex-1">
@@ -340,8 +357,7 @@
                                 <!-- Assistant messages with markdown rendering -->
                                 <div v-else
                                     class="text-sm prose prose-sm max-w-none dark:prose-invert prose-pre:bg-gray-800 prose-pre:text-gray-100"
-                                    :class="'dark:text-white-light'"
-                                    v-html="renderMarkdown(message.content)">
+                                    :class="'dark:text-white-light'" v-html="renderMarkdown(message.content)">
                                 </div>
                             </div>
                             <p class="text-xs text-white-dark mt-1 px-1">{{ message.timestamp }}</p>
@@ -389,13 +405,8 @@
                 <!-- Chat Input -->
                 <div class="border-t border-[#e0e6ed] dark:border-[#1b2e4b] p-4 bg-white dark:bg-[#0e1726]">
                     <form @submit.prevent="sendMessage" class="flex gap-2">
-                        <input
-                            v-model="currentMessage"
-                            type="text"
-                            placeholder="Type your question..."
-                            class="form-input flex-1"
-                            :disabled="inputDisabled"
-                        />
+                        <input v-model="currentMessage" type="text" placeholder="Type your question..."
+                            class="form-input flex-1" :disabled="inputDisabled" />
                         <button type="submit"
                             class="btn btn-primary flex-shrink-0 px-4 flex items-center justify-center"
                             :disabled="!currentMessage.trim() || inputDisabled">
@@ -439,7 +450,7 @@ const md = new MarkdownIt({
                 return '<pre class="hljs"><code>' +
                     hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
                     '</code></pre>'
-            } catch (__) {}
+            } catch (__) { }
         }
         return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>'
     }
@@ -912,23 +923,37 @@ const formatFileSize = (bytes) => {
     color: inherit;
 }
 
-.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
     color: inherit;
     font-weight: 600;
     margin-top: 1em;
     margin-bottom: 0.5em;
 }
 
-.prose h1 { font-size: 1.5em; }
-.prose h2 { font-size: 1.3em; }
-.prose h3 { font-size: 1.1em; }
+.prose h1 {
+    font-size: 1.5em;
+}
+
+.prose h2 {
+    font-size: 1.3em;
+}
+
+.prose h3 {
+    font-size: 1.1em;
+}
 
 .prose p {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 }
 
-.prose ul, .prose ol {
+.prose ul,
+.prose ol {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
     padding-left: 1.5em;
@@ -1010,7 +1035,8 @@ const formatFileSize = (bytes) => {
     margin-bottom: 0.5em;
 }
 
-.prose th, .prose td {
+.prose th,
+.prose td {
     border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.5em;
     text-align: left;
@@ -1030,7 +1056,8 @@ const formatFileSize = (bytes) => {
     border-left-color: rgba(255, 255, 255, 0.2);
 }
 
-.dark .prose th, .dark .prose td {
+.dark .prose th,
+.dark .prose td {
     border-color: rgba(255, 255, 255, 0.1);
 }
 
