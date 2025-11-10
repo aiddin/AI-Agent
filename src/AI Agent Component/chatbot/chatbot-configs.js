@@ -77,7 +77,7 @@ export const petSitterTrainerConfig = {
 }
 
 export const programAdvisorConfig = {
-  webhookUrl: 'https://workflow.forwen.com/webhook/af4e704c-2db3-48ab-8753-e4716bbdbf3f/chat',
+  webhookUrl: 'https://workflow.forwen.com/webhook/f19be4b4-5db7-45b4-ba57-d055bfc69ea9/chat',
   mode: 'window',
   showWelcomeScreen: false,
   defaultLanguage: 'en',
@@ -91,8 +91,8 @@ export const programAdvisorConfig = {
   ],
   i18n: {
     en: {
-      title: 'Program Advisor',
-      subtitle: " Share your academic results, and I'll help recommend the best program for you.",
+      title: 'AI Assistant',
+      subtitle: " AI assistant to help you with managing your appointments and medical terms.",
       getStarted: 'Start',
       inputPlaceholder: 'Type your message...',
       footer: ''
