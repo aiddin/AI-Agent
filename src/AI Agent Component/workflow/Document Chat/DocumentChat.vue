@@ -101,9 +101,28 @@
                 </div>
 
                 <!-- Your Files Section -->
-                <div v-if="uploadedFiles.length > 0" class="panel">
+                <div class="panel">
                     <h5 class="font-semibold text-base dark:text-white-light mb-3">Your Files</h5>
-                    <div class="space-y-2 max-h-[300px] overflow-y-auto">
+
+                    <!-- Loading State for Files -->
+                    <div v-if="isLoadingFiles" class="flex items-center justify-center py-8">
+                        <div class="text-center">
+                            <div class="animate-spin w-8 h-8 border-3 border-primary border-t-transparent rounded-full mx-auto mb-3"></div>
+                            <p class="text-sm text-white-dark">Loading documents...</p>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div v-else-if="uploadedFiles.length === 0" class="py-8 text-center">
+                        <svg class="w-12 h-12 mx-auto text-white-dark mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p class="text-sm text-white-dark">No documents uploaded yet</p>
+                    </div>
+
+                    <!-- Files List -->
+                    <div v-else class="space-y-2 max-h-[300px] overflow-y-auto">
                         <div v-for="file in uploadedFiles" :key="file.id" @click="loadDocument(file)"
                             class="flex items-center gap-3 p-3 bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg hover:bg-[#e0e6ed] dark:hover:bg-[#253b5c] cursor-pointer transition-colors"
                             :class="{ 'ring-2 ring-primary': currentDocument && currentDocument.id === file.id }">
@@ -171,8 +190,17 @@
 
                 <!-- Preview Content -->
                 <div class="flex-1 overflow-y-auto p-6 bg-white dark:bg-[#0e1726]">
+                    <!-- Loading Preview -->
+                    <div v-if="isProcessing" class="flex items-center justify-center h-full">
+                        <div class="text-center">
+                            <div class="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                            <p class="text-lg font-medium dark:text-white-light mb-2">Loading document preview...</p>
+                            <p class="text-sm text-white-dark">Please wait while we prepare your document</p>
+                        </div>
+                    </div>
+
                     <!-- Image Preview -->
-                    <div v-if="isImage(currentDocument.name)" class="flex items-center justify-center h-full">
+                    <div v-else-if="isImage(currentDocument.name)" class="flex items-center justify-center h-full">
                         <img :src="documentPreviewUrl" :alt="currentDocument.name"
                             class="max-w-full max-h-full object-contain rounded-lg shadow-lg" />
                     </div>
@@ -390,6 +418,7 @@ const currentDocument = ref<DocumentWithFile | null>(null)
 const uploadedFiles = ref<DocumentWithFile[]>([])
 const isProcessing = ref(false)
 const isTyping = ref(false)
+const isLoadingFiles = ref(false)
 const messages = ref<ChatMessage[]>([])
 const currentMessage = ref('')
 const chatContainer = ref<HTMLElement | null>(null)
@@ -593,6 +622,7 @@ const generateSuggestedQuestions = (fileName) => {
 
 // Load all documents on component mount
 onMounted(async () => {
+    isLoadingFiles.value = true
     try {
         console.log('Loading documents from database...')
         const docs = await getAllDocuments()
@@ -606,6 +636,8 @@ onMounted(async () => {
     } catch (error) {
         console.error('Error loading documents from database:', error)
         errorMessage.value = 'Failed to load documents from database'
+    } finally {
+        isLoadingFiles.value = false
     }
 })
 
@@ -689,8 +721,8 @@ const loadDocument = async (file) => {
         }
 
         // Load file preview if the file object exists (either from upload or from database)
-        const fileToPreview = currentDocument.value.file || file.file
-        if (fileToPreview) {
+        const fileToPreview = currentDocument.value?.file || file.file
+        if (fileToPreview && currentDocument.value) {
             const fileName = currentDocument.value.name || file.name
 
             // Reload preview for images
