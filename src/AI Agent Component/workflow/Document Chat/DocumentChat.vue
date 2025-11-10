@@ -10,6 +10,22 @@
                     <p class="text-sm lg:text-base text-white-dark mt-1">Upload documents and ask questions</p>
                 </div>
 
+                <!-- Error Message -->
+                <div v-if="errorMessage" class="panel bg-danger-light">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-5 h-5 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-sm text-danger">{{ errorMessage }}</p>
+                        <button @click="errorMessage = ''" class="ml-auto text-danger hover:text-danger-dark">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Upload Section -->
                 <div class="panel" v-if="!currentDocument">
                     <div class="mb-4">
@@ -235,7 +251,7 @@
             <div v-else class="flex-1 flex flex-col overflow-hidden">
                 <!-- Chat Messages -->
                 <div ref="chatContainer" class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4">
-                    <!-- Welcome Message -->
+                    <!-- Welcome Message (only when no messages) -->
                     <div v-if="messages.length === 0" class="space-y-4">
                         <div class="flex gap-3">
                             <div class="flex-shrink-0">
@@ -251,18 +267,6 @@
                                 <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4">
                                     <p class="text-sm dark:text-white-light">{{ welcomeMessage }}</p>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Example Prompts -->
-                        <div v-if="suggestedQuestions.length > 0" class="space-y-3">
-                            <p class="text-xs text-white-dark font-medium px-11">Example prompts</p>
-                            <div class="grid grid-cols-1 gap-2 px-11">
-                                <button v-for="(question, index) in suggestedQuestions" :key="index"
-                                    @click="askQuestion(question)"
-                                    class="text-left p-3 bg-white dark:bg-[#0e1726] border border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg hover:border-primary transition-colors text-sm dark:text-white-light">
-                                    {{ question }}
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -318,16 +322,33 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Suggested Questions (shown when available) -->
+                    <div v-if="suggestedQuestions.length > 0 && !isTyping" class="space-y-3">
+                        <p class="text-xs text-white-dark font-medium">Suggested questions:</p>
+                        <div class="grid grid-cols-1 gap-2">
+                            <button v-for="(question, index) in suggestedQuestions" :key="index"
+                                @click="askQuestion(question)"
+                                class="text-left p-3 bg-white dark:bg-[#0e1726] border border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg hover:border-primary hover:shadow-md transition-all text-sm dark:text-white-light">
+                                {{ question }}
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Chat Input -->
                 <div class="border-t border-[#e0e6ed] dark:border-[#1b2e4b] p-4 bg-white dark:bg-[#0e1726]">
                     <form @submit.prevent="sendMessage" class="flex gap-2">
-                        <input v-model="currentMessage" type="text" placeholder="Type your question..."
-                            class="form-input flex-1" :disabled="isTyping || isProcessing" />
+                        <input
+                            v-model="currentMessage"
+                            type="text"
+                            placeholder="Type your question..."
+                            class="form-input flex-1"
+                            :disabled="inputDisabled"
+                        />
                         <button type="submit"
                             class="btn btn-primary flex-shrink-0 px-4 flex items-center justify-center"
-                            :disabled="!currentMessage.trim() || isTyping || isProcessing">
+                            :disabled="!currentMessage.trim() || inputDisabled">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -340,20 +361,48 @@
     </div>
 </template>
 
-<script setup>
-import { ref, nextTick, computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted, watch } from 'vue'
+import {
+    getAllDocuments,
+    uploadDocument,
+    processDocument,
+    initializeChat,
+    sendChatMessage,
+    getDocumentById,
+    type Document,
+    type ChatResponse
+} from '@/api/documentChatApi'
+
+// Types
+interface DocumentWithFile extends Document {
+    file?: File
+}
+
+interface ChatMessage {
+    role: 'user' | 'assistant'
+    content: string
+    timestamp: string
+}
 
 // State
-const currentDocument = ref(null)
-const uploadedFiles = ref([])
+const currentDocument = ref<DocumentWithFile | null>(null)
+const uploadedFiles = ref<DocumentWithFile[]>([])
 const isProcessing = ref(false)
 const isTyping = ref(false)
-const messages = ref([])
+const messages = ref<ChatMessage[]>([])
 const currentMessage = ref('')
-const chatContainer = ref(null)
-const suggestedQuestions = ref([])
+const chatContainer = ref<HTMLElement | null>(null)
+const suggestedQuestions = ref<string[]>([])
 const documentPreviewUrl = ref('')
 const documentContent = ref('')
+const sessionId = ref('')
+const errorMessage = ref('')
+
+// Debug watchers
+watch([isProcessing, isTyping], ([processing, typing]) => {
+    console.log('DocumentChat State:', { isProcessing: processing, isTyping: typing, hasDocument: !!currentDocument.value, hasSession: !!sessionId.value })
+})
 
 // Computed
 const welcomeMessage = computed(() => {
@@ -361,6 +410,12 @@ const welcomeMessage = computed(() => {
         return `I've analyzed "${currentDocument.value.name}". What would you like to explore in this document?`
     }
     return 'Hello! Upload a document and I\'ll help you understand its content.'
+})
+
+const inputDisabled = computed(() => {
+    const disabled = isTyping.value || isProcessing.value
+    console.log('Input disabled:', disabled, { isTyping: isTyping.value, isProcessing: isProcessing.value })
+    return disabled
 })
 
 // Helper functions for file type detection
@@ -414,78 +469,106 @@ const getFileType = (filename) => {
 const handleFileUpload = async (event) => {
     const file = event.target.files[0]
     if (file) {
-        await processDocument(file)
+        await processDocumentFile(file)
     }
 }
 
 const handleDrop = async (event) => {
     const file = event.dataTransfer.files[0]
     if (file) {
-        await processDocument(file)
+        await processDocumentFile(file)
     }
 }
 
-const processDocument = async (file) => {
-    // Mock processing
-    isProcessing.value = true
-    currentDocument.value = {
-        id: Date.now(),
-        name: file.name,
-        size: file.size,
-        processed: false,
-        file: file
-    }
+const processDocumentFile = async (file) => {
+    try {
+        isProcessing.value = true
+        isTyping.value = false
+        errorMessage.value = ''
 
-    // Generate preview for images
-    if (isImage(file.name)) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-            documentPreviewUrl.value = e.target.result
+        // Step 1: Upload the document
+        const uploadResponse = await uploadDocument(file)
+        const documentId = uploadResponse.document_id
+
+        // Set current document with the uploaded document ID
+        currentDocument.value = {
+            id: documentId,
+            name: file.name,
+            size: file.size,
+            processed: false,
+            file: file
         }
-        reader.readAsDataURL(file)
-    }
 
-    // Generate preview for audio files
-    if (isAudio(file.name)) {
-        const url = URL.createObjectURL(file)
-        documentPreviewUrl.value = url
-    }
-
-    // Generate preview for video files
-    if (isVideo(file.name)) {
-        const url = URL.createObjectURL(file)
-        documentPreviewUrl.value = url
-    }
-
-    // Generate preview for PDF files
-    if (isPDF(file.name)) {
-        const url = URL.createObjectURL(file)
-        documentPreviewUrl.value = url
-    }
-
-    // Generate preview for text files
-    if (isText(file.name)) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-            documentContent.value = e.target.result
+        // Generate preview for images
+        if (isImage(file.name)) {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                if (e.target?.result) {
+                    documentPreviewUrl.value = e.target.result as string
+                }
+            }
+            reader.readAsDataURL(file)
         }
-        reader.readAsText(file)
+
+        // Generate preview for audio files
+        if (isAudio(file.name)) {
+            const url = URL.createObjectURL(file)
+            documentPreviewUrl.value = url
+        }
+
+        // Generate preview for video files
+        if (isVideo(file.name)) {
+            const url = URL.createObjectURL(file)
+            documentPreviewUrl.value = url
+        }
+
+        // Generate preview for PDF files
+        if (isPDF(file.name)) {
+            const url = URL.createObjectURL(file)
+            documentPreviewUrl.value = url
+        }
+
+        // Generate preview for text files
+        if (isText(file.name)) {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                if (e.target?.result) {
+                    documentContent.value = e.target.result as string
+                }
+            }
+            reader.readAsText(file)
+        }
+
+        // Step 2: Process the document
+        const processResponse = await processDocument(documentId)
+
+        if (processResponse.success) {
+            currentDocument.value.processed = true
+
+            // Step 3: Initialize chat session
+            const chatResponse = await initializeChat(documentId)
+            sessionId.value = chatResponse.sessionId
+
+            // Add to uploaded files
+            uploadedFiles.value.push({ ...currentDocument.value })
+
+            // Use suggested questions from the API response
+            suggestedQuestions.value = chatResponse.suggested_questions || []
+
+            // Reset messages to show welcome message from computed property
+            messages.value = []
+
+            setTimeout(() => scrollToBottom(), 0)
+        } else {
+            throw new Error('Document processing failed')
+        }
+    } catch (error) {
+        console.error('Error processing document:', error)
+        errorMessage.value = 'Failed to process document. Please try again.'
+        currentDocument.value = null
+    } finally {
+        isProcessing.value = false
     }
-
-    // Simulate AI processing
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    currentDocument.value.processed = true
-    isProcessing.value = false
-
-    // Add to uploaded files
-    uploadedFiles.value.push({ ...currentDocument.value })
-
-    // Generate mock suggested questions based on file type
-    generateSuggestedQuestions(file.name)
-
-    // Reset messages for new document
-    messages.value = []
 }
 
 const generateSuggestedQuestions = (fileName) => {
@@ -508,103 +591,217 @@ const generateSuggestedQuestions = (fileName) => {
     }
 }
 
+// Load all documents on component mount
+onMounted(async () => {
+    try {
+        console.log('Loading documents from database...')
+        const docs = await getAllDocuments()
+        uploadedFiles.value = docs.map(doc => ({
+            ...doc,
+            // Keep the processed status from the API, or assume false if not provided
+            processed: doc.processed !== undefined ? doc.processed : false
+        }))
+        console.log(`Loaded ${uploadedFiles.value.length} documents from database`)
+        console.log('Documents:', uploadedFiles.value.map(d => ({ id: d.id, name: d.name, processed: d.processed })))
+    } catch (error) {
+        console.error('Error loading documents from database:', error)
+        errorMessage.value = 'Failed to load documents from database'
+    }
+})
+
 const removeDocument = () => {
     currentDocument.value = null
     messages.value = []
     suggestedQuestions.value = []
+    sessionId.value = ''
+    documentPreviewUrl.value = ''
+    documentContent.value = ''
 }
 
-const loadDocument = (file) => {
-    currentDocument.value = file
-    messages.value = []
-    generateSuggestedQuestions(file.name)
+const loadDocument = async (file) => {
+    try {
+        currentDocument.value = file
+        messages.value = []
+        errorMessage.value = ''
+        isProcessing.value = true
+        isTyping.value = false // Ensure typing is false when loading
 
-    // Reload preview for images
-    if (isImage(file.name) && file.file) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-            documentPreviewUrl.value = e.target.result
+        console.log('Loading document:', file.name, 'ID:', file.id)
+
+        // Check if document needs processing first
+        // Documents loaded from database might not be processed yet
+        if (!file.processed) {
+            console.log('Document not processed yet, processing now...')
+            try {
+                const processResponse = await processDocument(file.id)
+                if (processResponse.success) {
+                    file.processed = true
+                    console.log('Document processed successfully')
+                } else {
+                    console.warn('Document processing returned success: false')
+                }
+            } catch (error) {
+                console.error('Document processing failed:', error)
+                // Continue anyway - might already be processed
+            }
         }
-        reader.readAsDataURL(file.file)
-    }
 
-    // Reload preview for audio files
-    if (isAudio(file.name) && file.file) {
-        const url = URL.createObjectURL(file.file)
-        documentPreviewUrl.value = url
-    }
+        // Initialize chat session for the selected document
+        const chatResponse = await initializeChat(file.id)
+        sessionId.value = chatResponse.sessionId
 
-    // Reload preview for video files
-    if (isVideo(file.name) && file.file) {
-        const url = URL.createObjectURL(file.file)
-        documentPreviewUrl.value = url
-    }
+        console.log('Chat session initialized:', chatResponse.sessionId)
 
-    // Reload preview for PDF files
-    if (isPDF(file.name) && file.file) {
-        const url = URL.createObjectURL(file.file)
-        documentPreviewUrl.value = url
-    }
+        // Use suggested questions from the API response
+        suggestedQuestions.value = chatResponse.suggested_questions || []
 
-    // Reload preview for text files
-    if (isText(file.name) && file.file) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-            documentContent.value = e.target.result
+        // Messages are already reset to empty array at the start of this function
+        // The welcome message will be shown via the welcomeMessage computed property
+
+        setTimeout(() => scrollToBottom(), 0)
+
+        // Fetch the document file from database if file object doesn't exist
+        if (!file.file && file.id) {
+            try {
+                console.log('Fetching document file from database...')
+                const { blob, fileName, mimeType } = await getDocumentById(file.id)
+
+                // Create a File object from the blob
+                const fetchedFile = new File([blob], fileName, { type: mimeType })
+
+                // Update the current document with the file object
+                currentDocument.value = {
+                    ...file,
+                    file: fetchedFile
+                }
+
+                // Update the uploaded files list as well
+                const fileIndex = uploadedFiles.value.findIndex(f => f.id === file.id)
+                if (fileIndex !== -1) {
+                    uploadedFiles.value[fileIndex].file = fetchedFile
+                }
+
+                console.log('Document file fetched successfully:', fileName, mimeType)
+            } catch (error) {
+                console.error('Failed to fetch document file:', error)
+                // Continue anyway - chat will still work without preview
+            }
         }
-        reader.readAsText(file.file)
+
+        // Load file preview if the file object exists (either from upload or from database)
+        const fileToPreview = currentDocument.value.file || file.file
+        if (fileToPreview) {
+            const fileName = currentDocument.value.name || file.name
+
+            // Reload preview for images
+            if (isImage(fileName)) {
+                const reader = new FileReader()
+                reader.onload = (e) => {
+                    if (e.target?.result) {
+                        documentPreviewUrl.value = e.target.result as string
+                    }
+                }
+                reader.readAsDataURL(fileToPreview)
+            }
+
+            // Reload preview for audio files
+            if (isAudio(fileName)) {
+                const url = URL.createObjectURL(fileToPreview)
+                documentPreviewUrl.value = url
+            }
+
+            // Reload preview for video files
+            if (isVideo(fileName)) {
+                const url = URL.createObjectURL(fileToPreview)
+                documentPreviewUrl.value = url
+            }
+
+            // Reload preview for PDF files
+            if (isPDF(fileName)) {
+                const url = URL.createObjectURL(fileToPreview)
+                documentPreviewUrl.value = url
+            }
+
+            // Reload preview for text files
+            if (isText(fileName)) {
+                const reader = new FileReader()
+                reader.onload = (e) => {
+                    if (e.target?.result) {
+                        documentContent.value = e.target.result as string
+                    }
+                }
+                reader.readAsText(fileToPreview)
+            }
+        }
+    } catch (error) {
+        console.error('Error loading document:', error)
+        errorMessage.value = 'Failed to load document. Please try again.'
+        currentDocument.value = null
+    } finally {
+        isProcessing.value = false
     }
 }
 
 // Chat Functions
 const sendMessage = async () => {
-    if (!currentMessage.value.trim()) return
+    if (!currentMessage.value.trim() || !currentDocument.value || !sessionId.value) return
 
-    const userMessage = {
-        role: 'user',
+    const userMessage: ChatMessage = {
+        role: 'user' as const,
         content: currentMessage.value,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
 
     messages.value.push(userMessage)
+    const messageToSend = currentMessage.value
     currentMessage.value = ''
 
     // Scroll to bottom
-    await nextTick()
-    scrollToBottom()
+    setTimeout(() => scrollToBottom(), 0)
 
-    // Simulate AI response
-    isTyping.value = true
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    try {
+        // Show typing indicator
+        isTyping.value = true
 
-    const aiResponse = generateMockResponse(userMessage.content)
-    messages.value.push({
-        role: 'assistant',
-        content: aiResponse,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    })
+        // Send message to API
+        const chatResponse = await sendChatMessage(
+            sessionId.value,
+            currentDocument.value.id,
+            messageToSend
+        )
 
-    isTyping.value = false
+        // Add AI response
+        messages.value.push({
+            role: 'assistant' as const,
+            content: chatResponse.message,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        })
 
-    // Scroll to bottom
-    await nextTick()
-    scrollToBottom()
+        // Update suggested questions if provided
+        if (chatResponse.suggested_questions && chatResponse.suggested_questions.length > 0) {
+            suggestedQuestions.value = chatResponse.suggested_questions
+        }
+    } catch (error) {
+        console.error('Error sending message:', error)
+        errorMessage.value = 'Failed to send message. Please try again.'
+
+        // Add error message to chat
+        messages.value.push({
+            role: 'assistant' as const,
+            content: 'Sorry, I encountered an error processing your message. Please try again.',
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        })
+    } finally {
+        isTyping.value = false
+
+        // Scroll to bottom
+        setTimeout(() => scrollToBottom(), 0)
+    }
 }
 
 const askQuestion = (question) => {
     currentMessage.value = question
     sendMessage()
-}
-
-const generateMockResponse = (question) => {
-    // Mock AI responses
-    const responses = [
-        `Based on the document "${currentDocument.value.name}", here's what I found: This is a mock response demonstrating the chat functionality. In a production environment, this would be replaced with actual AI-generated content from the N8N webhook.`,
-        `From analyzing "${currentDocument.value.name}", I can provide the following information: This response is simulated for demonstration purposes. The actual implementation will use your N8N API to generate contextual responses.`,
-        `According to the document content: This is placeholder text to show how the chat interface works. Once integrated with your N8N workflow, you'll receive intelligent responses based on the actual document content.`
-    ]
-
-    return responses[Math.floor(Math.random() * responses.length)]
 }
 
 const scrollToBottom = () => {

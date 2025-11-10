@@ -1,0 +1,11 @@
+This is a test document for the Document Chat workflow.
+
+It contains some sample text that can be used for testing the chat functionality.
+
+Key points:
+- Test document upload
+- Test chat interface
+- Test suggested questions
+- Test message sending
+
+This document helps verify that the Document Chat workflow is functioning correctly.
