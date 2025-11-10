@@ -87,7 +87,7 @@ export const programAdvisorConfig = {
     'application/pdf'
   ],
   initialMessages: [
-    'Hi! I\'m UniSZA\'s AI Program Advisor, here to help you find the best program at UniSZA. Let\'s get started!'
+    'I\'m Soul Medic\'s AI assistant, here to help you with explaining medical terms, or arranging your appointments, and more! How can I help you today?'
   ],
   i18n: {
     en: {

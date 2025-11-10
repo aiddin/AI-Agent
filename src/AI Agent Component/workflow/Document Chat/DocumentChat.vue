@@ -72,7 +72,6 @@
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium dark:text-white-light truncate">{{ currentDocument.name }}
                                 </p>
-                                <p class="text-xs text-white-dark">{{ formatFileSize(currentDocument.size) }}</p>
                             </div>
                         </div>
                     </div>
@@ -134,7 +133,6 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-xs font-medium dark:text-white-light truncate">{{ file.name }}</p>
-                                <p class="text-xs text-white-dark">{{ formatFileSize(file.size) }}</p>
                             </div>
                             <span v-if="file.processed" class="badge bg-success text-xs flex-shrink-0">PROCESSED</span>
                         </div>
@@ -182,7 +180,6 @@
                             </div>
                             <div>
                                 <h3 class="font-semibold dark:text-white-light">{{ currentDocument.name }}</h3>
-                                <p class="text-xs text-white-dark">{{ formatFileSize(currentDocument.size) }}</p>
                             </div>
                         </div>
                     </div>
