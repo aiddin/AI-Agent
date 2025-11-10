@@ -333,9 +333,16 @@
                         <div class="flex-1 max-w-[80%]">
                             <div class="rounded-lg p-4"
                                 :class="message.role === 'user' ? 'bg-secondary text-white' : 'bg-[#f1f2f3] dark:bg-[#1b2e4b]'">
-                                <p class="text-sm whitespace-pre-wrap"
-                                    :class="message.role === 'user' ? 'text-white' : 'dark:text-white-light'">{{
-                                        message.content }}</p>
+                                <!-- User messages as plain text -->
+                                <p v-if="message.role === 'user'" class="text-sm whitespace-pre-wrap text-white">
+                                    {{ message.content }}
+                                </p>
+                                <!-- Assistant messages with markdown rendering -->
+                                <div v-else
+                                    class="text-sm prose prose-sm max-w-none dark:prose-invert prose-pre:bg-gray-800 prose-pre:text-gray-100"
+                                    :class="'dark:text-white-light'"
+                                    v-html="renderMarkdown(message.content)">
+                                </div>
                             </div>
                             <p class="text-xs text-white-dark mt-1 px-1">{{ message.timestamp }}</p>
                         </div>
@@ -406,6 +413,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
+import MarkdownIt from 'markdown-it'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/github-dark.css'
 import {
     getAllDocuments,
     uploadDocument,
@@ -416,6 +426,24 @@ import {
     type Document,
     type ChatResponse
 } from '@/api/documentChatApi'
+
+// Initialize markdown-it with syntax highlighting
+const md = new MarkdownIt({
+    html: true,
+    linkify: true,
+    typographer: true,
+    breaks: true,
+    highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+            try {
+                return '<pre class="hljs"><code>' +
+                    hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+                    '</code></pre>'
+            } catch (__) {}
+        }
+        return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>'
+    }
+})
 
 // Types
 interface DocumentWithFile extends Document {
@@ -461,6 +489,11 @@ const inputDisabled = computed(() => {
     console.log('Input disabled:', disabled, { isTyping: isTyping.value, isProcessing: isProcessing.value })
     return disabled
 })
+
+// Render markdown to HTML
+const renderMarkdown = (content: string): string => {
+    return md.render(content)
+}
 
 // Helper functions for file type detection
 const isImage = (filename) => {
@@ -872,5 +905,136 @@ const formatFileSize = (bytes) => {
     transition-property: color, background-color, border-color;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 200ms;
+}
+
+/* Markdown content styling */
+.prose {
+    color: inherit;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    color: inherit;
+    font-weight: 600;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+}
+
+.prose h1 { font-size: 1.5em; }
+.prose h2 { font-size: 1.3em; }
+.prose h3 { font-size: 1.1em; }
+
+.prose p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.prose ul, .prose ol {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding-left: 1.5em;
+}
+
+.prose li {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+
+.prose code {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.prose pre {
+    background-color: #0d1117;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.prose pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: 0.875em;
+}
+
+/* Highlight.js code block styling */
+.prose .hljs {
+    background-color: #0d1117;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+}
+
+.prose pre.hljs {
+    padding: 1rem;
+    margin: 0.5em 0;
+}
+
+.prose blockquote {
+    border-left: 4px solid rgba(0, 0, 0, 0.2);
+    padding-left: 1em;
+    margin-left: 0;
+    font-style: italic;
+    color: inherit;
+    opacity: 0.8;
+}
+
+.prose a {
+    color: #3b82f6;
+    text-decoration: underline;
+}
+
+.prose a:hover {
+    color: #2563eb;
+}
+
+.prose strong {
+    font-weight: 600;
+}
+
+.prose em {
+    font-style: italic;
+}
+
+.prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.prose th, .prose td {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.5em;
+    text-align: left;
+}
+
+.prose th {
+    background-color: rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+}
+
+/* Dark mode adjustments */
+.dark .prose code {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .prose blockquote {
+    border-left-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark .prose th, .dark .prose td {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .prose th {
+    background-color: rgba(255, 255, 255, 0.05);
 }
 </style>
