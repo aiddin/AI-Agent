@@ -32,7 +32,7 @@ export const menuConfig: MenuSection[] = [
       {
         label: 'Uni Program Advisor',
         route: '/chatbot/uni-program-advisor',
-        icon: 'scrumboard',
+        icon: 'users',
         id: 'chatbot6'
       },
       {
