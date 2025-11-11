@@ -51,8 +51,8 @@
                     </div>
                 </div>
 
-                <!-- Current Document Info -->
-                <div v-if="currentDocument" class="space-y-4">
+                <!-- Current Document Info (Desktop Only) -->
+                <div v-if="currentDocument" class="hidden lg:block space-y-4">
                     <div class="panel">
                         <div class="flex items-start justify-between mb-3">
                             <h5 class="font-semibold text-base dark:text-white-light">Current Document</h5>
@@ -103,43 +103,56 @@
 
                 <!-- Your Files Section -->
                 <div class="panel">
-                    <h5 class="font-semibold text-base dark:text-white-light mb-3">Your Files</h5>
-
-                    <!-- Loading State for Files -->
-                    <div v-if="isLoadingFiles" class="flex items-center justify-center py-8">
-                        <div class="text-center">
-                            <div
-                                class="animate-spin w-8 h-8 border-3 border-primary border-t-transparent rounded-full mx-auto mb-3">
-                            </div>
-                            <p class="text-sm text-white-dark">Loading documents...</p>
-                        </div>
-                    </div>
-
-                    <!-- Empty State -->
-                    <div v-else-if="uploadedFiles.length === 0" class="py-8 text-center">
-                        <svg class="w-12 h-12 mx-auto text-white-dark mb-3" fill="none" stroke="currentColor"
+                    <!-- Collapsible Header (Mobile) / Regular Header (Desktop) -->
+                    <button @click="showFilesList = !showFilesList"
+                        class="lg:pointer-events-none w-full flex items-center justify-between mb-3">
+                        <h5 class="font-semibold text-base dark:text-white-light">Your Files</h5>
+                        <svg class="w-5 h-5 text-white-dark lg:hidden transition-transform"
+                            :class="{ 'rotate-180': showFilesList }" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
-                        <p class="text-sm text-white-dark">No documents uploaded yet</p>
-                    </div>
+                    </button>
 
-                    <!-- Files List -->
-                    <div v-else class="space-y-2 max-h-[300px] overflow-y-auto">
-                        <div v-for="file in uploadedFiles" :key="file.id" @click="loadDocument(file)"
-                            class="flex items-center gap-3 p-3 bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg hover:bg-[#e0e6ed] dark:hover:bg-[#253b5c] cursor-pointer transition-colors"
-                            :class="{ 'ring-2 ring-primary': currentDocument && currentDocument.id === file.id }">
-                            <div class="text-white-dark flex-shrink-0">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
+                    <!-- Collapsible Content -->
+                    <div :class="{ 'hidden lg:block': !showFilesList }">
+                        <!-- Loading State for Files -->
+                        <div v-if="isLoadingFiles" class="flex items-center justify-center py-8">
+                            <div class="text-center">
+                                <div
+                                    class="animate-spin w-8 h-8 border-3 border-primary border-t-transparent rounded-full mx-auto mb-3">
+                                </div>
+                                <p class="text-sm text-white-dark">Loading documents...</p>
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-xs font-medium dark:text-white-light truncate">{{ file.name }}</p>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div v-else-if="uploadedFiles.length === 0" class="py-8 text-center">
+                            <svg class="w-12 h-12 mx-auto text-white-dark mb-3" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <p class="text-sm text-white-dark">No documents uploaded yet</p>
+                        </div>
+
+                        <!-- Files List -->
+                        <div v-else class="space-y-2 max-h-[300px] overflow-y-auto">
+                            <div v-for="file in uploadedFiles" :key="file.id" @click="loadDocument(file)"
+                                class="flex items-center gap-3 p-3 bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg hover:bg-[#e0e6ed] dark:hover:bg-[#253b5c] cursor-pointer transition-colors"
+                                :class="{ 'ring-2 ring-primary': currentDocument && currentDocument.id === file.id }">
+                                <div class="text-white-dark flex-shrink-0">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs font-medium dark:text-white-light truncate">{{ file.name }}</p>
+                                </div>
+                                <span v-if="file.processed"
+                                    class="badge bg-success text-xs flex-shrink-0">PROCESSED</span>
                             </div>
-                            <span v-if="file.processed" class="badge bg-success text-xs flex-shrink-0">PROCESSED</span>
                         </div>
                     </div>
                 </div>
@@ -239,8 +252,8 @@
                     </div>
 
                     <!-- PDF Preview -->
-                    <div v-else-if="isPDF(currentDocument.name)" class="min-h-[600px] h-[800px]">
-                        <iframe :src="documentPreviewUrl" class="w-full h-full rounded-lg border-0"></iframe>
+                    <div v-else-if="isPDF(currentDocument.name)" class="h-[800px]">
+                        <PdfViewer :url="documentPreviewUrl" />
                     </div>
 
                     <!-- Text Preview -->
@@ -269,8 +282,180 @@
             </div>
         </div>
 
-        <!-- Right Side - Chat Interface -->
-        <div class="w-full lg:w-[400px] flex flex-col bg-white dark:bg-[#0e1726] overflow-hidden">
+        <!-- Floating Chat Button (Mobile Only) -->
+        <button v-if="currentDocument" @click="showMobileChat = true"
+            class="lg:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center z-50 hover:bg-primary-dark transition-all"
+            :class="{ 'hidden': showMobileChat }">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+        </button>
+
+        <!-- Mobile Chat Modal -->
+        <div v-if="showMobileChat && currentDocument"
+            class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-end">
+            <div class="w-full h-[85vh] bg-white dark:bg-[#0e1726] rounded-t-2xl flex flex-col overflow-hidden animate-slide-up">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between p-4 border-b border-[#e0e6ed] dark:border-[#1b2e4b]">
+                    <div class="flex items-center gap-3">
+                        <div class="text-primary">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold dark:text-white-light">Chat</h3>
+                            <p class="text-xs text-white-dark truncate max-w-[200px]">{{ currentDocument.name }}</p>
+                        </div>
+                    </div>
+                    <button @click="showMobileChat = false"
+                        class="text-white-dark hover:text-danger transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Chat Content (Mobile Modal) -->
+                <div class="flex-1 flex flex-col overflow-hidden">
+                    <div ref="mobileChatContainer" class="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+                        <!-- Loading/Analyzing State -->
+                        <div v-if="isProcessing && messages.length === 0" class="space-y-4">
+                            <div class="flex gap-3">
+                                <div class="flex-shrink-0">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+                                        <div
+                                            class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4">
+                                        <p class="text-sm dark:text-white-light">Analyzing your document...</p>
+                                        <p class="text-xs text-white-dark mt-2">Please wait while I process the content
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Welcome Message (only when not processing and no messages) -->
+                        <div v-else-if="messages.length === 0" class="space-y-4">
+                            <div class="flex gap-3">
+                                <div class="flex-shrink-0">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4">
+                                        <p class="text-sm dark:text-white-light">{{ welcomeMessage }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Messages -->
+                        <div v-for="(message, index) in messages" :key="index" class="flex gap-3"
+                            :class="{ 'flex-row-reverse': message.role === 'user' }">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                                    :class="message.role === 'user' ? 'bg-secondary text-white' : 'bg-primary text-white'">
+                                    <svg v-if="message.role === 'assistant'" class="w-5 h-5" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                    <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 max-w-[80%]">
+                                <div class="rounded-lg p-4"
+                                    :class="message.role === 'user' ? 'bg-secondary text-white' : 'bg-[#f1f2f3] dark:bg-[#1b2e4b]'">
+                                    <!-- User messages as plain text -->
+                                    <p v-if="message.role === 'user'" class="text-sm whitespace-pre-wrap text-white">
+                                        {{ message.content }}
+                                    </p>
+                                    <!-- Assistant messages with markdown rendering -->
+                                    <div v-else
+                                        class="text-sm prose prose-sm max-w-none dark:prose-invert prose-pre:bg-gray-800 prose-pre:text-gray-100"
+                                        :class="'dark:text-white-light'" v-html="renderMarkdown(message.content)">
+                                    </div>
+                                </div>
+                                <p class="text-xs text-white-dark mt-1 px-1">{{ message.timestamp }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Loading Indicator -->
+                        <div v-if="isTyping" class="flex gap-3">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-[#f1f2f3] dark:bg-[#1b2e4b] rounded-lg p-4">
+                                    <div class="flex gap-1">
+                                        <div class="w-2 h-2 bg-primary rounded-full animate-bounce"
+                                            style="animation-delay: 0ms"></div>
+                                        <div class="w-2 h-2 bg-primary rounded-full animate-bounce"
+                                            style="animation-delay: 150ms"></div>
+                                        <div class="w-2 h-2 bg-primary rounded-full animate-bounce"
+                                            style="animation-delay: 300ms"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Suggested Questions (shown when available and not processing) -->
+                        <div v-if="suggestedQuestions.length > 0 && !isTyping && !isProcessing" class="space-y-3">
+                            <p class="text-xs text-white-dark font-medium">Suggested questions:</p>
+                            <div class="grid grid-cols-1 gap-2">
+                                <button v-for="(question, index) in suggestedQuestions" :key="index"
+                                    @click="askQuestion(question)"
+                                    class="text-left p-3 bg-white dark:bg-[#0e1726] border border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg hover:border-primary hover:shadow-md transition-all text-sm dark:text-white-light"
+                                    :disabled="isProcessing">
+                                    {{ question }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input (Mobile Modal) -->
+                    <div class="border-t border-[#e0e6ed] dark:border-[#1b2e4b] p-4 bg-white dark:bg-[#0e1726]">
+                        <form @submit.prevent="sendMessage" class="flex gap-2">
+                            <input v-model="currentMessage" type="text" placeholder="Type your question..."
+                                class="form-input flex-1" :disabled="inputDisabled" />
+                            <button type="submit"
+                                class="btn btn-primary flex-shrink-0 px-4 flex items-center justify-center"
+                                :disabled="!currentMessage.trim() || inputDisabled">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Chat Interface (Desktop Only) -->
+        <div class="hidden lg:flex w-full lg:w-[400px] flex-col bg-white dark:bg-[#0e1726] overflow-hidden">
             <!-- Empty State when no document -->
             <div v-if="!currentDocument" class="flex-1 flex items-center justify-center p-6">
                 <div class="text-center">
@@ -285,7 +470,7 @@
                 </div>
             </div>
 
-            <!-- Chat Area -->
+            <!-- Chat Area (Desktop) -->
             <div v-else class="flex-1 flex flex-col overflow-hidden h-full">
                 <!-- Chat Messages -->
                 <div ref="chatContainer"
@@ -427,6 +612,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github-dark.css'
+import PdfViewer from './PdfViewer.vue'
 import {
     getAllDocuments,
     uploadDocument,
@@ -481,6 +667,9 @@ const documentPreviewUrl = ref('')
 const documentContent = ref('')
 const sessionId = ref('')
 const errorMessage = ref('')
+const showMobileChat = ref(false)
+const mobileChatContainer = ref<HTMLElement | null>(null)
+const showFilesList = ref(true)
 
 // Debug watchers
 watch([isProcessing, isTyping], ([processing, typing]) => {
@@ -1063,5 +1252,19 @@ const formatFileSize = (bytes) => {
 
 .dark .prose th {
     background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Mobile chat modal animation */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.animate-slide-up {
+    animation: slideUp 0.3s ease-out;
 }
 </style>
