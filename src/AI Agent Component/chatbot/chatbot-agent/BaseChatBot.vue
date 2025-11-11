@@ -26,6 +26,8 @@ import TrainerBackground from '@/assets/css/images/AIAgentSelector/TrainerBackgr
 import TrainerBackgroundMobile from '@/assets/css/images/AIAgentSelector/TrainerBackgroundMobile.svg'
 import AdvisorBackground from '@/assets/css/images/AIAgentSelector/AdvisorBackground.png'
 import AdvisorBackgroundMobile from '@/assets/css/images/AIAgentSelector/AdvisorBackgroundMobile.png'
+import MedicalBackground from '@/assets/css/images/AIAgentSelector/MedicalAssistant.png'
+import MedicalBackgroundMobile from '@/assets/css/images/AIAgentSelector/MedicalAssitantMobile.png'
 
 const props = defineProps({
   config: {
@@ -56,7 +58,8 @@ const desktopBackgroundImage = computed(() => {
     mortgage: MortgageBackground,
     petbacker: PetbackerBackground,
     trainer: TrainerBackground,
-    advisor: AdvisorBackground
+    advisor: AdvisorBackground,
+    medical: MedicalBackground
   }
   return backgrounds[props.backgroundTheme] || backgrounds.default
 })
@@ -67,7 +70,8 @@ const mobileBackgroundImage = computed(() => {
     mortgage: MortgageBackgroundMobile,
     petbacker: PetbackerBackgroundMobile,
     trainer: TrainerBackgroundMobile,
-    advisor: AdvisorBackgroundMobile
+    advisor: AdvisorBackgroundMobile,
+    medical: MedicalBackgroundMobile
   }
   return backgrounds[props.backgroundTheme] || backgrounds.default
 })

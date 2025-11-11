@@ -13,8 +13,11 @@
       <div v-if="selectedAgent === 'mortgage-assistant'">
         <MortgageApplicationData />
       </div>
-      <div v-if="selectedAgent === 'program-advisor'">
-        <ProgramAdvisor />
+      <div v-if="selectedAgent === 'medical-assistant'">
+        <MedicalAIAssistant />
+      </div>
+      <div v-if="selectedAgent === 'uni-program-advisor'">
+        <UniProgramAdvisor />
       </div>
       <div v-if="selectedAgent === 'applicant-scoring'">
         <ApplicantScoring />
@@ -47,7 +50,8 @@ import MessageAI from './chatbot/chatbot-agent/PetSitterTrainer.vue'
 import PetbackerCS from './chatbot/chatbot-agent/PetbackerCS.vue'
 import MortgageApplicationDocument from './chatbot/chatbot-agent/MortgageApplicationDocument.vue'
 import MortgageApplicationData from './chatbot/chatbot-agent/MortgageApplicationData.vue'
-import ProgramAdvisor from './chatbot/chatbot-agent/ProgramAdvisor.vue'
+import MedicalAIAssistant from './chatbot/chatbot-agent/MedicalAIAssistant.vue'
+import UniProgramAdvisor from './chatbot/chatbot-agent/UniProgramAdvisor.vue'
 import ApplicantScoring from './workflow/Applicant_Scoring/ApplicantScoring.vue'
 import PurchaseOrderViewer from './workflow/Purchase Order/PurchaseOrderViewer.vue'
 import DataCleansing from './workflow/Data Cleansing/DataCleansing.vue'

@@ -76,7 +76,7 @@ export const petSitterTrainerConfig = {
   }
 }
 
-export const programAdvisorConfig = {
+export const medicalAIAssistantConfig = {
   webhookUrl: 'https://workflow.forwen.com/webhook/f19be4b4-5db7-45b4-ba57-d055bfc69ea9/chat',
   mode: 'window',
   showWelcomeScreen: false,
@@ -91,8 +91,32 @@ export const programAdvisorConfig = {
   ],
   i18n: {
     en: {
-      title: 'AI Assistant',
-      subtitle: " AI assistant to help you with managing your appointments and medical terms.",
+      title: 'Medical AI Assistant',
+      subtitle: "AI assistant to help you with managing your appointments and medical terms.",
+      getStarted: 'Start',
+      inputPlaceholder: 'Type your message...',
+      footer: ''
+    }
+  }
+}
+
+export const uniProgramAdvisorConfig = {
+  webhookUrl: 'https://workflow.forwen.com/webhook/af4e704c-2db3-48ab-8753-e4716bbdbf3f/chat',
+  mode: 'window',
+  showWelcomeScreen: false,
+  defaultLanguage: 'en',
+  allowFileUploads: true,
+  allowedFilesMimeTypes: [
+    'image/*',
+    'application/pdf'
+  ],
+  initialMessages: [
+    'Hi! I\'m UniSZA\'s AI Program Advisor, here to help you find the best program at UniSZA. Let\'s get started!'
+  ],
+  i18n: {
+    en: {
+      title: 'UniSZA AI Program Advisor',
+      subtitle: "Get personalized guidance for your academic programs and requirements.",
       getStarted: 'Start',
       inputPlaceholder: 'Type your message...',
       footer: ''

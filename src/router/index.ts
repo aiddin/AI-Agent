@@ -43,9 +43,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import(/* webpackChunkName: "chatbot-customer-support" */ '../AI Agent Component/chatbot/chatbot-agent/PetbackerCS.vue'),
     },
     {
-        path: '/chatbot/program-advisor',
-        name: 'program-advisor',
-        component: () => import(/* webpackChunkName: "chatbot-program-advisor" */ '../AI Agent Component/chatbot/chatbot-agent/ProgramAdvisor.vue'),
+        path: '/chatbot/medical-assistant',
+        name: 'medical-assistant',
+        component: () => import(/* webpackChunkName: "chatbot-medical-assistant" */ '../AI Agent Component/chatbot/chatbot-agent/MedicalAIAssistant.vue'),
+    },
+    {
+        path: '/chatbot/uni-program-advisor',
+        name: 'uni-program-advisor',
+        component: () => import(/* webpackChunkName: "chatbot-uni-program-advisor" */ '../AI Agent Component/chatbot/chatbot-agent/UniProgramAdvisor.vue'),
     },
     {
         path: '/chatbot/pet-trainer',
