@@ -282,6 +282,24 @@
             </div>
         </div>
 
+        <!-- Upload Progress Overlay -->
+        <div v-if="isProcessing && !currentDocument?.processed"
+            class="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center">
+            <div class="bg-white dark:bg-[#0e1726] rounded-lg p-8 max-w-md mx-4 text-center">
+                <div class="animate-spin w-16 h-16 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4">
+                </div>
+                <h3 class="text-xl font-semibold dark:text-white-light mb-2">Processing Document</h3>
+                <p class="text-sm text-white-dark mb-4">
+                    {{ uploadStatus }}
+                </p>
+                <div class="w-full bg-[#ebedf2] dark:bg-dark/40 rounded-full h-2">
+                    <div class="bg-primary h-2 rounded-full transition-all duration-300"
+                        :style="{ width: uploadProgress + '%' }"></div>
+                </div>
+                <p class="text-xs text-white-dark mt-2">{{ uploadProgress }}%</p>
+            </div>
+        </div>
+
         <!-- Floating Chat Button (Mobile Only) -->
         <button v-if="currentDocument" @click="showMobileChat = true"
             class="lg:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center z-50 hover:bg-primary-dark transition-all"
@@ -670,6 +688,8 @@ const errorMessage = ref('')
 const showMobileChat = ref(false)
 const mobileChatContainer = ref<HTMLElement | null>(null)
 const showFilesList = ref(true)
+const uploadStatus = ref('Preparing document...')
+const uploadProgress = ref(0)
 
 // Debug watchers
 watch([isProcessing, isTyping], ([processing, typing]) => {
@@ -758,13 +778,30 @@ const handleDrop = async (event) => {
 }
 
 const processDocumentFile = async (file) => {
+    let uploadProgressInterval: number | null = null
+
     try {
         isProcessing.value = true
         isTyping.value = false
         errorMessage.value = ''
+        uploadProgress.value = 0
+        uploadStatus.value = 'Uploading document...'
 
-        // Step 1: Upload the document
+        // Step 1: Simulate upload progress (4-5 seconds)
+        const uploadStartTime = Date.now()
+        const uploadDuration = 6000 // 4.5 seconds
+        uploadProgressInterval = setInterval(() => {
+            const elapsed = Date.now() - uploadStartTime
+            const progress = Math.min((elapsed / uploadDuration) * 35, 35) // Progress from 0 to 35%
+            uploadProgress.value = Math.floor(progress)
+        }, 100)
+
+        // Upload the document
         const uploadResponse = await uploadDocument(file)
+        if (uploadProgressInterval) clearInterval(uploadProgressInterval)
+
+        uploadProgress.value = 40
+        uploadStatus.value = 'Document uploaded successfully'
         const documentId = uploadResponse.document_id
 
         // Set current document with the uploaded document ID
@@ -817,14 +854,23 @@ const processDocumentFile = async (file) => {
         }
 
         // Step 2: Process the document
+        uploadProgress.value = 50
+        uploadStatus.value = 'Analyzing document content...'
         const processResponse = await processDocument(documentId)
 
         if (processResponse.success) {
+            uploadProgress.value = 70
+            uploadStatus.value = 'Document processed successfully'
             currentDocument.value.processed = true
 
             // Step 3: Initialize chat session
+            uploadProgress.value = 85
+            uploadStatus.value = 'Initializing chat session...'
             const chatResponse = await initializeChat(documentId)
             sessionId.value = chatResponse.sessionId
+
+            uploadProgress.value = 100
+            uploadStatus.value = 'Ready to chat!'
 
             // Add to uploaded files
             uploadedFiles.value.push({ ...currentDocument.value })
@@ -843,8 +889,14 @@ const processDocumentFile = async (file) => {
         console.error('Error processing document:', error)
         errorMessage.value = 'Failed to process document. Please try again.'
         currentDocument.value = null
+        uploadProgress.value = 0
+        uploadStatus.value = 'Upload failed'
+        if (uploadProgressInterval) clearInterval(uploadProgressInterval)
     } finally {
-        isProcessing.value = false
+        // Small delay before hiding the overlay so user can see "Ready to chat!"
+        setTimeout(() => {
+            isProcessing.value = false
+        }, 500)
     }
 }
 
