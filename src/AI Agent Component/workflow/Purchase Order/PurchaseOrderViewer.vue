@@ -272,10 +272,10 @@ export default {
                 
                 // Import PDF.js library dynamically for client-side use
                 const pdfjsLib = await import('pdfjs-dist')
-                console.log('PDF.js imported successfully')
-                
-                // Set worker source for PDF.js using local file
-                pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js'
+                console.log('PDF.js imported successfully, version:', pdfjsLib.version)
+
+                // Set worker source for PDF.js using CDN (matches installed version)
+                pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
                 console.log('Worker source set to:', pdfjsLib.GlobalWorkerOptions.workerSrc)
                 
                 // Convert file to array buffer for PDF.js
