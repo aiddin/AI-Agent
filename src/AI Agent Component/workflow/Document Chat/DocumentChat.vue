@@ -778,7 +778,7 @@ const handleDrop = async (event) => {
 }
 
 const processDocumentFile = async (file) => {
-    let uploadProgressInterval: number | null = null
+    let uploadProgressInterval: ReturnType<typeof setInterval> | null = null
 
     try {
         isProcessing.value = true
