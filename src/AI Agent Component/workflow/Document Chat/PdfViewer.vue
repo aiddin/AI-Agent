@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, nextTick } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import * as pdfjsLib from 'pdfjs-dist'
 
 // Configure PDF.js worker using jsdelivr CDN (stable for v4.x)
@@ -94,10 +94,9 @@ const loadPDF = async () => {
 
         // Wait for loading to finish and canvas to be ready
         isLoading.value = false
-        await nextTick()
 
-        // Small delay to ensure container is sized
-        await new Promise(resolve => setTimeout(resolve, 100))
+        // Small delay to ensure container is sized and canvas is rendered
+        await new Promise(resolve => setTimeout(resolve, 150))
 
         await renderPage(1)
     } catch (err) {
