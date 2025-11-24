@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 import * as pdfjsLib from 'pdfjs-dist'
 
 // Configure PDF.js worker using jsdelivr CDN (stable for v4.x)
@@ -92,8 +92,14 @@ const loadPDF = async () => {
         totalPages.value = pdfDoc.numPages
         currentPage.value = 1
 
-        await renderPage(1)
+        // Wait for loading to finish and canvas to be ready
         isLoading.value = false
+        await nextTick()
+
+        // Small delay to ensure container is sized
+        await new Promise(resolve => setTimeout(resolve, 100))
+
+        await renderPage(1)
     } catch (err) {
         console.error('Error loading PDF:', err)
         error.value = 'Failed to load PDF. Please try again.'
@@ -102,7 +108,10 @@ const loadPDF = async () => {
 }
 
 const renderPage = async (pageNum: number) => {
-    if (!pdfDoc || !pdfCanvas.value) return
+    if (!pdfDoc || !pdfCanvas.value) {
+        console.log('renderPage skipped - no pdfDoc or canvas')
+        return
+    }
 
     try {
         const page = await pdfDoc.getPage(pageNum)
@@ -111,10 +120,23 @@ const renderPage = async (pageNum: number) => {
         const canvas = pdfCanvas.value
         const context = canvas.getContext('2d')
 
-        if (!context) return
+        if (!context) {
+            console.log('No canvas context available')
+            return
+        }
 
+        console.log('Rendering PDF page', pageNum, 'at scale', scale.value, 'viewport:', viewport.width, 'x', viewport.height)
+
+        // Set canvas dimensions
         canvas.height = viewport.height
         canvas.width = viewport.width
+
+        // Set canvas style to ensure it's visible
+        canvas.style.maxWidth = '100%'
+        canvas.style.height = 'auto'
+
+        // Clear canvas before rendering
+        context.clearRect(0, 0, canvas.width, canvas.height)
 
         const renderContext = {
             canvasContext: context,
@@ -122,6 +144,7 @@ const renderPage = async (pageNum: number) => {
         }
 
         await page.render(renderContext).promise
+        console.log('PDF page rendered successfully')
     } catch (err) {
         console.error('Error rendering page:', err)
         error.value = 'Failed to render PDF page'
