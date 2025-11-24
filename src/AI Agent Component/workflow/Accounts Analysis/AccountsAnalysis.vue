@@ -439,6 +439,7 @@ import hljs from 'highlight.js'
 import 'highlight.js/styles/github-dark.css'
 import PdfViewer from '../Document Chat/PdfViewer.vue'
 import axios from 'axios'
+import JSZip from 'jszip'
 
 // API Configuration
 const BASE_URL = 'https://workflow.forwen.com/webhook'
@@ -513,15 +514,46 @@ const inputDisabled = computed(() => isTyping.value || isProcessing.value)
 // Render markdown
 const renderMarkdown = (content: string): string => md.render(content)
 
-// Parse CSV data
+// Parse CSV data with proper handling of quoted fields
 const parseCSV = (csvString: string) => {
     const lines = csvString.split('\n').filter(line => line.trim())
     if (lines.length === 0) return
 
-    csvHeaders.value = lines[0].split(',').map(h => h.trim())
-    csvRows.value = lines.slice(1).map(line => {
-        return line.split(',').map(cell => cell.trim())
-    })
+    // Helper function to parse a CSV line respecting quoted fields
+    const parseLine = (line: string): string[] => {
+        const result: string[] = []
+        let current = ''
+        let inQuotes = false
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i]
+            const nextChar = line[i + 1]
+
+            if (char === '"') {
+                if (inQuotes && nextChar === '"') {
+                    // Handle escaped quotes
+                    current += '"'
+                    i++ // Skip next quote
+                } else {
+                    // Toggle quote state
+                    inQuotes = !inQuotes
+                }
+            } else if (char === ',' && !inQuotes) {
+                // Field separator outside quotes
+                result.push(current.trim())
+                current = ''
+            } else {
+                current += char
+            }
+        }
+
+        // Add the last field
+        result.push(current.trim())
+        return result
+    }
+
+    csvHeaders.value = parseLine(lines[0])
+    csvRows.value = lines.slice(1).map(line => parseLine(line))
 }
 
 // Download CSV
@@ -687,24 +719,44 @@ const loadDocument = async (file: Document) => {
         errorMessage.value = ''
         isProcessing.value = true
         isTyping.value = false
+        csvData.value = ''
+        csvHeaders.value = []
+        csvRows.value = []
 
         // Initialize chat session
         const chatResponse = await axios.post(`${CHAT_API_URL}/chat`, { documentId: file.id })
         sessionId.value = chatResponse.data.sessionId
         suggestedQuestions.value = chatResponse.data.suggested_questions || []
 
-        // Fetch document file
+        // Fetch document file (returns ZIP with PDF and CSV)
         if (!file.file && file.id) {
             const response = await axios.get(`${GET_DOC_API_URL}/documents/${file.id}`, {
                 responseType: 'blob'
             })
-            const fileName = response.headers['filename'] || file.name
-            const mimeType = response.headers['mimetype'] || 'application/pdf'
-            const fetchedFile = new File([response.data], fileName, { type: mimeType })
 
-            currentDocument.value = { ...file, file: fetchedFile }
-            const url = URL.createObjectURL(fetchedFile)
-            documentPreviewUrl.value = url
+            const zipBlob = response.data
+
+            // Extract files from ZIP
+            const zip = await JSZip.loadAsync(zipBlob)
+
+            // Extract PDF file
+            const pdfFile = Object.keys(zip.files).find(name => name.toLowerCase().endsWith('.pdf'))
+            if (pdfFile) {
+                const pdfBlob = await zip.files[pdfFile].async('blob')
+                const fetchedFile = new File([pdfBlob], pdfFile, { type: 'application/pdf' })
+                currentDocument.value = { ...file, file: fetchedFile }
+                const url = URL.createObjectURL(pdfBlob)
+                documentPreviewUrl.value = url
+            }
+
+            // Extract CSV file
+            const csvFile = Object.keys(zip.files).find(name => name.toLowerCase().endsWith('.csv'))
+            if (csvFile) {
+                const csvText = await zip.files[csvFile].async('text')
+                csvData.value = csvText
+                parseCSV(csvText)
+                console.log('CSV extracted from ZIP:', csvFile)
+            }
         }
 
         setTimeout(() => scrollToBottom(), 0)
