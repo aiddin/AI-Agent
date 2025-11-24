@@ -79,7 +79,7 @@ const isLoading = ref(true)
 const error = ref('')
 const currentPage = ref(1)
 const totalPages = ref(0)
-const scale = ref(1.5)
+const scale = ref(1.0)
 let pdfDoc: any = null
 
 const loadPDF = async () => {
