@@ -630,6 +630,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import(/* webpackChunkName: "auth-cover-password-reset" */ '../views/auth/cover-password-reset.vue'),
         meta: { layout: 'auth' },
     },
+    {
+        path: '/login',
+        name: 'login',
+        component: () => import(/* webpackChunkName: "login" */ '../views/auth/Login.vue'),
+        meta: { layout: 'auth', requiresGuest: true },
+    },
 ];
 
 const router = createRouter({
@@ -647,6 +653,22 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const store = useAppStore();
+
+    // Check authentication
+    const isAuthenticated = store.isAuthenticated;
+    const requiresGuest = to.meta?.requiresGuest === true;
+
+    // If already logged in and trying to access login page, redirect to home
+    if (requiresGuest && isAuthenticated) {
+        next({ name: 'home' });
+        return;
+    }
+
+    // If not authenticated and trying to access any route other than login, redirect to login
+    if (!isAuthenticated && to.name !== 'login') {
+        next({ name: 'login' });
+        return;
+    }
 
     if (to?.meta?.layout == 'auth') {
         store.setMainLayout('auth');

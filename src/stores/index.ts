@@ -34,6 +34,7 @@ export const useAppStore = defineStore('app', {
         ],
         isShowMainLoader: true,
         semidark: false,
+        isAuthenticated: localStorage.getItem('isAuthenticated') === 'true',
     }),
 
     actions: {
@@ -115,6 +116,14 @@ export const useAppStore = defineStore('app', {
             setTimeout(() => {
                 this.isShowMainLoader = false;
             }, 500);
+        },
+        setAuthenticated(value: boolean) {
+            this.isAuthenticated = value;
+            localStorage.setItem('isAuthenticated', value.toString());
+        },
+        logout() {
+            this.isAuthenticated = false;
+            localStorage.removeItem('isAuthenticated');
         },
     },
     getters: {},

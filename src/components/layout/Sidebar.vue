@@ -2,7 +2,7 @@
     <div :class="{ 'dark text-white-dark': store.semidark }">
         <nav
             class="sidebar fixed min-h-screen h-full top-0 bottom-0 w-[260px] shadow-[5px_0_25px_0_rgba(94,92,154,0.1)] z-50 transition-all duration-300">
-            <div class="bg-white dark:bg-[#0e1726] h-full">
+            <div class="bg-white dark:bg-[#0e1726] h-full flex flex-col">
                 <div class="flex justify-between items-center px-4 py-3">
                     <router-link to="/" class="main-logo flex items-center shrink-0" @click="toggleMobileMenu()">
                         <img class="w-8 ml-[5px] flex-none" src="/assets/images/logo.png" alt="" />
@@ -19,7 +19,7 @@
                 <perfect-scrollbar :options="{
                     swipeEasing: true,
                     wheelPropagation: false,
-                }" class="h-[calc(100vh-80px)] relative">
+                }" class="flex-1 relative">
                     <ul class="relative font-semibold space-y-0.5 p-4 py-0">
                         <!-- Loop through menu sections -->
                         <template v-for="section in menuConfig" :key="section.title">
@@ -62,6 +62,20 @@
                         </template>
                     </ul>
                 </perfect-scrollbar>
+
+                <!-- Logout Button at Bottom -->
+                <div class="p-4 border-t border-[#e0e6ed] dark:border-[#1b2e4b]">
+                    <button
+                        @click="handleLogout"
+                        class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-danger text-white hover:bg-danger/80 transition-colors font-semibold"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        <span>Logout</span>
+                    </button>
+                </div>
             </div>
         </nav>
     </div>
@@ -70,6 +84,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import { useAppStore } from '@/stores/index'
+import { useRouter } from 'vue-router'
 import { menuConfig } from './sidebar-config'
 import IconCaretsDown from '@/components/icon/icon-carets-down.vue'
 import IconMenuChat from '@/components/icon/menu/icon-menu-chat.vue'
@@ -82,7 +97,13 @@ import IconMenuUsers from '@/components/icon/menu/icon-menu-users.vue'
 import IconMenuDocumentation from '@/components/icon/menu/icon-menu-documentation.vue'
 
 const store = useAppStore()
+const router = useRouter()
 const currentChatbot: any = ref('')
+
+const handleLogout = () => {
+    store.logout()
+    router.push({ name: 'login' })
+}
 
 // Icon component mapping
 const iconMap: Record<string, any> = {
