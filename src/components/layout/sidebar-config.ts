@@ -88,6 +88,11 @@ export const menuConfig: MenuSection[] = [
         label: 'Document Chat',
         route: '/workflow/document-chat',
         icon: 'chat'
+      },
+      {
+        label: 'Accounts Analysis',
+        route: '/workflow/accounts-analysis',
+        icon: 'invoice'
       }
     ]
   }

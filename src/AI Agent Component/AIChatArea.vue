@@ -37,6 +37,9 @@
       <div v-if="selectedAgent === 'document-chat'">
         <DocumentChat />
       </div>
+      <div v-if="selectedAgent === 'accounts-analysis'">
+        <AccountsAnalysis />
+      </div>
       <div v-if="selectedAgent === null" class="welcome-message">
         <h2>Please select an AI agent to start.</h2>
       </div>
@@ -58,6 +61,7 @@ import DataCleansing from './workflow/Data Cleansing/DataCleansing.vue'
 import IssueClassification from './workflow/Issue_Classification/IssueClassification.vue'
 import ReceiptClaim from './workflow/Receipt Claim Analyzer/ReceiptClaim.vue'
 import DocumentChat from './workflow/Document Chat/DocumentChat.vue'
+import AccountsAnalysis from './workflow/Accounts Analysis/AccountsAnalysis.vue'
 
 // Define props
 const props = defineProps({

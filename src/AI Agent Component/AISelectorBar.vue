@@ -121,6 +121,12 @@
             <span class="card-description">Upload documents and chat with AI about their content</span>
             <span class="category-tag misc">Misc</span>
           </div>
+          <div class="card" @click="selectAgentAndCloseDrawer('accounts-analysis')"
+            :class="{ active: selectedAgent === 'accounts-analysis' }">
+            Accounts Analysis
+            <span class="card-description">Upload bank statements and analyze transactions with CSV export</span>
+            <span class="category-tag finance">Finance</span>
+          </div>
         </div>
       </div>
     </div>

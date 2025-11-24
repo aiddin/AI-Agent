@@ -100,6 +100,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import(/* webpackChunkName: "workflow-document-chat" */ '../AI Agent Component/workflow/Document Chat/DocumentChat.vue'),
     },
     {
+        path: '/workflow/accounts-analysis',
+        name: 'accounts-analysis',
+        component: () => import(/* webpackChunkName: "workflow-accounts-analysis" */ '../AI Agent Component/workflow/Accounts Analysis/AccountsAnalysis.vue'),
+    },
+    {
         path: '/apps/chat',
         name: 'chat',
         component: () => import(/* webpackChunkName: "apps-chat" */ '../views/apps/chat.vue'),

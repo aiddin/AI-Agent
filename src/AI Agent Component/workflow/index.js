@@ -16,6 +16,7 @@ export { default as DataCleansingTool } from './Data Cleansing/DataCleansingTool
 // Document Processing Workflows
 export { default as PurchaseOrderViewer } from './Purchase Order/PurchaseOrderViewer.vue'
 export { default as DocumentChat } from './Document Chat/DocumentChat.vue'
+export { default as AccountsAnalysis } from './Accounts Analysis/AccountsAnalysis.vue'
 
 // Issue Classification Workflow
 export { default as IssueClassification } from './Issue_Classification/IssueClassification.vue'
