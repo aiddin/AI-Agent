@@ -1659,15 +1659,15 @@ table thead {
 }
 
 /* Chat message images */
-.chat-message-content img {
-    cursor: zoom-in;
+:deep(.chat-message-content img) {
+    cursor: pointer;
     transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
     border-radius: 0.5rem;
     max-width: 100%;
     height: auto;
 }
 
-.chat-message-content img:hover {
+:deep(.chat-message-content img:hover) {
     transform: scale(1.02);
     opacity: 0.9;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
