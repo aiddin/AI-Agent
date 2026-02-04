@@ -1271,26 +1271,71 @@ const matchSupportingDocs = async () => {
             {
                 supportingDocuments: selectedDocs
             },
-            { responseType: 'text' }
+            { responseType: 'blob' }
         )
 
-        // Parse match response (CSV format)
-        const matchedCsv = matchResponse.data
-        const matchedDocs = parseCSVToObjects(matchedCsv)
+        // Parse match response (ZIP file containing CSV)
+        const zipBlob = matchResponse.data
+        console.log('Match API Response (ZIP):', zipBlob)
 
-        // Format matched data for display - only include selected docs
-        const matched: any[] = matchedDocs
-            .map((doc: any, index: number) => ({
+        // Extract CSV files from ZIP
+        const zip = await JSZip.loadAsync(zipBlob)
+        console.log('ZIP contents:', Object.keys(zip.files))
+
+        // Find CSV files in the ZIP
+        const csvFiles = Object.keys(zip.files).filter(name => name.toLowerCase().endsWith('.csv'))
+        console.log('CSV files found:', csvFiles)
+
+        if (csvFiles.length === 0) {
+            throw new Error('No CSV files found in the ZIP archive')
+        }
+
+        // Extract and parse the first CSV file (or combine all if multiple)
+        let allMatchedDocs: any[] = []
+
+        for (const csvFileName of csvFiles) {
+            const csvText = await zip.files[csvFileName].async('text')
+            console.log(`CSV content from ${csvFileName}:`, csvText.substring(0, 500)) // Log first 500 chars
+
+            const matchedDocs = parseCSVToObjects(csvText)
+            console.log(`Parsed docs from ${csvFileName}:`, matchedDocs)
+
+            allMatchedDocs = allMatchedDocs.concat(matchedDocs)
+        }
+
+        // If we have data, log the first row to see column names
+        if (allMatchedDocs.length > 0) {
+            console.log('First row columns:', Object.keys(allMatchedDocs[0]))
+            console.log('First row data:', allMatchedDocs[0])
+        }
+
+        // Format matched data for display - use actual column names from response
+        const matched: any[] = allMatchedDocs.map((doc: any, index: number) => {
+            // Get all possible field names (case-insensitive search)
+            const getField = (possibleNames: string[]) => {
+                for (const name of possibleNames) {
+                    // Check exact match
+                    if (doc[name] !== undefined && doc[name] !== '') return doc[name]
+                    // Check case-insensitive match
+                    const key = Object.keys(doc).find(k => k.toLowerCase() === name.toLowerCase())
+                    if (key && doc[key] !== '') return doc[key]
+                }
+                return null
+            }
+
+            return {
                 id: index,
-                date: doc.date || doc.Date || doc.transaction_date || doc['Transaction Date'] || doc.created_at || 'N/A',
-                description: doc.description || doc.Description || doc.reference || doc.Reference || doc.memo || doc.Memo || 'Matched Transaction',
-                amount: parseFloat(doc.amount || doc.Amount || 0),
-                type: (doc.type || doc.Type || 'other').toLowerCase(),
+                date: getField(['date', 'Date', 'transaction_date', 'Transaction Date', 'created_at', 'transaction date']) || 'N/A',
+                description: getField(['description', 'Description', 'reference', 'Reference', 'memo', 'Memo', 'narration', 'Narration', 'particulars', 'Particulars']) || 'No description',
+                amount: parseFloat(getField(['amount', 'Amount', 'value', 'Value', 'transaction_amount', 'Transaction Amount']) || 0),
+                type: (getField(['type', 'Type', 'transaction_type', 'Transaction Type', 'category', 'Category']) || 'matched').toLowerCase(),
                 matchedWith: 'Bank Statement',
-                status: doc.status || doc.Status || 'Matched'
-            }))
-            .filter((doc: any) => selectedSupportingDocs.value.has(doc.id))
+                status: getField(['status', 'Status', 'match_status', 'Match Status']) || 'Matched',
+                rawData: doc // Keep raw data for debugging
+            }
+        })
 
+        console.log('Formatted matched data:', matched)
         processedData.value = matched
 
         // Switch to processed tab
