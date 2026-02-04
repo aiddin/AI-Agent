@@ -477,26 +477,40 @@
                         <div v-else>
                             <div class="mb-4 flex items-center justify-between">
                                 <h4 class="text-lg font-semibold dark:text-white-light">Matched Transactions</h4>
-                                <span class="badge bg-success">{{ processedData.length }} matches found</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="badge bg-success">{{ processedData.length }} matches found</span>
+                                    <button @click="downloadResultZip"
+                                        :disabled="!matchResultZip"
+                                        class="px-3 py-1 bg-success text-white rounded text-sm font-medium hover:bg-success-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Download ZIP
+                                    </button>
+                                </div>
                             </div>
                             <div class="overflow-auto max-h-[calc(100vh-300px)] border border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg">
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <thead class="bg-gray-50 dark:bg-[#1b2e4b]">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
-                                            Date
+                                            ID
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
-                                            Description
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
-                                            Amount
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
-                                            Type
+                                            Bank Statement ID
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
                                             Status
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            Match Table
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            Matched ID
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            Reasoning
                                         </th>
                                     </tr>
                                 </thead>
@@ -504,22 +518,24 @@
                                     <tr v-for="(item, index) in processedData" :key="index"
                                         class="hover:bg-gray-50 dark:hover:bg-[#1b2e4b] transition-colors">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
-                                            {{ item.date }}
+                                            {{ item.id }}
                                         </td>
-                                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-white-light">
-                                            {{ item.description }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium"
-                                            :class="item.amount >= 0 ? 'text-success' : 'text-danger'">
-                                            {{ item.amount >= 0 ? '+' : '' }}{{ item.amount }}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
+                                            {{ item.bank_statement_id }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            <span class="badge" :class="item.type === 'payout' ? 'bg-info' : 'bg-warning'">
-                                                {{ item.type }}
+                                            <span class="badge" :class="item.status === 'matched' ? 'bg-success' : item.status === 'unmatched' ? 'bg-warning' : 'bg-info'">
+                                                {{ item.status }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            <span class="badge bg-success">Matched</span>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
+                                            {{ item.match_table }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
+                                            {{ item.matched_id }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-white-light max-w-md">
+                                            <div class="truncate" :title="item.reasoning">{{ item.reasoning }}</div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -777,6 +793,7 @@ const isLoadingSupportingDocs = ref(false)
 const supportingDocsRaw = ref<any[]>([])
 const selectedSupportingDocs = ref<Set<number>>(new Set())
 const selectedSupportingDocForView = ref<any | null>(null)
+const matchResultZip = ref<Blob | null>(null)
 
 // Computed
 const welcomeMessage = computed(() => {
@@ -990,6 +1007,7 @@ const removeDocument = () => {
     csvHeaders.value = []
     csvRows.value = []
     processedData.value = []
+    matchResultZip.value = null
     activeTab.value = 'pdf'
 }
 
@@ -1278,6 +1296,9 @@ const matchSupportingDocs = async () => {
         const zipBlob = matchResponse.data
         console.log('Match API Response (ZIP):', zipBlob)
 
+        // Save ZIP for download
+        matchResultZip.value = zipBlob
+
         // Extract CSV files from ZIP
         const zip = await JSZip.loadAsync(zipBlob)
         console.log('ZIP contents:', Object.keys(zip.files))
@@ -1310,7 +1331,7 @@ const matchSupportingDocs = async () => {
         }
 
         // Format matched data for display - use actual column names from response
-        const matched: any[] = allMatchedDocs.map((doc: any, index: number) => {
+        const matched: any[] = allMatchedDocs.map((doc: any) => {
             // Get all possible field names (case-insensitive search)
             const getField = (possibleNames: string[]) => {
                 for (const name of possibleNames) {
@@ -1324,13 +1345,12 @@ const matchSupportingDocs = async () => {
             }
 
             return {
-                id: index,
-                date: getField(['date', 'Date', 'transaction_date', 'Transaction Date', 'created_at', 'transaction date']) || 'N/A',
-                description: getField(['description', 'Description', 'reference', 'Reference', 'memo', 'Memo', 'narration', 'Narration', 'particulars', 'Particulars']) || 'No description',
-                amount: parseFloat(getField(['amount', 'Amount', 'value', 'Value', 'transaction_amount', 'Transaction Amount']) || 0),
-                type: (getField(['type', 'Type', 'transaction_type', 'Transaction Type', 'category', 'Category']) || 'matched').toLowerCase(),
-                matchedWith: 'Bank Statement',
-                status: getField(['status', 'Status', 'match_status', 'Match Status']) || 'Matched',
+                id: getField(['id', 'ID', 'Id']) || 'N/A',
+                bank_statement_id: getField(['bank_statement_id', 'Bank Statement ID', 'bank_statement_id', 'BankStatementId']) || 'N/A',
+                status: (getField(['status', 'Status']) || 'unknown').toLowerCase(),
+                match_table: getField(['match_table', 'Match Table', 'match_table', 'MatchTable']) || 'N/A',
+                matched_id: getField(['matched_id', 'Matched ID', 'matched_id', 'MatchedId']) || 'N/A',
+                reasoning: getField(['reasoning', 'Reasoning', 'reason', 'Reason']) || 'No reasoning provided',
                 rawData: doc // Keep raw data for debugging
             }
         })
@@ -1364,6 +1384,20 @@ const toggleAllSupportingDocs = () => {
     } else {
         selectedSupportingDocs.value = new Set(supportingDocsRaw.value.map(doc => doc.id))
     }
+}
+
+// Download result ZIP file
+const downloadResultZip = () => {
+    if (!matchResultZip.value) return
+
+    const url = URL.createObjectURL(matchResultZip.value)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `match-results-${new Date().toISOString().split('T')[0]}.zip`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
 }
 </script>
 

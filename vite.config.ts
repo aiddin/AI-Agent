@@ -22,8 +22,14 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
+    build: {
+        target: 'esnext',
+    },
     optimizeDeps: {
         include: ['quill'],
+        esbuildOptions: {
+            target: 'esnext',
+        },
     },
     server: {
         proxy: {
