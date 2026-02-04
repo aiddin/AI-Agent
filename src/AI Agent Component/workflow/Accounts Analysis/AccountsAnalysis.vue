@@ -916,32 +916,51 @@ const isTagColumn = (columnIndex: number): boolean => {
     return header === 'tag' || header === 'tags' || header === 'label' || header === 'labels'
 }
 
-// Render tag badge with colorful background (no emoji)
+// Map to store unique tag to color assignments
+const tagColorMap = new Map<string, number>()
+
+// Generate a hash from string for consistent color assignment
+const stringToHash = (str: string): number => {
+    let hash = 0
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i)
+        hash = ((hash << 5) - hash) + char
+        hash = hash & hash
+    }
+    return Math.abs(hash)
+}
+
+// Get unique color index for a tag
+const getTagColorIndex = (tag: string): number => {
+    const normalizedTag = tag.trim().toLowerCase()
+    if (!tagColorMap.has(normalizedTag)) {
+        const hash = stringToHash(normalizedTag)
+        tagColorMap.set(normalizedTag, hash % 12) // 12 unique colors
+    }
+    return tagColorMap.get(normalizedTag)!
+}
+
+// Render tag badge with unique color per tag
 const renderTagBadge = (cell: string): string => {
     if (!cell || typeof cell !== 'string') return cell
 
-    const tagPatterns = [
-        { pattern: /settlement|settled/i, class: 'badge-tag-success' },
-        { pattern: /payment|paid|payout/i, class: 'badge-tag-info' },
-        { pattern: /refund|return/i, class: 'badge-tag-warning' },
-        { pattern: /gateway|api/i, class: 'badge-tag-primary' },
-        { pattern: /transfer|neft|rtgs|imps/i, class: 'badge-tag-cyan' },
-        { pattern: /fee|charge|commission/i, class: 'badge-tag-secondary' },
-        { pattern: /deposit|credit/i, class: 'badge-tag-success' },
-        { pattern: /withdrawal|debit/i, class: 'badge-tag-danger' },
-        { pattern: /booking|reservation/i, class: 'badge-tag-purple' },
-        { pattern: /error|fail/i, class: 'badge-tag-danger' },
-        { pattern: /pending|process/i, class: 'badge-tag-warning' },
+    const colorIndex = getTagColorIndex(cell)
+    const colorClasses = [
+        'badge-tag-color-0',  // Blue
+        'badge-tag-color-1',  // Green
+        'badge-tag-color-2',  // Purple
+        'badge-tag-color-3',  // Orange
+        'badge-tag-color-4',  // Pink
+        'badge-tag-color-5',  // Teal
+        'badge-tag-color-6',  // Red
+        'badge-tag-color-7',  // Indigo
+        'badge-tag-color-8',  // Yellow
+        'badge-tag-color-9',  // Cyan
+        'badge-tag-color-10', // Lime
+        'badge-tag-color-11', // Rose
     ]
 
-    for (const { pattern, class: className } of tagPatterns) {
-        if (pattern.test(cell)) {
-            return `<span class="csv-tag ${className}">${cell}</span>`
-        }
-    }
-
-    // Default neutral style for unmatched tags
-    return `<span class="csv-tag badge-tag-neutral">${cell}</span>`
+    return `<span class="csv-tag ${colorClasses[colorIndex]}">${cell}</span>`
 }
 
 // Parse CSV data with proper handling of quoted fields
@@ -1695,85 +1714,113 @@ table thead {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-/* Colorful tag badges */
-:deep(.badge-tag-success) {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-}
-
-.dark :deep(.badge-tag-success) {
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-}
-
-:deep(.badge-tag-danger) {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    color: white;
-}
-
-.dark :deep(.badge-tag-danger) {
-    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-}
-
-:deep(.badge-tag-warning) {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: white;
-}
-
-.dark :deep(.badge-tag-warning) {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-}
-
-:deep(.badge-tag-info) {
+/* Unique colorful tag badges - 12 distinct colors */
+:deep(.badge-tag-color-0) {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
 }
 
-.dark :deep(.badge-tag-info) {
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+:deep(.badge-tag-color-1) {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
 }
 
-:deep(.badge-tag-primary) {
+:deep(.badge-tag-color-2) {
     background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
 }
 
-.dark :deep(.badge-tag-primary) {
-    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
-}
-
-:deep(.badge-tag-secondary) {
-    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+:deep(.badge-tag-color-3) {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     color: white;
 }
 
-.dark :deep(.badge-tag-secondary) {
-    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+:deep(.badge-tag-color-4) {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    color: white;
 }
 
-:deep(.badge-tag-cyan) {
+:deep(.badge-tag-color-5) {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+    color: white;
+}
+
+:deep(.badge-tag-color-6) {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+:deep(.badge-tag-color-7) {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white;
+}
+
+:deep(.badge-tag-color-8) {
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+    color: white;
+}
+
+:deep(.badge-tag-color-9) {
     background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
     color: white;
 }
 
-.dark :deep(.badge-tag-cyan) {
+:deep(.badge-tag-color-10) {
+    background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%);
+    color: white;
+}
+
+:deep(.badge-tag-color-11) {
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    color: white;
+}
+
+/* Dark mode variants */
+.dark :deep(.badge-tag-color-0) {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+}
+
+.dark :deep(.badge-tag-color-1) {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.dark :deep(.badge-tag-color-2) {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+}
+
+.dark :deep(.badge-tag-color-3) {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.dark :deep(.badge-tag-color-4) {
+    background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+}
+
+.dark :deep(.badge-tag-color-5) {
+    background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
+}
+
+.dark :deep(.badge-tag-color-6) {
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+}
+
+.dark :deep(.badge-tag-color-7) {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
+}
+
+.dark :deep(.badge-tag-color-8) {
+    background: linear-gradient(135deg, #fde047 0%, #eab308 100%);
+}
+
+.dark :deep(.badge-tag-color-9) {
     background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
 }
 
-:deep(.badge-tag-purple) {
-    background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
-    color: white;
+.dark :deep(.badge-tag-color-10) {
+    background: linear-gradient(135deg, #a3e635 0%, #84cc16 100%);
 }
 
-.dark :deep(.badge-tag-purple) {
-    background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
-}
-
-:deep(.badge-tag-neutral) {
-    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
-    color: white;
-}
-
-.dark :deep(.badge-tag-neutral) {
-    background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
+.dark :deep(.badge-tag-color-11) {
+    background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%);
 }
 </style>
