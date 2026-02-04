@@ -360,8 +360,9 @@
                                 <tr v-for="(row, rowIndex) in csvRows" :key="rowIndex"
                                     class="hover:bg-gray-50 dark:hover:bg-[#1b2e4b] transition-colors">
                                     <td v-for="(cell, cellIndex) in row" :key="cellIndex"
-                                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
-                                        {{ cell }}
+                                        class="px-6 py-4 text-sm text-gray-900 dark:text-white-light">
+                                        <span v-if="isTagColumn(cellIndex)" v-html="renderTagBadge(cell)"></span>
+                                        <span v-else>{{ cell }}</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -710,8 +711,9 @@
                                     {{ message.content }}
                                 </p>
                                 <div v-else
-                                    class="text-sm prose prose-sm max-w-none dark:prose-invert prose-pre:bg-gray-800 prose-pre:text-gray-100"
-                                    :class="'dark:text-white-light'" v-html="renderMarkdown(message.content)">
+                                    class="text-sm prose prose-sm max-w-none dark:prose-invert prose-pre:bg-gray-800 prose-pre:text-gray-100 chat-message-content"
+                                    :class="'dark:text-white-light'" v-html="renderMarkdown(message.content)"
+                                    @click="handleMessageClick">
                                 </div>
                             </div>
                             <p class="text-xs text-white-dark mt-1 px-1">{{ message.timestamp }}</p>
@@ -773,6 +775,33 @@
                 </div>
             </div>
         </div>
+
+        <!-- Image Modal Popup -->
+        <Transition name="modal-fade">
+            <div v-if="lightboxImage" @click="lightboxImage = null"
+                class="fixed inset-0 bg-black bg-opacity-50 z-[70] flex items-center justify-center p-4">
+                <Transition name="modal-slide">
+                    <div v-if="lightboxImage" @click.stop
+                        class="bg-white dark:bg-[#0e1726] rounded-xl shadow-2xl max-w-4xl max-h-[85vh] overflow-hidden relative">
+                        <!-- Modal Header -->
+                        <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-semibold dark:text-white-light">Image Preview</h3>
+                            <button @click="lightboxImage = null"
+                                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-all hover:scale-110 hover:rotate-90">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <!-- Modal Body -->
+                        <div class="p-6 overflow-auto max-h-[calc(85vh-80px)]">
+                            <img :src="lightboxImage" alt="Enlarged view"
+                                class="w-full h-auto rounded-lg" />
+                        </div>
+                    </div>
+                </Transition>
+            </div>
+        </Transition>
     </div>
 </template>
 
@@ -856,6 +885,7 @@ const supportingDocsRaw = ref<any[]>([])
 const selectedSupportingDocs = ref<Set<number>>(new Set())
 const selectedSupportingDocForView = ref<any | null>(null)
 const matchResultZip = ref<Blob | null>(null)
+const lightboxImage = ref<string | null>(null)
 
 // Computed
 const welcomeMessage = computed(() => {
@@ -869,6 +899,50 @@ const inputDisabled = computed(() => isTyping.value || isProcessing.value)
 
 // Render markdown
 const renderMarkdown = (content: string): string => md.render(content)
+
+// Handle clicks on message content (for image lightbox)
+const handleMessageClick = (event: MouseEvent) => {
+    const target = event.target as HTMLElement
+    if (target.tagName === 'IMG') {
+        const img = target as HTMLImageElement
+        lightboxImage.value = img.src
+    }
+}
+
+// Check if column is a tag column
+const isTagColumn = (columnIndex: number): boolean => {
+    if (!csvHeaders.value || columnIndex >= csvHeaders.value.length) return false
+    const header = csvHeaders.value[columnIndex].toLowerCase()
+    return header === 'tag' || header === 'tags' || header === 'label' || header === 'labels'
+}
+
+// Render tag badge with colorful background (no emoji)
+const renderTagBadge = (cell: string): string => {
+    if (!cell || typeof cell !== 'string') return cell
+
+    const tagPatterns = [
+        { pattern: /settlement|settled/i, class: 'badge-tag-success' },
+        { pattern: /payment|paid|payout/i, class: 'badge-tag-info' },
+        { pattern: /refund|return/i, class: 'badge-tag-warning' },
+        { pattern: /gateway|api/i, class: 'badge-tag-primary' },
+        { pattern: /transfer|neft|rtgs|imps/i, class: 'badge-tag-cyan' },
+        { pattern: /fee|charge|commission/i, class: 'badge-tag-secondary' },
+        { pattern: /deposit|credit/i, class: 'badge-tag-success' },
+        { pattern: /withdrawal|debit/i, class: 'badge-tag-danger' },
+        { pattern: /booking|reservation/i, class: 'badge-tag-purple' },
+        { pattern: /error|fail/i, class: 'badge-tag-danger' },
+        { pattern: /pending|process/i, class: 'badge-tag-warning' },
+    ]
+
+    for (const { pattern, class: className } of tagPatterns) {
+        if (pattern.test(cell)) {
+            return `<span class="csv-tag ${className}">${cell}</span>`
+        }
+    }
+
+    // Default neutral style for unmatched tags
+    return `<span class="csv-tag badge-tag-neutral">${cell}</span>`
+}
 
 // Parse CSV data with proper handling of quoted fields
 const parseCSV = (csvString: string) => {
@@ -1563,5 +1637,143 @@ table thead {
 
 .dark .prose code {
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat message images */
+.chat-message-content img {
+    cursor: zoom-in;
+    transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+    border-radius: 0.5rem;
+    max-width: 100%;
+    height: auto;
+}
+
+.chat-message-content img:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Modal animations */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+    opacity: 0;
+}
+
+.modal-slide-enter-active {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-slide-leave-active {
+    transition: all 0.25s ease-out;
+}
+
+.modal-slide-enter-from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-30px);
+}
+
+.modal-slide-leave-to {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+}
+
+/* CSV Tag Styles - Colorful solid badges */
+:deep(.csv-tag) {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.813rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    white-space: nowrap;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Colorful tag badges */
+:deep(.badge-tag-success) {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.dark :deep(.badge-tag-success) {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+:deep(.badge-tag-danger) {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.dark :deep(.badge-tag-danger) {
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+}
+
+:deep(.badge-tag-warning) {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.dark :deep(.badge-tag-warning) {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+:deep(.badge-tag-info) {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.dark :deep(.badge-tag-info) {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+}
+
+:deep(.badge-tag-primary) {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+}
+
+.dark :deep(.badge-tag-primary) {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+}
+
+:deep(.badge-tag-secondary) {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    color: white;
+}
+
+.dark :deep(.badge-tag-secondary) {
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+}
+
+:deep(.badge-tag-cyan) {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: white;
+}
+
+.dark :deep(.badge-tag-cyan) {
+    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+}
+
+:deep(.badge-tag-purple) {
+    background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+    color: white;
+}
+
+.dark :deep(.badge-tag-purple) {
+    background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+}
+
+:deep(.badge-tag-neutral) {
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+    color: white;
+}
+
+.dark :deep(.badge-tag-neutral) {
+    background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
 }
 </style>
