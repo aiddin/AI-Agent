@@ -938,8 +938,8 @@ const processDocumentFile = async (file: File) => {
             `${PROCESS_API_URL}/process-document/${documentId}`,
         )
 
-        // Convert blob to text for CSV
-        const csvText = await processResponse.data.text()
+        // Get CSV text - the API returns text directly, not a Blob
+        const csvText = typeof processResponse.data === 'string' ? processResponse.data : JSON.stringify(processResponse.data)
         csvData.value = csvText
         parseCSV(csvText)
 
