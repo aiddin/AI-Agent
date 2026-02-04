@@ -111,11 +111,11 @@ export const uniProgramAdvisorConfig = {
     'application/pdf'
   ],
   initialMessages: [
-    'Hi! I\'m UniSZA\'s AI Program Advisor, here to help you find the best program at UniSZA. Let\'s get started!'
+    'Hi! I\'m Athena\'s AI Program Advisor, here to help you find the best program at Athena. Let\'s get started!'
   ],
   i18n: {
     en: {
-      title: 'UniSZA AI Program Advisor',
+      title: 'Athena AI Program Advisor',
       subtitle: "Get personalized guidance for your academic programs and requirements.",
       getStarted: 'Start',
       inputPlaceholder: 'Type your message...',
