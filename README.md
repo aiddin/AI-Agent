@@ -18,7 +18,7 @@ A comprehensive Vue 3 + TypeScript application that provides a unified interface
 - **Interactive Charts**: ApexCharts integration for data visualization
 
 ### 🛠️ Workflow Tools
-- **Applicant Scoring**: UTP applicant evaluation and ranking system
+- **Applicant Scoring**:  applicant evaluation and ranking system
 - **Issue Classification**: Petbacker customer support ticket classification
 - **Purchase Order Extraction**: Automated purchase order information extraction
 - **Data Cleansing**: Multi-source data comparison and consolidation
