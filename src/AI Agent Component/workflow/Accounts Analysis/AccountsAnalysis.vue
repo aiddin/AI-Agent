@@ -155,7 +155,7 @@
                 <div class="panel">
                     <div class="flex items-center justify-between mb-3">
                         <h5 class="font-semibold text-base dark:text-white-light">Supporting Documents</h5>
-                        <button @click="fetchSupportingDocs"
+                        <!-- <button @click="fetchSupportingDocs"
                             :disabled="isLoadingSupportingDocs"
                             class="text-xs text-primary hover:text-primary-dark disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
                             <svg v-if="!isLoadingSupportingDocs" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +164,7 @@
                             </svg>
                             <span v-if="isLoadingSupportingDocs" class="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
                             {{ isLoadingSupportingDocs ? 'Loading...' : 'Fetch' }}
-                        </button>
+                        </button> -->
                     </div>
 
                     <!-- Loading State -->
@@ -188,14 +188,14 @@
                     <!-- Supporting Documents List -->
                     <div v-else>
                         <!-- Header with count and actions -->
-                        <div class="flex items-center justify-between mb-3 px-1">
+                        <!-- <div class="flex items-center justify-between mb-3 px-1">
                             <span class="text-xs text-white-dark">{{ selectedSupportingDocs.size }} / {{ supportingDocsRaw.length }} selected</span>
                             <button @click="matchSupportingDocs"
                                 :disabled="!currentDocument || selectedSupportingDocs.size === 0 || isLoadingSupportingDocs"
                                 class="text-xs text-success hover:text-success-dark disabled:opacity-50 disabled:cursor-not-allowed font-medium">
                                 Match Selected
                             </button>
-                        </div>
+                        </div> -->
 
                         <!-- Documents List -->
                         <div class="space-y-2 max-h-[300px] overflow-y-auto">
@@ -212,21 +212,7 @@
                                         class="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary cursor-pointer" />
                                 </div>
 
-                                <!-- Icon -->
-                                <div class="flex-shrink-0 mt-0.5">
-                                    <svg v-if="doc.type === 'payout'" class="w-5 h-5 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <svg v-else-if="doc.type === 'settlement'" class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                                    </svg>
-                                    <svg v-else class="w-5 h-5 text-white-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                </div>
+
 
                                 <!-- Document Info -->
                                 <div class="flex-1 min-w-0">
@@ -235,18 +221,18 @@
                                     </p>
                                     <div class="flex items-center gap-2 mt-1">
                                         <span class="text-xs text-white-dark">{{ doc.rowCount }} rows</span>
-                                        <span class="text-xs font-medium" :class="doc.totalAmount >= 0 ? 'text-success' : 'text-danger'">
+                                        <!-- <span class="text-xs font-medium" :class="doc.totalAmount >= 0 ? 'text-success' : 'text-danger'">
                                             {{ doc.totalAmount >= 0 ? '+' : '' }}{{ doc.totalAmount.toFixed(2) }}
-                                        </span>
+                                        </span> -->
                                     </div>
                                 </div>
 
                                 <!-- Type Badge -->
-                                <div class="flex-shrink-0">
+                                <!-- <div class="flex-shrink-0">
                                     <span class="badge text-xs" :class="doc.type === 'payout' ? 'bg-info' : 'bg-warning'">
                                         {{ doc.type }}
                                     </span>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -293,11 +279,17 @@
                             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                             Supporting Docs
                         </button>
-                        <button @click="activeTab = 'processed'" :disabled="processedData.length === 0"
-                            :class="activeTab === 'processed' ? 'bg-primary text-white' : 'bg-[#f1f2f3] dark:bg-[#0e1726] text-gray-600 dark:text-white-dark'"
+                        <button @click="activeTab = 'matched'" :disabled="matchedData.length === 0"
+                            :class="activeTab === 'matched' ? 'bg-primary text-white' : 'bg-[#f1f2f3] dark:bg-[#0e1726] text-gray-600 dark:text-white-dark'"
                             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-                            Processed
-                            <span v-if="processedData.length > 0" class="badge bg-success text-xs">{{ processedData.length }}</span>
+                            Matched
+                            <span v-if="matchedData.length > 0" class="badge bg-success text-xs">{{ matchedData.length }}</span>
+                        </button>
+                        <button @click="activeTab = 'unmatched'" :disabled="unmatchedData.length === 0"
+                            :class="activeTab === 'unmatched' ? 'bg-primary text-white' : 'bg-[#f1f2f3] dark:bg-[#0e1726] text-gray-600 dark:text-white-dark'"
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                            Unmatched
+                            <span v-if="unmatchedData.length > 0" class="badge bg-warning text-xs">{{ unmatchedData.length }}</span>
                         </button>
                         <button @click="matchSupportingDocs"
                             :disabled="!currentDocument || selectedSupportingDocs.size === 0 || isLoadingSupportingDocs"
@@ -393,14 +385,14 @@
                     <div v-else-if="activeTab === 'supporting'" class="space-y-4">
                         <div class="flex items-center justify-between">
                             <h4 class="text-lg font-semibold dark:text-white-light">Selected Supporting Documents</h4>
-                            <div class="flex items-center gap-3">
+                            <!-- <div class="flex items-center gap-3">
                                 <span class="text-sm text-white-dark">{{ selectedSupportingDocs.size }} / {{ supportingDocsRaw.length }} selected</span>
                                 <button @click="matchSupportingDocs"
                                     :disabled="!currentDocument || selectedSupportingDocs.size === 0 || isLoadingSupportingDocs"
                                     class="px-4 py-2 bg-success text-white rounded-lg text-sm font-medium hover:bg-success-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                     Match Selected
                                 </button>
-                            </div>
+                            </div> -->
                         </div>
 
                         <div v-if="supportingDocsRaw.filter(doc => selectedSupportingDocs.has(doc.id)).length === 0"
@@ -448,8 +440,8 @@
                         </div>
                     </div>
 
-                    <!-- Processed Tab -->
-                    <div v-else-if="activeTab === 'processed'" class="space-y-6">
+                    <!-- Matched Tab -->
+                    <div v-else-if="activeTab === 'matched'" class="space-y-6">
                         <!-- Loading State -->
                         <div v-if="isLoadingSupportingDocs" class="flex items-center justify-center py-12">
                             <div class="text-center">
@@ -460,25 +452,25 @@
                         </div>
 
                         <!-- Empty State -->
-                        <div v-else-if="processedData.length === 0" class="flex items-center justify-center py-12">
+                        <div v-else-if="matchedData.length === 0" class="flex items-center justify-center py-12">
                             <div class="text-center max-w-md">
-                                <div class="text-primary mb-4">
+                                <div class="text-success mb-4">
                                     <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
-                                <h4 class="text-lg font-semibold dark:text-white-light mb-2">No Matched Documents</h4>
-                                <p class="text-sm text-white-dark">Click the "Processed" button to fetch and match supporting documents with bank statement transactions.</p>
+                                <h4 class="text-lg font-semibold dark:text-white-light mb-2">No Matched Transactions</h4>
+                                <p class="text-sm text-white-dark">Click "Process Data" to match supporting documents with bank statement transactions.</p>
                             </div>
                         </div>
 
-                        <!-- Processed Data Table -->
+                        <!-- Matched Data Table -->
                         <div v-else>
                             <div class="mb-4 flex items-center justify-between">
-                                <h4 class="text-lg font-semibold dark:text-white-light">Processed Transactions</h4>
+                                <h4 class="text-lg font-semibold dark:text-white-light">Matched Transactions</h4>
                                 <div class="flex items-center gap-3">
-                                    <span class="badge bg-success">{{ processedData.length }} matches found</span>
+                                    <span class="badge bg-success">{{ matchedData.length }} matched</span>
                                     <button @click="downloadResultZip"
                                         :disabled="!matchResultZip"
                                         class="px-3 py-1 bg-success text-white rounded text-sm font-medium hover:bg-success-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
@@ -501,9 +493,6 @@
                                             Bank Statement ID
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
-                                            Status
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
                                             Match Table
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
@@ -515,7 +504,7 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white dark:bg-[#0e1726] divide-y divide-gray-200 dark:divide-gray-700">
-                                    <tr v-for="(item, index) in processedData" :key="index"
+                                    <tr v-for="(item, index) in matchedData" :key="index"
                                         class="hover:bg-gray-50 dark:hover:bg-[#1b2e4b] transition-colors">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
                                             {{ item.id }}
@@ -523,16 +512,87 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
                                             {{ item.bank_statement_id }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            <span class="badge" :class="item.status === 'matched' ? 'bg-success' : item.status === 'unmatched' ? 'bg-warning' : 'bg-info'">
-                                                {{ item.status }}
-                                            </span>
-                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
                                             {{ item.match_table }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
                                             {{ item.matched_id }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-white-light max-w-md">
+                                            <div class="truncate" :title="item.reasoning">{{ item.reasoning }}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Unmatched Tab -->
+                    <div v-else-if="activeTab === 'unmatched'" class="space-y-6">
+                        <!-- Loading State -->
+                        <div v-if="isLoadingSupportingDocs" class="flex items-center justify-center py-12">
+                            <div class="text-center">
+                                <div class="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                                <p class="text-lg font-medium dark:text-white-light mb-2">Processing matches...</p>
+                                <p class="text-sm text-white-dark">Identifying unmatched transactions</p>
+                            </div>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div v-else-if="unmatchedData.length === 0" class="flex items-center justify-center py-12">
+                            <div class="text-center max-w-md">
+                                <div class="text-warning mb-4">
+                                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                </div>
+                                <h4 class="text-lg font-semibold dark:text-white-light mb-2">No Unmatched Transactions</h4>
+                                <p class="text-sm text-white-dark">All transactions have been matched, or click "Process Data" to start matching.</p>
+                            </div>
+                        </div>
+
+                        <!-- Unmatched Data Table -->
+                        <div v-else>
+                            <div class="mb-4 flex items-center justify-between">
+                                <h4 class="text-lg font-semibold dark:text-white-light">Unmatched Transactions</h4>
+                                <div class="flex items-center gap-3">
+                                    <span class="badge bg-warning">{{ unmatchedData.length }} unmatched</span>
+                                    <button @click="downloadResultZip"
+                                        :disabled="!matchResultZip"
+                                        class="px-3 py-1 bg-success text-white rounded text-sm font-medium hover:bg-success-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Download ZIP
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="overflow-auto max-h-[calc(100vh-300px)] border border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-[#1b2e4b]">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            ID
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            Bank Statement ID
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            Reasoning
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-[#0e1726] divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tr v-for="(item, index) in unmatchedData" :key="index"
+                                        class="hover:bg-gray-50 dark:hover:bg-[#1b2e4b] transition-colors">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
+                                            {{ item.id }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
+                                            {{ item.bank_statement_id }}
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-900 dark:text-white-light max-w-md">
                                             <div class="truncate" :title="item.reasoning">{{ item.reasoning }}</div>
@@ -782,13 +842,15 @@ const errorMessage = ref('')
 const showFilesList = ref(true)
 const uploadStatus = ref('Preparing document...')
 const uploadProgress = ref(0)
-const activeTab = ref<'pdf' | 'csv' | 'supporting' | 'processed'>('pdf')
+const activeTab = ref<'pdf' | 'csv' | 'supporting' | 'matched' | 'unmatched'>('pdf')
 const csvData = ref<string>('')
 const csvHeaders = ref<string[]>([])
 const csvRows = ref<string[][]>([])
 const payoutsData = ref<any[]>([])
 const settlementsData = ref<any[]>([])
 const processedData = ref<any[]>([])
+const matchedData = ref<any[]>([])
+const unmatchedData = ref<any[]>([])
 const isLoadingSupportingDocs = ref(false)
 const supportingDocsRaw = ref<any[]>([])
 const selectedSupportingDocs = ref<Set<number>>(new Set())
@@ -1007,6 +1069,8 @@ const removeDocument = () => {
     csvHeaders.value = []
     csvRows.value = []
     processedData.value = []
+    matchedData.value = []
+    unmatchedData.value = []
     matchResultZip.value = null
     activeTab.value = 'pdf'
 }
@@ -1022,6 +1086,8 @@ const loadDocument = async (file: Document) => {
         csvHeaders.value = []
         csvRows.value = []
         processedData.value = []
+        matchedData.value = []
+        unmatchedData.value = []
 
         // Initialize chat session
         const chatResponse = await axios.post(`${CHAT_API_URL}/chat`, { documentId: file.id })
@@ -1358,8 +1424,16 @@ const matchSupportingDocs = async () => {
         console.log('Formatted matched data:', matched)
         processedData.value = matched
 
-        // Switch to processed tab
-        activeTab.value = 'processed'
+        // Split data into matched and unmatched
+        matchedData.value = matched.filter(item => item.status === 'matched')
+        unmatchedData.value = matched.filter(item => item.status === 'unmatched')
+
+        // Switch to matched tab if there are matches, otherwise unmatched
+        if (matchedData.value.length > 0) {
+            activeTab.value = 'matched'
+        } else if (unmatchedData.value.length > 0) {
+            activeTab.value = 'unmatched'
+        }
     } catch (error) {
         console.error('Error matching documents:', error)
         errorMessage.value = 'Failed to match documents. Please try again.'
