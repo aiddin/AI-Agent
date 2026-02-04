@@ -150,39 +150,119 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Supporting Documents Section -->
+                <div class="panel">
+                    <div class="flex items-center justify-between mb-3">
+                        <h5 class="font-semibold text-base dark:text-white-light">Supporting Documents</h5>
+                        <button @click="fetchSupportingDocs"
+                            :disabled="isLoadingSupportingDocs"
+                            class="text-xs text-primary hover:text-primary-dark disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1">
+                            <svg v-if="!isLoadingSupportingDocs" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                            <span v-if="isLoadingSupportingDocs" class="w-3 h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+                            {{ isLoadingSupportingDocs ? 'Loading...' : 'Fetch' }}
+                        </button>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div v-if="isLoadingSupportingDocs" class="flex items-center justify-center py-6">
+                        <div class="text-center">
+                            <div class="animate-spin w-6 h-6 border-3 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+                            <p class="text-xs text-white-dark">Fetching documents...</p>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div v-else-if="supportingDocsRaw.length === 0" class="py-6 text-center">
+                        <svg class="w-10 h-10 mx-auto text-white-dark mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <p class="text-xs text-white-dark">No supporting documents</p>
+                        <p class="text-xs text-white-dark mt-1">Click "Fetch" to load</p>
+                    </div>
+
+                    <!-- Supporting Documents List -->
+                    <div v-else>
+                        <!-- Header with count and actions -->
+                        <div class="flex items-center justify-between mb-3 px-1">
+                            <span class="text-xs text-white-dark">{{ selectedSupportingDocs.size }} / {{ supportingDocsRaw.length }} selected</span>
+                            <button @click="matchSupportingDocs"
+                                :disabled="!currentDocument || selectedSupportingDocs.size === 0 || isLoadingSupportingDocs"
+                                class="text-xs text-success hover:text-success-dark disabled:opacity-50 disabled:cursor-not-allowed font-medium">
+                                Match Selected
+                            </button>
+                        </div>
+
+                        <!-- Documents List -->
+                        <div class="space-y-2 max-h-[300px] overflow-y-auto">
+                            <div v-for="doc in supportingDocsRaw" :key="doc.id"
+                                class="flex items-start gap-3 p-3 rounded-lg transition-colors"
+                                :class="selectedSupportingDocs.has(doc.id)
+                                    ? 'bg-primary/10 dark:bg-primary/20 ring-2 ring-primary'
+                                    : 'bg-[#f1f2f3] dark:bg-[#1b2e4b] hover:bg-[#e0e6ed] dark:hover:bg-[#253b5c]'">
+                                <!-- Checkbox -->
+                                <div class="flex-shrink-0 mt-0.5">
+                                    <input type="checkbox"
+                                        :checked="selectedSupportingDocs.has(doc.id)"
+                                        @click.stop="toggleSupportingDoc(doc.id)"
+                                        class="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary cursor-pointer" />
+                                </div>
+
+                                <!-- Icon -->
+                                <div class="flex-shrink-0 mt-0.5">
+                                    <svg v-if="doc.type === 'payout'" class="w-5 h-5 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <svg v-else-if="doc.type === 'settlement'" class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                    </svg>
+                                    <svg v-else class="w-5 h-5 text-white-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+
+                                <!-- Document Info -->
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs font-medium dark:text-white-light truncate">
+                                        {{ doc.name }}
+                                    </p>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span class="text-xs text-white-dark">{{ doc.rowCount }} rows</span>
+                                        <span class="text-xs font-medium" :class="doc.totalAmount >= 0 ? 'text-success' : 'text-danger'">
+                                            {{ doc.totalAmount >= 0 ? '+' : '' }}{{ doc.totalAmount.toFixed(2) }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Type Badge -->
+                                <div class="flex-shrink-0">
+                                    <span class="badge text-xs" :class="doc.type === 'payout' ? 'bg-info' : 'bg-warning'">
+                                        {{ doc.type }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <!-- Middle - Document Preview with Tabs -->
         <div
             class="flex-1 flex flex-col bg-[#f9fafb] dark:bg-[#0e1726] border-r border-[#e0e6ed] dark:border-[#1b2e4b] overflow-hidden">
-            <!-- Empty State -->
-            <div v-if="!currentDocument" class="flex-1 flex items-center justify-center p-4 lg:p-6 overflow-y-auto">
-                <div class="text-center max-w-xl">
-                    <div class="mb-6">
-                        <div class="text-primary mb-4">
-                            <svg class="w-24 h-24 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                        </div>
-                    </div>
-                    <h3 class="text-xl lg:text-2xl font-semibold mb-3 dark:text-white-light">No Document Selected
-                    </h3>
-                    <p class="text-sm lg:text-base text-white-dark leading-relaxed mb-4">
-                        Upload a bank statement PDF to analyze transactions.
-                    </p>
-                    <p class="text-xs lg:text-sm text-white-dark">
-                        Supported: PDF format only
-                    </p>
-                </div>
-            </div>
-
             <!-- Document Preview Area with Tabs -->
-            <div v-else class="flex-1 flex flex-col overflow-hidden">
+            <div class="flex-1 flex flex-col overflow-hidden">
                 <!-- Preview Header with Tabs -->
                 <div class="p-4 border-b border-[#e0e6ed] dark:border-[#1b2e4b] bg-white dark:bg-[#1b2e4b]">
-                    <div class="flex items-center justify-between mb-3">
+                    <div v-if="currentDocument" class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-3">
                             <div class="text-primary">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -208,8 +288,29 @@
                             class="px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                             Extracted Data
                         </button>
+                        <button @click="activeTab = 'supporting'" :disabled="supportingDocsRaw.length === 0"
+                            :class="activeTab === 'supporting' ? 'bg-primary text-white' : 'bg-[#f1f2f3] dark:bg-[#0e1726] text-gray-600 dark:text-white-dark'"
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                            Supporting Docs
+                        </button>
+                        <button @click="activeTab = 'processed'" :disabled="processedData.length === 0"
+                            :class="activeTab === 'processed' ? 'bg-primary text-white' : 'bg-[#f1f2f3] dark:bg-[#0e1726] text-gray-600 dark:text-white-dark'"
+                            class="px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                            Processed
+                            <span v-if="processedData.length > 0" class="badge bg-success text-xs">{{ processedData.length }}</span>
+                        </button>
+                        <button @click="matchSupportingDocs"
+                            :disabled="!currentDocument || selectedSupportingDocs.size === 0 || isLoadingSupportingDocs"
+                            class="ml-auto px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                            <svg v-if="isLoadingSupportingDocs" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></svg>
+                            <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                            Process Data
+                        </button>
                         <button v-if="csvData" @click="downloadCSV"
-                            class="ml-auto px-4 py-2 bg-success text-white rounded-lg text-sm font-medium hover:bg-success-dark transition-colors flex items-center gap-2">
+                            class="px-4 py-2 bg-success text-white rounded-lg text-sm font-medium hover:bg-success-dark transition-colors flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -220,7 +321,7 @@
                 </div>
 
                 <!-- Tab Content -->
-                <div class="flex-1 overflow-y-auto p-6 bg-white dark:bg-[#0e1726] max-h-[calc(100vh-120px)]">
+                <div class="flex-1 overflow-y-auto overflow-x-auto p-6 bg-white dark:bg-[#0e1726] max-h-[calc(100vh-190px)]">
                     <!-- Loading -->
                     <div v-if="isProcessing" class="flex items-center justify-center h-full">
                         <div class="text-center">
@@ -233,13 +334,28 @@
                     </div>
 
                     <!-- PDF Tab -->
-                    <div v-else-if="activeTab === 'pdf' && documentPreviewUrl" class="h-[800px]">
-                        <PdfViewer :url="documentPreviewUrl" />
+                    <div v-else-if="activeTab === 'pdf'">
+                        <div v-if="documentPreviewUrl" class="h-[800px]">
+                            <PdfViewer :url="documentPreviewUrl" />
+                        </div>
+                        <div v-else class="flex items-center justify-center h-full py-12">
+                            <div class="text-center max-w-md">
+                                <div class="text-primary mb-4">
+                                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <h4 class="text-lg font-semibold dark:text-white-light mb-2">No Bank Statement</h4>
+                                <p class="text-sm text-white-dark">Upload a bank statement PDF to view it here</p>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- CSV Table Tab -->
-                    <div v-else-if="activeTab === 'csv' && csvData" class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 border border-[#e0e6ed] dark:border-[#1b2e4b]">
+                    <div v-else-if="activeTab === 'csv'">
+                        <div v-if="csvData" class="overflow-auto max-h-[calc(100vh-220px)] border border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-[#1b2e4b]">
                                 <tr>
                                     <th v-for="(header, index) in csvHeaders" :key="index"
@@ -258,6 +374,158 @@
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
+                        <div v-else class="flex items-center justify-center h-full py-12">
+                            <div class="text-center max-w-md">
+                                <div class="text-primary mb-4">
+                                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+                                    </svg>
+                                </div>
+                                <h4 class="text-lg font-semibold dark:text-white-light mb-2">No Extracted Data</h4>
+                                <p class="text-sm text-white-dark">Upload a bank statement to extract transaction data</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Supporting Docs Tab -->
+                    <div v-else-if="activeTab === 'supporting'" class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-lg font-semibold dark:text-white-light">Selected Supporting Documents</h4>
+                            <div class="flex items-center gap-3">
+                                <span class="text-sm text-white-dark">{{ selectedSupportingDocs.size }} / {{ supportingDocsRaw.length }} selected</span>
+                                <button @click="matchSupportingDocs"
+                                    :disabled="!currentDocument || selectedSupportingDocs.size === 0 || isLoadingSupportingDocs"
+                                    class="px-4 py-2 bg-success text-white rounded-lg text-sm font-medium hover:bg-success-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                                    Match Selected
+                                </button>
+                            </div>
+                        </div>
+
+                        <div v-if="supportingDocsRaw.filter(doc => selectedSupportingDocs.has(doc.id)).length === 0"
+                            class="flex items-center justify-center h-full py-12">
+                            <div class="text-center max-w-md">
+                                <div class="text-primary mb-4">
+                                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <h4 class="text-lg font-semibold dark:text-white-light mb-2">No Documents Selected</h4>
+                                <p class="text-sm text-white-dark">Check documents in the sidebar to view them here</p>
+                            </div>
+                        </div>
+
+                        <div v-else class="space-y-4">
+                            <div v-for="doc in supportingDocsRaw.filter(d => selectedSupportingDocs.has(d.id))" :key="doc.id">
+                                <div class="mb-3 flex items-center justify-between">
+                                    <h5 class="font-semibold dark:text-white-light">{{ doc.name }}</h5>
+                                    <span class="text-sm text-white-dark">{{ doc.rowCount }} transactions</span>
+                                </div>
+                                <div class="overflow-auto max-h-[400px] border border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg mb-6">
+                                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                        <thead class="bg-gray-50 dark:bg-[#1b2e4b]">
+                                            <tr>
+                                                <th v-for="(header, index) in Object.keys(doc.csvRows[0] || {})" :key="index"
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                                    {{ header }}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white dark:bg-[#0e1726] divide-y divide-gray-200 dark:divide-gray-700">
+                                            <tr v-for="(row, rowIndex) in doc.csvRows" :key="rowIndex"
+                                                class="hover:bg-gray-50 dark:hover:bg-[#1b2e4b] transition-colors">
+                                                <td v-for="(value, key) in row" :key="key"
+                                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
+                                                    {{ value }}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Processed Tab -->
+                    <div v-else-if="activeTab === 'processed'" class="space-y-6">
+                        <!-- Loading State -->
+                        <div v-if="isLoadingSupportingDocs" class="flex items-center justify-center py-12">
+                            <div class="text-center">
+                                <div class="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                                <p class="text-lg font-medium dark:text-white-light mb-2">Fetching supporting documents...</p>
+                                <p class="text-sm text-white-dark">Retrieving payouts and settlements</p>
+                            </div>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div v-else-if="processedData.length === 0" class="flex items-center justify-center py-12">
+                            <div class="text-center max-w-md">
+                                <div class="text-primary mb-4">
+                                    <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <h4 class="text-lg font-semibold dark:text-white-light mb-2">No Matched Documents</h4>
+                                <p class="text-sm text-white-dark">Click the "Processed" button to fetch and match supporting documents with bank statement transactions.</p>
+                            </div>
+                        </div>
+
+                        <!-- Processed Data Table -->
+                        <div v-else>
+                            <div class="mb-4 flex items-center justify-between">
+                                <h4 class="text-lg font-semibold dark:text-white-light">Matched Transactions</h4>
+                                <span class="badge bg-success">{{ processedData.length }} matches found</span>
+                            </div>
+                            <div class="overflow-auto max-h-[calc(100vh-300px)] border border-[#e0e6ed] dark:border-[#1b2e4b] rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-[#1b2e4b]">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            Date
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            Description
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            Amount
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            Type
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-white-dark uppercase tracking-wider">
+                                            Status
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-[#0e1726] divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tr v-for="(item, index) in processedData" :key="index"
+                                        class="hover:bg-gray-50 dark:hover:bg-[#1b2e4b] transition-colors">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white-light">
+                                            {{ item.date }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-white-light">
+                                            {{ item.description }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium"
+                                            :class="item.amount >= 0 ? 'text-success' : 'text-danger'">
+                                            {{ item.amount >= 0 ? '+' : '' }}{{ item.amount }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="badge" :class="item.type === 'payout' ? 'bg-info' : 'bg-warning'">
+                                                {{ item.type }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <span class="badge bg-success">Matched</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -446,6 +714,8 @@ const BASE_URL = 'https://workflow.forwen.com/webhook'
 const CHAT_API_URL = `${BASE_URL}/chat-with-bank-statement`
 const PROCESS_API_URL = `${BASE_URL}/5f904f09-c34f-48e3-a747-f452e0498fed/chat-with-bank-statement`
 const GET_DOC_API_URL = `${BASE_URL}/56086a6b-8570-4134-abb2-bcade1aa9cfb/chat-with-bank-statement`
+const SUPPORTING_DOCS_API_URL = `${BASE_URL}/supporting_docs`
+const MATCH_API_URL = `${BASE_URL}/4b43dbac-2114-49a8-a6de-4de7b4b23429/chat-with-bank-statement`
 
 // Initialize markdown-it
 const md = new MarkdownIt({
@@ -496,10 +766,17 @@ const errorMessage = ref('')
 const showFilesList = ref(true)
 const uploadStatus = ref('Preparing document...')
 const uploadProgress = ref(0)
-const activeTab = ref<'pdf' | 'csv'>('pdf')
+const activeTab = ref<'pdf' | 'csv' | 'supporting' | 'processed'>('pdf')
 const csvData = ref<string>('')
 const csvHeaders = ref<string[]>([])
 const csvRows = ref<string[][]>([])
+const payoutsData = ref<any[]>([])
+const settlementsData = ref<any[]>([])
+const processedData = ref<any[]>([])
+const isLoadingSupportingDocs = ref(false)
+const supportingDocsRaw = ref<any[]>([])
+const selectedSupportingDocs = ref<Set<number>>(new Set())
+const selectedSupportingDocForView = ref<any | null>(null)
 
 // Computed
 const welcomeMessage = computed(() => {
@@ -601,6 +878,7 @@ const processDocumentFile = async (file: File) => {
         uploadProgress.value = 0
         uploadStatus.value = 'Uploading bank statement...'
         csvData.value = ''
+        processedData.value = []
         activeTab.value = 'pdf'
 
         // Step 1: Upload simulation
@@ -639,10 +917,8 @@ const processDocumentFile = async (file: File) => {
         // Step 2: Process the document (get CSV)
         uploadProgress.value = 50
         uploadStatus.value = 'Extracting transaction data...'
-        const processResponse = await axios.post(
+        const processResponse = await axios.get(
             `${PROCESS_API_URL}/process-document/${documentId}`,
-            null,
-            { responseType: 'blob' }
         )
 
         // Convert blob to text for CSV
@@ -687,11 +963,15 @@ const processDocumentFile = async (file: File) => {
 onMounted(async () => {
     isLoadingFiles.value = true
     try {
+        // Load uploaded bank statements
         const response = await axios.get(`${CHAT_API_URL}/documents`)
         uploadedFiles.value = response.data.map((doc: any) => ({
             ...doc,
             processed: doc.processed !== undefined ? doc.processed : false
         }))
+
+        // Automatically fetch supporting documents
+        await fetchSupportingDocs()
     } catch (error) {
         console.error('Error loading documents:', error)
         errorMessage.value = 'Failed to load documents'
@@ -709,6 +989,7 @@ const removeDocument = () => {
     csvData.value = ''
     csvHeaders.value = []
     csvRows.value = []
+    processedData.value = []
     activeTab.value = 'pdf'
 }
 
@@ -722,6 +1003,7 @@ const loadDocument = async (file: Document) => {
         csvData.value = ''
         csvHeaders.value = []
         csvRows.value = []
+        processedData.value = []
 
         // Initialize chat session
         const chatResponse = await axios.post(`${CHAT_API_URL}/chat`, { documentId: file.id })
@@ -827,6 +1109,217 @@ const scrollToBottom = () => {
         chatContainer.value.scrollTop = chatContainer.value.scrollHeight
     }
 }
+
+// Parse CSV string to array of objects
+const parseCSVToObjects = (csvString: string): any[] => {
+    const lines = csvString.split('\n').filter(line => line.trim())
+    if (lines.length === 0) return []
+
+    // Helper function to parse a CSV line respecting quoted fields
+    const parseLine = (line: string): string[] => {
+        const result: string[] = []
+        let current = ''
+        let inQuotes = false
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i]
+            const nextChar = line[i + 1]
+
+            if (char === '"') {
+                if (inQuotes && nextChar === '"') {
+                    current += '"'
+                    i++
+                } else {
+                    inQuotes = !inQuotes
+                }
+            } else if (char === ',' && !inQuotes) {
+                result.push(current.trim())
+                current = ''
+            } else {
+                current += char
+            }
+        }
+        result.push(current.trim())
+        return result
+    }
+
+    // Parse headers
+    const headers = parseLine(lines[0])
+
+    // Parse data rows
+    const dataRows = lines.slice(1).map(line => {
+        const values = parseLine(line)
+        const obj: any = {}
+        headers.forEach((header, index) => {
+            obj[header] = values[index] || ''
+        })
+        return obj
+    })
+
+    return dataRows
+}
+
+// Fetch Supporting Documents (without matching)
+const fetchSupportingDocs = async () => {
+    try {
+        isLoadingSupportingDocs.value = true
+        errorMessage.value = ''
+
+        // Fetch supporting documents as RAR/ZIP file
+        const supportingDocsResponse = await axios.get(SUPPORTING_DOCS_API_URL, {
+            responseType: 'blob'
+        })
+
+        // Extract files from the archive
+        const archiveBlob = supportingDocsResponse.data
+        const zip = await JSZip.loadAsync(archiveBlob)
+
+        // Find and extract CSV files
+        const csvFiles = Object.keys(zip.files).filter(name => name.toLowerCase().endsWith('.csv'))
+
+        // Treat each CSV file as a separate document
+        supportingDocsRaw.value = []
+        payoutsData.value = []
+        settlementsData.value = []
+
+        for (let i = 0; i < csvFiles.length; i++) {
+            const csvFileName = csvFiles[i]
+            const csvText = await zip.files[csvFileName].async('text')
+            const csvRows = parseCSVToObjects(csvText)
+
+            // Determine type from filename
+            const fileName = csvFileName.toLowerCase()
+            const type = fileName.includes('payout') ? 'payout' : fileName.includes('settlement') ? 'settlement' : 'other'
+
+            // Calculate summary info
+            const totalAmount = csvRows.reduce((sum, row) => sum + parseFloat(row.amount || row.Amount || 0), 0)
+            const rowCount = csvRows.length
+
+            // Create document entry for this CSV file
+            const doc = {
+                id: i,
+                name: csvFileName.split('/').pop() || csvFileName, // Get filename without path
+                type: type,
+                rowCount: rowCount,
+                totalAmount: totalAmount,
+                csvText: csvText,
+                csvRows: csvRows,
+                description: `${type.charAt(0).toUpperCase() + type.slice(1)} Report - ${rowCount} transactions`
+            }
+
+            supportingDocsRaw.value.push(doc)
+
+            // Categorize by type
+            if (type === 'payout') {
+                payoutsData.value.push(doc)
+            } else if (type === 'settlement') {
+                settlementsData.value.push(doc)
+            }
+        }
+
+        // Select all by default
+        selectedSupportingDocs.value = new Set(supportingDocsRaw.value.map(doc => doc.id))
+
+    } catch (error) {
+        console.error('Error fetching supporting documents:', error)
+        errorMessage.value = 'Failed to fetch supporting documents. Please try again.'
+    } finally {
+        isLoadingSupportingDocs.value = false
+    }
+}
+
+// View supporting document details (only if checked)
+const viewSupportingDoc = (doc: any) => {
+    if (!selectedSupportingDocs.value.has(doc.id)) {
+        errorMessage.value = 'Please check the document to preview it'
+        setTimeout(() => {
+            errorMessage.value = ''
+        }, 3000)
+        return
+    }
+    selectedSupportingDocForView.value = doc
+    activeTab.value = 'supporting'
+}
+
+// Match selected supporting docs with bank statement
+const matchSupportingDocs = async () => {
+    if (!currentDocument.value) {
+        errorMessage.value = 'Please upload a bank statement first'
+        return
+    }
+
+    if (selectedSupportingDocs.value.size === 0) {
+        errorMessage.value = 'Please select at least one supporting document'
+        return
+    }
+
+    try {
+        isLoadingSupportingDocs.value = true
+        errorMessage.value = ''
+        processedData.value = []
+
+        // Call Match API with bank statement ID (POST method)
+        const bankStatementId = currentDocument.value.id
+
+        // Get selected supporting documents
+        const selectedDocs = supportingDocsRaw.value.filter(doc =>
+            selectedSupportingDocs.value.has(doc.id)
+        )
+
+        const matchResponse = await axios.post(
+            `${MATCH_API_URL}/${bankStatementId}/match`,
+            {
+                supportingDocuments: selectedDocs
+            },
+            { responseType: 'text' }
+        )
+
+        // Parse match response (CSV format)
+        const matchedCsv = matchResponse.data
+        const matchedDocs = parseCSVToObjects(matchedCsv)
+
+        // Format matched data for display - only include selected docs
+        const matched: any[] = matchedDocs
+            .map((doc: any, index: number) => ({
+                id: index,
+                date: doc.date || doc.Date || doc.transaction_date || doc['Transaction Date'] || doc.created_at || 'N/A',
+                description: doc.description || doc.Description || doc.reference || doc.Reference || doc.memo || doc.Memo || 'Matched Transaction',
+                amount: parseFloat(doc.amount || doc.Amount || 0),
+                type: (doc.type || doc.Type || 'other').toLowerCase(),
+                matchedWith: 'Bank Statement',
+                status: doc.status || doc.Status || 'Matched'
+            }))
+            .filter((doc: any) => selectedSupportingDocs.value.has(doc.id))
+
+        processedData.value = matched
+
+        // Switch to processed tab
+        activeTab.value = 'processed'
+    } catch (error) {
+        console.error('Error matching documents:', error)
+        errorMessage.value = 'Failed to match documents. Please try again.'
+    } finally {
+        isLoadingSupportingDocs.value = false
+    }
+}
+
+// Toggle supporting doc selection
+const toggleSupportingDoc = (docId: number) => {
+    if (selectedSupportingDocs.value.has(docId)) {
+        selectedSupportingDocs.value.delete(docId)
+    } else {
+        selectedSupportingDocs.value.add(docId)
+    }
+}
+
+// Toggle all supporting docs selection
+const toggleAllSupportingDocs = () => {
+    if (selectedSupportingDocs.value.size === supportingDocsRaw.value.length) {
+        selectedSupportingDocs.value.clear()
+    } else {
+        selectedSupportingDocs.value = new Set(supportingDocsRaw.value.map(doc => doc.id))
+    }
+}
 </script>
 
 <style scoped>
@@ -845,6 +1338,35 @@ const scrollToBottom = () => {
 }
 
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Horizontal scrollbar styling */
+.overflow-x-auto::-webkit-scrollbar,
+.overflow-auto::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track,
+.overflow-auto::-webkit-scrollbar-track {
+    background: #f1f2f3;
+    border-radius: 4px;
+}
+
+.dark .overflow-x-auto::-webkit-scrollbar-track,
+.dark .overflow-auto::-webkit-scrollbar-track {
+    background: #1b2e4b;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb,
+.overflow-auto::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover,
+.overflow-auto::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
