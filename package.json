@@ -17,6 +17,7 @@
         "node": "22.0.0"
     },
     "dependencies": {
+        "@a.izzuddin/ai-chat": "^0.2.3",
         "@bhplugin/vue3-datatable": "^2.0.0",
         "@capacitor/android": "^6.1.2",
         "@capacitor/camera": "^6.1.2",

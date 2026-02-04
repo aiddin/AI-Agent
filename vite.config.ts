@@ -5,7 +5,14 @@ import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
 
 export default defineConfig({
     plugins: [
-        vue(),
+        vue({
+            template: {
+                compilerOptions: {
+                    // Treat ai-chat as a custom element
+                    isCustomElement: (tag) => tag === 'ai-chat'
+                }
+            }
+        }),
         VueI18nPlugin({
             include: path.resolve(__dirname, './src/locales/**'),
         }),
@@ -17,5 +24,14 @@ export default defineConfig({
     },
     optimizeDeps: {
         include: ['quill'],
+    },
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://127.0.0.1:8000',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, ''),
+            },
+        },
     },
 });
