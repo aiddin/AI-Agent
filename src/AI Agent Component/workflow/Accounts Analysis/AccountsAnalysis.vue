@@ -476,7 +476,7 @@
                         <!-- Processed Data Table -->
                         <div v-else>
                             <div class="mb-4 flex items-center justify-between">
-                                <h4 class="text-lg font-semibold dark:text-white-light">Matched Transactions</h4>
+                                <h4 class="text-lg font-semibold dark:text-white-light">Processed Transactions</h4>
                                 <div class="flex items-center gap-3">
                                     <span class="badge bg-success">{{ processedData.length }} matches found</span>
                                     <button @click="downloadResultZip"
