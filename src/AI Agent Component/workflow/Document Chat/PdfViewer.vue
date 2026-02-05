@@ -36,7 +36,9 @@
         </div>
 
         <!-- PDF Canvas Container -->
-        <div class="flex-1 overflow-auto bg-gray-400 dark:bg-gray-700 p-4">
+        <div ref="scrollContainer" class="flex-1 overflow-auto bg-gray-400 dark:bg-gray-700 p-4"
+            :class="{ 'cursor-grab': !isDragging, 'cursor-grabbing': isDragging }"
+            @mousedown="startDrag" @mousemove="drag" @mouseup="endDrag" @mouseleave="endDrag">
             <div v-if="isLoading" class="flex items-center justify-center h-full">
                 <div class="text-center">
                     <div
@@ -57,7 +59,7 @@
                 </div>
             </div>
             <div v-else class="flex justify-center">
-                <canvas ref="pdfCanvas" class="shadow-lg bg-white"></canvas>
+                <canvas ref="pdfCanvas" class="shadow-lg bg-white select-none"></canvas>
             </div>
         </div>
     </div>
@@ -75,12 +77,20 @@ const props = defineProps<{
 }>()
 
 const pdfCanvas = ref<HTMLCanvasElement | null>(null)
+const scrollContainer = ref<HTMLDivElement | null>(null)
 const isLoading = ref(true)
 const error = ref('')
 const currentPage = ref(1)
 const totalPages = ref(0)
 const scale = ref(1.0)
 let pdfDoc: any = null
+
+// Drag functionality
+const isDragging = ref(false)
+const startX = ref(0)
+const startY = ref(0)
+const scrollLeft = ref(0)
+const scrollTop = ref(0)
 
 const loadPDF = async () => {
     try {
@@ -130,8 +140,8 @@ const renderPage = async (pageNum: number) => {
         canvas.height = viewport.height
         canvas.width = viewport.width
 
-        // Set canvas style to ensure it's visible
-        canvas.style.maxWidth = '100%'
+        // Remove maxWidth constraint to allow proper zooming
+        canvas.style.maxWidth = 'none'
         canvas.style.height = 'auto'
 
         // Clear canvas before rendering
@@ -165,13 +175,37 @@ const previousPage = () => {
 }
 
 const zoomIn = () => {
-    scale.value = Math.min(scale.value + 0.25, 3)
+    scale.value = Math.min(scale.value + 0.25, 4)
     renderPage(currentPage.value)
 }
 
 const zoomOut = () => {
     scale.value = Math.max(scale.value - 0.25, 0.5)
     renderPage(currentPage.value)
+}
+
+const startDrag = (e: MouseEvent) => {
+    if (!scrollContainer.value) return
+    isDragging.value = true
+    startX.value = e.pageX - scrollContainer.value.offsetLeft
+    startY.value = e.pageY - scrollContainer.value.offsetTop
+    scrollLeft.value = scrollContainer.value.scrollLeft
+    scrollTop.value = scrollContainer.value.scrollTop
+}
+
+const drag = (e: MouseEvent) => {
+    if (!isDragging.value || !scrollContainer.value) return
+    e.preventDefault()
+    const x = e.pageX - scrollContainer.value.offsetLeft
+    const y = e.pageY - scrollContainer.value.offsetTop
+    const walkX = (x - startX.value) * 1.5 // Multiply for faster scrolling
+    const walkY = (y - startY.value) * 1.5
+    scrollContainer.value.scrollLeft = scrollLeft.value - walkX
+    scrollContainer.value.scrollTop = scrollTop.value - walkY
+}
+
+const endDrag = () => {
+    isDragging.value = false
 }
 
 onMounted(() => {
